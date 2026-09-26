@@ -448,7 +448,7 @@ def build_index():
                   for k, v in h["edu"])
     skills = "".join('<div class="kv-row"><div class="k">%s</div><div class="v">%s</div></div>' % (e(k), v)
                      for k, v in h["skills"])
-    off = "".join("<li>%s</li>" % e(x) for x in h["offindustry"])
+    off = "".join("<li>%s</li>" % x for x in h["offindustry"])   # 본문 데이터는 서식 태그를 그대로 쓴다
 
     out = [head("손석완 · 레벨 디자이너 포트폴리오",
                 "레벨 디자이너 손석완의 포트폴리오. 왕좌의 게임: 킹스로드 필드·던전 레벨디자인."),
@@ -490,10 +490,23 @@ def build_index():
     </div>
     <div class="stats rv">%s</div>
     <div class="feats">%s</div>
-    <ul class="bul rv">%s</ul>
   </div>
 </section>
-""" % (stats, feats, "".join("<li>%s</li>" % x for x in h["bullets"])))
+""" % (stats, feats))
+
+    # 프로젝트
+    out.append("""<section id="projects">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">Projects</p>
+      <h2>참여한 6개 프로젝트</h2>
+      <p class="note">카드를 누르면 프로젝트별 상세 문서로 들어갑니다. 대표 프로젝트인 <b>왕좌의 게임: 킹스로드</b>는 지역·던전 10종의 작업 과정을 따로 정리해 두었습니다.</p>
+    </div>
+    %s
+    <div class="pgrid">%s</div>
+  </div>
+</section>
+""" % (project_card(kingsroad), "".join(project_card(p) for p in others)))
 
     # R&D 배너
     out.append("""<section id="rnd">
@@ -518,20 +531,6 @@ def build_index():
   </div>
 </section>
 """)
-
-    # 프로젝트
-    out.append("""<section id="projects">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <p class="eyebrow">Projects</p>
-      <h2>참여한 6개 프로젝트</h2>
-      <p class="note">카드를 누르면 프로젝트별 상세 문서로 들어갑니다. 대표 프로젝트인 <b>왕좌의 게임: 킹스로드</b>는 지역·던전 10종의 작업 과정을 따로 정리해 두었습니다.</p>
-    </div>
-    %s
-    <div class="pgrid">%s</div>
-  </div>
-</section>
-""" % (project_card(kingsroad), "".join(project_card(p) for p in others)))
 
     # 개인 작업
     own_cards = "".join(
@@ -562,7 +561,7 @@ def build_index():
     <div class="career rv">%s</div>
     <div class="kv rv">%s</div>
     <h3 class="h3 rv">업계 외 경력</h3>
-    <p class="body-p rv">게임 업계에 오기 전 영화를 전공했고, 시나리오 작가와 영화 스탭으로 일했습니다. 스토리텔링이 중요한 게임에서 이 경력이 크게 작용합니다.</p>
+    <p class="body-p rv">게임 업계에 오기 전 영화를 전공했고, 시나리오 작가와 영화 스탭으로 일했습니다. 글쓰기는 지금도 이어가고 있어서, 스토리텔링과 연출이 중요한 레벨에서 이 경력이 크게 작용합니다.</p>
     <ul class="bul rv">%s</ul>
     <figure class="fig rv" style="max-width:620px"><img src="img/cov/offindustry.webp" alt="보조작가로 참여한 드라마와 만화" loading="lazy" decoding="async" width="1000" height="563"><figcaption>보조작가로 참여한 어린이 드라마와 만화 · 애니메이션 작업 일부</figcaption></figure>
   </div>
