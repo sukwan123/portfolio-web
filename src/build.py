@@ -482,14 +482,13 @@ def build_index():
         <a class="btn btn-ghost" href="personal.html">개인작품 포트폴리오 <span class="ar">→</span></a>
       </div>
       %s
-      <div class="chips chip-row"><a class="chip mail" href="mailto:%s">%s</a></div>
     </div>
     <figure class="portrait">
       <img src="img/profile.webp" alt="손석완 프로필 사진" width="660" height="880" fetchpriority="high">
     </figure>
   </div>
 </div>
-""" % (h["lede"], h["sub"], chips, e(C.SITE["email"]), e(C.SITE["email"])))
+""" % (h["lede"], h["sub"], chips))
 
     out.append('<main>\n')
 
