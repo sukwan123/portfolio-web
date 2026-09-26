@@ -69,9 +69,10 @@ def avatar():
         src = os.path.join(IMG, "profile.webp")
     im = Image.open(src).convert("RGB")
     w, h = im.size
-    side = int(w * 0.70)                    # 얼굴이 원 안에 꽉 차되 잘리지 않는 비율
+    # 원형 마스크를 씌우므로 턱까지 원 안에 들어오도록 넉넉히 잡는다
+    side = int(w * 0.88)
     x = (w - side) // 2
-    y = int(h * 0.10)
+    y = int(h * 0.02)
     face = im.crop((x, y, x + side, min(y + side, h)))
     face.resize((96, 96), Image.LANCZOS).save(os.path.join(IMG, "avatar.webp"),
                                               "WEBP", quality=88, method=6)
