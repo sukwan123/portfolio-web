@@ -579,3 +579,43 @@ figure{margin:0}
 .pcover.blank .ythumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   opacity:0;transition:opacity .3s}
 .pcover.blank .ythumb.on{opacity:1}
+
+/* ─────────────────────────────────────────── 본인 전용 편집 모드 */
+.ed-able{outline:1px dashed transparent;outline-offset:3px;border-radius:3px;transition:outline-color .15s,background .15s}
+.ed-on .ed-able:hover{outline-color:var(--accent);cursor:text}
+.ed-on .ed-able:focus{outline:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.ed-bar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:300;display:flex;
+  align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 24px);
+  padding:11px 14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line-hard);
+  box-shadow:var(--shadow-lift)}
+.ed-bar .ed-lab{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent)}
+.ed-bar button{font-family:var(--sans);font-size:13px;padding:7px 12px;border-radius:7px;cursor:pointer;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink2)}
+.ed-bar button:hover{border-color:var(--accent);color:var(--ink)}
+.ed-bar button.pri{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+:root[data-theme="dark"] .ed-bar button.pri,
+:root:not([data-theme="light"]) .ed-bar button.pri{color:#14171C}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .ed-bar button.pri{color:#fff}}
+.ed-bar .ed-hint{font-size:12px;color:var(--ink3)}
+@media(max-width:700px){.ed-bar .ed-hint{display:none}}
+
+.ed-modal{position:fixed;inset:0;z-index:320;background:rgba(8,10,14,.72);display:grid;place-items:center;padding:20px}
+.ed-box{width:min(360px,100%);background:var(--surface-2);border:1px solid var(--line-hard);
+  border-radius:12px;padding:20px;box-shadow:var(--shadow-lift)}
+.ed-box .ed-t{font-size:15px;font-weight:600;color:var(--ink)}
+.ed-box input{width:100%;margin-top:12px;padding:10px 12px;font-size:14px;font-family:var(--sans);
+  border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.ed-box input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.ed-box .ed-msg{font-size:12.5px;color:#B4553C;min-height:18px;margin-top:6px}
+.ed-box .ed-row{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+.ed-box button{font-size:13px;padding:8px 14px;border-radius:7px;cursor:pointer;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink2)}
+.ed-box button.pri{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.ed-toast{position:fixed;left:50%;bottom:104px;transform:translateX(-50%);z-index:330;
+  padding:10px 16px;border-radius:9px;font-size:13px;background:var(--ink);color:var(--bg);
+  box-shadow:var(--shadow-lift)}
+.ed-out{position:fixed;left:50%;bottom:150px;transform:translateX(-50%);z-index:310;
+  width:min(720px,92vw);height:220px;padding:12px;font-family:var(--mono);font-size:12px;
+  border:1px solid var(--line-hard);border-radius:10px;background:var(--surface);color:var(--ink)}
+@media print{.ed-bar,.ed-modal,.ed-toast,.ed-out{display:none!important}}

@@ -189,7 +189,8 @@ def tail(with_lightbox=True):
   <div class="lb-cap"><span id="lbCap"></span><span class="ix" id="lbIx"></span></div>
 </div>
 """ if with_lightbox else ""
-    return lb + '<script src="assets/app.js"></script>\n</body>\n</html>\n'
+    return (lb + '<script src="assets/app.js"></script>\n'
+            '<script src="assets/edit.js"></script>\n</body>\n</html>\n')
 
 
 def contact_section():
@@ -485,7 +486,6 @@ def build_index():
     <div class="sec-head rv">
       <p class="eyebrow">Summary</p>
       <h2>이렇게 일해왔습니다</h2>
-      <p class="note">10년 넘게 6개 프로젝트에서 레벨디자인을 해왔고, 그 사이 시나리오 · 퀘스트 · 시스템 · BM · 운영까지 맡아봤습니다. 하이컨셉 단계부터 글로벌 출시와 라이브 서비스, 그리고 서비스 종료까지 개발 주기 전체를 겪었습니다.</p>
     </div>
     <div class="stats rv">%s</div>
     <div class="feats">%s</div>
