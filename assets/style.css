@@ -676,3 +676,7 @@ figure{margin:0}
 .hero .chip.t2{color:#9CC3E8;border-color:rgba(156,195,232,.42);background:rgba(156,195,232,.10)}
 .hero .chip.t3{color:#93D3B4;border-color:rgba(147,211,180,.42);background:rgba(147,211,180,.10)}
 .hero .chip.t4{color:#D6A9C2;border-color:rgba(214,169,194,.42);background:rgba(214,169,194,.10)}
+/* 커버 위 표식은 썸네일·베일보다 위에 (유튜브 썸네일이 배지를 덮던 문제) */
+.pcover .badge,.pcover .shotc,.pcover .go{z-index:3}
+.pcover .veil{z-index:2}
+.pcover.blank .ythumb{z-index:1}
