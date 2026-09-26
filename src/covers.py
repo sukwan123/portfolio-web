@@ -62,8 +62,27 @@ def crop(src, w, h, focus):
     return im.resize((w, h), Image.LANCZOS)
 
 
+def avatar():
+    """상단 바 로고와 파비콘 — 프로필 사진을 얼굴 중심으로 정사각 크롭."""
+    src = os.path.join(ROOT, "src", "media", "profile.png")
+    if not os.path.exists(src):
+        src = os.path.join(IMG, "profile.webp")
+    im = Image.open(src).convert("RGB")
+    w, h = im.size
+    side = int(w * 0.70)                    # 얼굴이 원 안에 꽉 차되 잘리지 않는 비율
+    x = (w - side) // 2
+    y = int(h * 0.10)
+    face = im.crop((x, y, x + side, min(y + side, h)))
+    face.resize((96, 96), Image.LANCZOS).save(os.path.join(IMG, "avatar.webp"),
+                                              "WEBP", quality=88, method=6)
+    face.resize((64, 64), Image.LANCZOS).save(os.path.join(IMG, "favicon.png"),
+                                              "PNG", optimize=True)
+    print("avatar  img/avatar.webp · img/favicon.png")
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
+    avatar()
     total = 0
     for name, (src, focus) in sorted(CARDS.items()):
         p = os.path.join(OUT, name + ".webp")
