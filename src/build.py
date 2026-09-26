@@ -478,7 +478,7 @@ def build_index():
       <p class="lede">%s</p>
       <p class="sub">%s</p>
       <div class="hero-cta">
-        <a class="btn btn-pri" href="#projects">프로젝트 <span class="ar">↓</span></a>
+        <a class="btn btn-pri" href="#projects">프로젝트 <span class="ar">→</span></a>
         <a class="btn btn-pri" href="personal.html">개인 작품 <span class="ar">→</span></a>
       </div>
       %s
