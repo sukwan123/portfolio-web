@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>영상 임베드 점검</title>
+<style>
+  body{margin:0;padding:28px 20px 60px;background:#0E1116;color:#E8ECF1;
+       font:15px/1.6 -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;word-break:keep-all}
+  .in{max-width:880px;margin:0 auto}
+  h1{font-size:20px;margin:0 0 6px}
+  p.sub{margin:0 0 22px;color:#95A0AD;font-size:14px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #222A34;vertical-align:top}
+  th{color:#95A0AD;font-weight:500;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+  td.v{white-space:nowrap;font-weight:600}
+  .ok{color:#7FD1A2} .no{color:#F08A8A} .wait{color:#95A0AD} .warn{color:#E8C07A}
+  code{font:12px/1.5 ui-monospace,Menlo,monospace;color:#95A0AD}
+  #sum{margin:20px 0 0;padding:13px 15px;border:1px solid #222A34;border-radius:8px;background:#151A21}
+  textarea{width:100%;height:150px;margin-top:12px;padding:10px;background:#0B0E12;color:#E8ECF1;
+           border:1px solid #222A34;border-radius:8px;font:12px/1.5 ui-monospace,Menlo,monospace}
+  #hold{position:absolute;left:-9999px;top:0;width:320px;height:180px}
+</style>
+<div class="in">
+  <h1>영상 임베드 점검</h1>
+  <p class="sub">포트폴리오에 걸린 유튜브 영상이 외부 사이트에서 재생 가능한지 하나씩 물어봅니다.
+    전부 끝나면 아래 상자의 내용을 복사해서 주세요. 10~20초 걸립니다.</p>
+  <table><thead><tr><th>영상</th><th>실린 곳</th><th>ID</th><th>판정</th></tr></thead>
+    <tbody id="rows"></tbody></table>
+  <div id="sum">확인 중…</div>
+  <textarea id="out" readonly></textarea>
+</div>
+<div id="hold"></div>
+<script>
+var LIST = [
+  ["kuf2", "레이드 홍보 영상", "k-xVaTSeDeo"],
+  ["kuf2", "PvP ‘격전의 도시’ 플레이", "31ObPMikvFg"],
+  ["kuf2", "3v3 PvP 경기", "lqhtfQrQcrI"],
+  ["kuf2", "도시 · 필드 플레이", "NgCVZJkbEDU"],
+  ["kuf2", "미션 유저 플레이", "bhPSSpAG6Eo"],
+  ["kuf2", "2014 E3 소니 컨퍼런스", "1oiCRRD-pVA"],
+  ["zeta", "공식 인게임 트레일러", "-NCpfGbZXt8"],
+  ["nanolegend", "PvE 첫 튜토리얼 미션", "CRWUWx0-hQ0"],
+  ["nanolegend", "랜덤덱 모드 플레이", "_IJJ-uX8Xlo"],
+  ["nanolegend", "패키지 · 프리미엄 패스", "-SOocSAzNaw"],
+  ["minimax", "상점 · 인벤토리 · 성장 · BM", "_omHoRsK6lc"],
+  ["minimax", "연속 가챠", "4e1PXOTKuOM"],
+  ["minimax", "성장 시스템 공식 가이드", "bWu4RU2M05Q"],
+  ["sc-redesign", "목업 브리핑 영상", "-u-Y927xszk"],
+  ["rpg-dungeon", "목업 제작 과정 영상", "ziBouh2LaiA"]
+];
+
+// 유튜브가 돌려주는 오류 코드 → 사람이 읽을 말. 101 과 150 은 같은 뜻이다.
+var WHY = {
+  2:   ["no",   "주소가 잘못됨"],
+  5:   ["warn", "플레이어 오류(재시도 필요)"],
+  100: ["no",   "삭제됐거나 비공개"],
+  101: ["no",   "업로더가 퍼가기를 막음"],
+  150: ["no",   "업로더가 퍼가기를 막음"]
+};
+
+var rows = document.getElementById("rows");
+var cells = [], done = 0;
+
+LIST.forEach(function (it, i) {
+  var tr = document.createElement("tr");
+  tr.innerHTML = '<td>' + it[1] + '</td><td><code>' + it[0] + '</code></td>' +
+                 '<td><code>' + it[2] + '</code></td><td class="v wait">확인 중…</td>';
+  rows.appendChild(tr);
+  cells[i] = tr.lastChild;
+  var d = document.createElement("div");
+  d.id = "p" + i;
+  document.getElementById("hold").appendChild(d);
+});
+
+function mark(i, cls, txt) {
+  if (cells[i].dataset.set) return;
+  cells[i].dataset.set = "1";
+  cells[i].className = "v " + cls;
+  cells[i].textContent = txt;
+  LIST[i].push(txt);
+  if (++done === LIST.length) finish();
+}
+
+function finish() {
+  var bad = LIST.filter(function (x) { return x[3] !== "정상"; });
+  document.getElementById("sum").textContent = bad.length
+    ? "재생 불가 " + bad.length + "건 / 전체 " + LIST.length + "건"
+    : "전부 정상입니다 (" + LIST.length + "건)";
+  document.getElementById("out").value =
+    LIST.map(function (x) { return x[0] + "\t" + x[2] + "\t" + x[3] + "\t" + x[1]; }).join("\n");
+}
+
+function onYouTubeIframeAPIReady() {
+  LIST.forEach(function (it, i) {
+    new YT.Player("p" + i, {
+      videoId: it[2],
+      host: "https://www.youtube-nocookie.com",
+      playerVars: { rel: 0 },
+      events: {
+        onReady: function () { mark(i, "ok", "정상"); },
+        onError: function (ev) {
+          var w = WHY[ev.data] || ["no", "오류 " + ev.data];
+          mark(i, w[0], w[1]);
+        }
+      }
+    });
+  });
+  // 응답이 아예 없는 경우(차단 확장·회사망)도 표에 남긴다
+  setTimeout(function () {
+    LIST.forEach(function (it, i) { mark(i, "warn", "응답 없음"); });
+  }, 20000);
+}
+
+var s = document.createElement("script");
+s.src = "https://www.youtube.com/iframe_api";
+document.head.appendChild(s);
+</script>
+</html>
