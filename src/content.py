@@ -723,7 +723,11 @@ PERSONAL = dict(
                   "기획서와 브리핑 영상으로 정리했습니다.",
              videos=[("목업 브리핑 영상", "https://youtu.be/-u-Y927xszk",
                       "리디자인 의도와 공간 구성을 직접 설명한 영상")],
-             links=[]),
+             # (파일 접두사, 쪽수, 캡션) — img/doc/sc-01.webp … 를 눌러서 크게 본다
+             deck=("sc", 22, "스타크래프트 캠페인 3D 리디자인 기획서"),
+             links=[("문서", "기획서 원본 내려받기 (PDF · 22쪽)",
+                     "슬라이드를 눌러 크게 보거나, 파일로 받아 볼 수 있습니다",
+                     "doc/starcraft-3d-redesign.pdf")]),
         dict(slug="rpg-dungeon", page="pw-rpg-dungeon.html",
              title="범용성 있는 RPG 던전 목업 제작 과정", year="2024",
              meta="레벨디자인 · 목업", mono="RPG",

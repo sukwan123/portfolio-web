@@ -291,6 +291,17 @@ def block(b):
                        '<span class="lnk-ar">↗</span></a>' % (
                            e(url), e(tag), e(label), ('<em>%s</em>' % e(note)) if note else ""))
         return '<div class="lnks rv">%s</div>\n' % "".join(out)
+    if kind == "deck":
+        # 기획서 슬라이드 — 눌러서 크게 본다
+        prefix, n, cap = b[1], b[2], b[3]
+        cells = []
+        for i in range(1, n + 1):
+            src = "img/doc/%s-%02d.webp" % (prefix, i)
+            alt = "%s %d쪽" % (cap, i)
+            cells.append('<button class="shot" data-src="%s" data-cap="%s" aria-label="%s 확대">'
+                         '<img src="%s" alt="%s" loading="lazy" decoding="async"></button>'
+                         % (e(src), e(alt), e(alt), e(src), e(alt)))
+        return '<div class="grid g3 rv">%s</div>\n' % "".join(cells)
     if kind == "shotfig":
         _, src, cap, figcap = b
         return ('<figure class="fig rv"><button class="shot" data-src="%s" data-cap="%s" '
@@ -752,6 +763,9 @@ def build_own(w, prev, next_):
            phero("Personal Work · %s" % w["year"], w["title"], w["meta"], w["desc"],
                  cover=w.get("cover"), num=w.get("mono"))]
     out.append('<main>\n<section class="tight"><div class="wrap">')
+    if w.get("deck"):
+        out.append(block(("h3", "기획서")))
+        out.append(block(("deck",) + w["deck"]))
     if w.get("links"):
         out.append(block(("h3", "자료")))
         out.append(block(("links", w["links"])))
@@ -761,7 +775,7 @@ def build_own(w, prev, next_):
     out.append('</div></section>\n</main>\n')
     out.append(pager(prev, next_))
     out.append(foot())
-    out.append(tail(with_lightbox=False))
+    out.append(tail(with_lightbox=bool(w.get("deck"))))
     return "".join(out)
 
 
