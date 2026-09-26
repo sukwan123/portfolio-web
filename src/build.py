@@ -380,8 +380,8 @@ def gallery(c):
     if os.path.exists(red):
         n = len(pick(c["num"], "1")) + len(pick(c["num"], "2"))
         out.append('<div class="slot rv"><div class="slot-head"><span class="slot-tag">작업 과정</span>'
-                   '<p class="slot-cap">평면도와 목업 %s— 회사 대외비 자료라 형태만 남기고 '
-                   '되돌릴 수 없게 흐리게 처리했습니다.</p></div>'
+                   '<p class="slot-cap">평면도와 목업 %s— 회사 대외비 자료라 지명·수치 같은 '
+                   '글씨를 되돌릴 수 없게 지웠습니다. 공간 구조와 동선은 그대로입니다.</p></div>'
                    '<figure class="redact"><img src="img/redacted/%s.webp" '
                    'alt="%s 평면도·목업 (대외비 처리)" loading="lazy" decoding="async">'
                    '<figcaption>대외비 처리된 작업 기록</figcaption></figure></div>'

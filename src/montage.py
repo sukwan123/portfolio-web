@@ -7,13 +7,16 @@
 한 장의 몽타주로 합치고, 되돌릴 수 없게 뭉갠 뒤 img/redacted/ 에 저장한다.
 CSS 필터로 가리는 방식은 원본 파일이 그대로 내려받아지므로 쓰지 않는다.
 
-뭉개는 방법 (셋을 겹쳐 복원 불가):
-  1) 타일마다 22px 폭까지 축소 — 정보 자체를 버린다 (장수와 무관하게 같은 강도)
-  2) 다시 확대                — 잃은 정보는 돌아오지 않는다
-  3) 가우시안 블러             — 축소 격자와 타일 경계를 지운다
+가리는 대상은 글씨(지명·수치·주석)다. 동선과 공간 구조는 보여야 작업물 구실을
+하므로, 글씨가 읽히지 않는 선까지만 뭉갠다.
 
-원본은 이 저장소에 없다. 다시 구우려면 원본 저장소(LevelDesign_Portfolio)의
-평면도·목업을 img/ 에 되돌려 놓고 실행할 것.
+  1) 타일 박스 크기로 축소   — 원본 대비 3~4배 축소라 여기서 이미 잔글씨가 사라진다
+  2) 절반 크기로 한 번 더    — 남은 큰 글씨까지 버린다. 잃은 정보는 돌아오지 않는다
+  3) 약한 가우시안 블러      — 축소 격자를 지운다
+
+원본은 이 저장소에 없다. 다시 구우려면 원본을 아무 데나 풀고 위치를 넘긴다.
+
+    MONTAGE_SRC=/path/to/originals python3 src/montage.py
 """
 import math
 import os
@@ -22,25 +25,42 @@ from PIL import Image, ImageFilter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 IMG = os.path.join(ROOT, "img")
+SRC = os.environ.get("MONTAGE_SRC") or IMG      # 원본 위치
 OUT = os.path.join(IMG, "redacted")
 
-WIDTH = 1400          # 몽타주 가로
-TILE_PX = 22          # 타일 하나를 이 너비까지 줄였다 되돌린다 (장수와 무관하게 같은 강도)
+WIDTH = 1600          # 몽타주 가로 (표시 폭 1000px 의 1.6배)
+SCALE = 0.5           # 타일 너비의 이 비율까지 줄였다 되돌린다
+BLUR = 3.5            # 가우시안 블러 반경(px) — 축소 격자를 지울 만큼만
+BG = (22, 26, 32)     # 빈칸·여백 색
 
 
 def tiles_for(n):
     if n <= 2:
         return n
-    if n <= 6:
-        return 3
-    return 5
+    return 3 if n <= 12 else 4
 
 
 def redact_tile(im, tw, th):
-    """타일 한 장을 복원 불가하게 뭉갠다 — 축소 → 확대 → 블러."""
-    small = im.resize((TILE_PX, max(int(TILE_PX * th / tw), 6)), Image.BILINEAR)
+    """타일 한 장에서 글씨를 지운다 — 축소 → 확대 → 약한 블러."""
+    small = im.resize((max(int(tw * SCALE), 24), max(int(th * SCALE), 14)), Image.BILINEAR)
     back = small.resize((tw, th), Image.BICUBIC)
-    return back.filter(ImageFilter.GaussianBlur(radius=max(tw / 26, 8)))
+    return back.filter(ImageFilter.GaussianBlur(radius=BLUR))
+
+
+def fit(f, tw, th):
+    """타일 박스를 채운다. 목업(가로 스샷)은 센터 크롭, 평면도는 세로라 통째로 넣는다."""
+    im = Image.open(f).convert("RGB")
+    if "-plan" in os.path.basename(f):
+        box = Image.new("RGB", (tw, th), BG)
+        im.thumbnail((tw, th), Image.LANCZOS)
+        box.paste(im, ((tw - im.width) // 2, (th - im.height) // 2))
+        return box
+    want, (w, h) = tw / th, im.size
+    if w / h > want:
+        nw = int(h * want)
+        return im.crop(((w - nw) // 2, 0, (w - nw) // 2 + nw, h))
+    nh = int(w / want)
+    return im.crop((0, (h - nh) // 2, w, (h - nh) // 2 + nh))
 
 
 def montage(files, width=WIDTH):
@@ -48,32 +68,27 @@ def montage(files, width=WIDTH):
     rows = math.ceil(len(files) / cols)
     tw = width // cols
     th = int(tw * 9 / 16)
-    canvas = Image.new("RGB", (tw * cols, th * rows), (22, 26, 32))
-    for i, f in enumerate(files):
-        im = Image.open(f).convert("RGB")
-        want = tw / th                       # 타일 박스에 맞춰 센터 크롭
-        w, h = im.size
-        if w / h > want:
-            nw = int(h * want)
-            im = im.crop(((w - nw) // 2, 0, (w - nw) // 2 + nw, h))
-        else:
-            nh = int(w / want)
-            im = im.crop((0, (h - nh) // 2, w, (h - nh) // 2 + nh))
-        canvas.paste(redact_tile(im, tw, th), ((i % cols) * tw, (i // cols) * th))
-    # 타일 경계까지 부드럽게
-    return canvas.filter(ImageFilter.GaussianBlur(radius=max(tw / 60, 4)))
+    canvas = Image.new("RGB", (width, th * rows), BG)
+    for r in range(rows):
+        band = files[r * cols:(r + 1) * cols]
+        x0 = (width - len(band) * tw) // 2   # 모자라는 마지막 줄은 가운데로
+        for i, f in enumerate(band):
+            canvas.paste(redact_tile(fit(f, tw, th), tw, th), (x0 + i * tw, r * th))
+    return canvas
 
 
 def main():
     os.makedirs(OUT, exist_ok=True)
-    nums = sorted({f.split("-")[0] for f in os.listdir(IMG)
+    nums = sorted({f.split("-")[0] for f in os.listdir(SRC)
                    if "-plan" in f or "-mock" in f})
     if not nums:
-        print("img/ 에 평면도·목업 원본이 없다. 원본 저장소에서 되돌려 놓고 실행할 것.")
+        print("%s 에 평면도·목업 원본이 없다. MONTAGE_SRC 로 원본 위치를 넘길 것." % SRC)
         return
     for num in nums:
-        files = sorted(os.path.join(IMG, f) for f in os.listdir(IMG)
-                       if f.startswith(num + "-plan") or f.startswith(num + "-mock"))
+        files = [os.path.join(SRC, f) for f in os.listdir(SRC)
+                 if f.startswith(num + "-plan") or f.startswith(num + "-mock")]
+        # 평면도를 맨 앞에 — 지역을 한눈에 보여주는 자료라 먼저 온다
+        files.sort(key=lambda p: ("-plan" not in os.path.basename(p), p))
         out = os.path.join(OUT, "%s.webp" % num)
         montage(files).save(out, "WEBP", quality=70, method=6)
         print("%s  %2d장 → %s  %.0f KB" % (num, len(files), os.path.basename(out),
