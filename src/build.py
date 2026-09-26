@@ -447,7 +447,10 @@ def build_index():
                     for n, l in h["stats"])
     feats = "".join('<div class="feat rv"><div class="k">%s</div><h3>%s</h3><p>%s</p></div>' % (
         e(k), e(t), p) for k, t, p in h["feats"])
-    chips = "".join('<span class="chip">%s</span>' % x for x in h["chips"])
+    chips = "".join(
+        '<div class="chips chip-row">%s</div>'
+        % "".join('<span class="chip %s">%s</span>' % (cls, e(t)) for t in tags)
+        for cls, tags in h["chips"])
     jobs = "".join(
         '<div class="job"><div class="when"><b>%s</b>%s</div><div><h4>%s</h4>'
         '<div class="pos">%s</div><ul>%s</ul></div></div>' % (
@@ -478,7 +481,8 @@ def build_index():
         <a class="btn btn-pri" href="#projects">프로젝트 <span class="ar">↓</span></a>
         <a class="btn btn-ghost" href="personal.html">개인작품 포트폴리오 <span class="ar">→</span></a>
       </div>
-      <div class="chips">%s<a class="chip" href="mailto:%s">%s</a></div>
+      %s
+      <div class="chips chip-row"><a class="chip mail" href="mailto:%s">%s</a></div>
     </div>
     <figure class="portrait">
       <img src="img/profile.webp" alt="손석완 프로필 사진" width="660" height="880" fetchpriority="high">
