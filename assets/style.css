@@ -149,6 +149,8 @@ p{margin:0}
 .hero .sub{margin-top:16px;color:#AEB6C0;font-size:15px;max-width:52ch}
 .hero .sub b{color:#EAEDF1;font-weight:600}
 .hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.hero-cta .btn{justify-content:center;min-width:186px}
+@media(max-width:420px){.hero-cta .btn{flex:1 1 100%;min-width:0}}
 .btn{display:inline-flex;align-items:center;gap:9px;font-size:14px;font-weight:500;
   text-decoration:none;padding:11px 18px;border-radius:9px;border:1px solid transparent;
   transition:transform .16s,background .16s,border-color .16s}

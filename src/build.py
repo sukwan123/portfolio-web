@@ -479,7 +479,7 @@ def build_index():
       <p class="sub">%s</p>
       <div class="hero-cta">
         <a class="btn btn-pri" href="#projects">프로젝트 <span class="ar">↓</span></a>
-        <a class="btn btn-ghost" href="personal.html">개인작품 포트폴리오 <span class="ar">→</span></a>
+        <a class="btn btn-pri" href="personal.html">개인 작품 <span class="ar">→</span></a>
       </div>
       %s
     </div>
@@ -531,7 +531,7 @@ def build_index():
   <div class="wrap">
     <div class="sec-head rv">
       <p class="eyebrow">Personal Works</p>
-      <h2>개인작품 포트폴리오</h2>
+      <h2>개인 작품</h2>
       <p class="note">시킨 사람이 없어도 만듭니다. 회사 업무 밖에서 직접 기획하고 만든 작업들입니다.</p>
     </div>
     <div class="pgrid">%s</div>
@@ -704,14 +704,14 @@ def build_aura():
     a = C.AURA
     out = [head("AI 목업 파이프라인 · 손석완",
                 "평면도 제작 툴과 Aura를 연결한 UE5 목업 파이프라인 — 목업 제작 시간 31% 절감."),
-           bar("개인작품"),
-           crumb([("index.html", "홈"), ("personal.html", "개인작품 포트폴리오"),
+           bar("개인 작품"),
+           crumb([("index.html", "홈"), ("personal.html", "개인 작품"),
                   (None, "아우라 활용 — AI 목업 파이프라인")]),
            phero(a["eyebrow"], a["title"], a["tag"], a["note"], cover=a.get("cover"))]
     out.append('<main>\n<section class="tight"><div class="wrap">')
     out.append(blocks(a["blocks"]))
     out.append('</div></section>\n</main>\n')
-    out.append(pager(("personal.html", "개인작품 포트폴리오"), ("index.html", "홈")))
+    out.append(pager(("personal.html", "개인 작품"), ("index.html", "홈")))
     out.append(foot())
     out.append(tail())
     return "".join(out)
@@ -720,8 +720,8 @@ def build_aura():
 def build_personal():
     P = C.PERSONAL
     out = [head("개인 작업 · 자료실 · 손석완", P["note"]),
-           bar("개인작품"),
-           crumb([("index.html", "홈"), (None, "개인작품 포트폴리오")]),
+           bar("개인 작품"),
+           crumb([("index.html", "홈"), (None, "개인 작품")]),
            phero(P["eyebrow"], P["title"], P["tag"], P["note"])]
     out.append('<main>\n<section class="tight"><div class="wrap">')
 

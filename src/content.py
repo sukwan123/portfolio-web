@@ -20,7 +20,7 @@ SITE = dict(
 # ── 상단 내비게이션 (홈 기준 앵커)
 NAV = [
     ("index.html#projects", "프로젝트"),
-    ("personal.html", "개인작품"),
+    ("personal.html", "개인 작품"),
     ("index.html#career", "경력"),
     ("index.html#contact", "연락"),
 ]
@@ -695,7 +695,7 @@ DRIVE = "https://drive.google.com/file/d/%s/view"
 PERSONAL = dict(
     page="personal.html",
     eyebrow="Personal Works",
-    title="개인작품 포트폴리오",
+    title="개인 작품",
     tag="레벨디자인<span class=\"dot\">·</span>목업<span class=\"dot\">·</span>AI<span class=\"dot\">·</span>인디게임",
     note="회사 일로 만든 것 말고, 직접 파고들어 만든 작업들입니다.",
     # 최신순. href 가 있으면 별도 문서로, 없으면 이 페이지 안의 항목으로 간다.
