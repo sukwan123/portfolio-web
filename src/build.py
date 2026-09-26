@@ -581,7 +581,7 @@ def build_kingsroad():
 
     out = [head("왕좌의 게임: 킹스로드 · 손석완 레벨디자인",
                 "넷마블네오 왕좌의 게임: 킹스로드에서 담당한 필드 5곳과 던전 5종."),
-           bar("킹스로드"),
+           bar("프로젝트"),
            crumb([("index.html", "홈"), (None, "왕좌의 게임: 킹스로드")]),
            phero("Current · 넷마블네오", "왕좌의 게임: 킹스로드",
                  "오픈월드 액션 RPG<span class=\"dot\">·</span>PC · 모바일 크로스플레이"
@@ -662,7 +662,7 @@ def build_kingsroad():
 def build_content(c, prev, next_):
     kind = "필드 지역" if c["group"] == "field" else "던전"
     out = [head("%s · 킹스로드 레벨디자인" % c["title"], c["summary"]),
-           bar("킹스로드"),
+           bar("프로젝트"),
            crumb([("index.html", "홈"), ("kingsroad.html", "왕좌의 게임: 킹스로드"), (None, c["nav"])]),
            phero("%s · %s" % (kind, c["badge"][1]), c["title"],
                  "%s<span class=\"dot\">·</span><b>%s</b>" % (e(c["meta"]), e(c["badge"][1])),
@@ -688,7 +688,7 @@ def build_content(c, prev, next_):
 def build_systems(prev, next_):
     s = C.SYSTEMS
     out = [head("레벨 기능 · 기믹 기획 · 킹스로드", s["note"]),
-           bar("킹스로드"),
+           bar("프로젝트"),
            crumb([("index.html", "홈"), ("kingsroad.html", "왕좌의 게임: 킹스로드"), (None, "레벨 기능 · 기믹")]),
            phero(s["eyebrow"], s["title"], s["tag"], s["note"], cover=s.get("cover"))]
     out.append('<main>\n<section class="tight"><div class="wrap">')
@@ -704,7 +704,7 @@ def build_aura():
     a = C.AURA
     out = [head("AI 목업 파이프라인 · 손석완",
                 "평면도 제작 툴과 Aura를 연결한 UE5 목업 파이프라인 — 목업 제작 시간 31% 절감."),
-           bar("AI 파이프라인"),
+           bar("개인작품"),
            crumb([("index.html", "홈"), ("personal.html", "개인작품 포트폴리오"),
                   (None, "아우라 활용 — AI 목업 파이프라인")]),
            phero(a["eyebrow"], a["title"], a["tag"], a["note"], cover=a.get("cover"))]

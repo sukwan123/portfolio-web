@@ -21,8 +21,6 @@ SITE = dict(
 NAV = [
     ("index.html#projects", "프로젝트"),
     ("personal.html", "개인작품"),
-    ("kingsroad.html", "킹스로드"),
-    ("aura.html", "AI 파이프라인"),
     ("index.html#career", "경력"),
     ("index.html#contact", "연락"),
 ]
