@@ -727,9 +727,18 @@ PERSONAL = dict(
                       "빈 공간에서 플레이 가능한 던전이 되기까지")],
              links=[]),
         dict(slug="cashout", title="캐시아웃",
-             meta="개인 작업 · 인디게임 · 1인 개발", mono="CO",
-             desc="크래시(그래프) 게임을 소재로 한 인디게임. 기획부터 개발까지 혼자 진행했습니다.",
-             videos=[], links=[]),
+             meta="개인 작업 · 인디게임 · 1인 개발 · Claude로 구현", mono="CO",
+             desc="크래시(그래프) 게임을 소재로 한 인디게임. 기획부터 개발까지 혼자 진행했고, "
+                  "구현은 Claude로 했습니다. 브라우저에서 바로 플레이할 수 있습니다.",
+             videos=[],
+             links=[("플레이", "캐시아웃 플레이하기",
+                     "cashout-multi-production.up.railway.app",
+                     "https://cashout-multi-production.up.railway.app/")]),
+        # 프로토타입이 나오면 draft 줄만 지우면 노출된다. 그때 desc·링크도 채울 것.
+        dict(slug="maedonyeo", title="매도녀 (가제)",
+             meta="개인 작업 · 개발 중", mono="MD",
+             desc="코인 그래프와 미연시를 결합한 게임. 프로토타입 개발 중입니다.",
+             videos=[], links=[], draft=True),
     ],
     docs=[
         ("시스템", "그래프 게임 분석 및 신개념 가챠 시스템 제안",

@@ -539,7 +539,7 @@ def build_index():
         '<div class="m">%s</div><p>%s</p>'
         '<div class="more">자세히 보기 <span class="ar">→</span></div></div></a>'
         % (e(w["slug"]), own_cover(w), e(w["title"]), e(w["meta"]), e(w["desc"]))
-        for w in C.PERSONAL["own"])
+        for w in C.PERSONAL["own"] if not w.get("draft"))
     out.append("""<section id="personal">
   <div class="wrap">
     <div class="sec-head rv">
@@ -755,6 +755,8 @@ def build_personal():
     out.append('<h3 class="h3 rv" id="own">직접 만든 것</h3>')
     out.append('<p class="body-p rv">회사 업무가 아니라 개인적으로 파고들어 만든 작업입니다.</p>')
     for w in P["own"]:
+        if w.get("draft"):          # 준비 중인 항목은 아직 싣지 않는다
+            continue
         extra = block(("links", w["links"])) if w["links"] else ""
         if w.get("videos"):
             extra += embeds(w["videos"])
