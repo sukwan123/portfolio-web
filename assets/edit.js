@@ -10,7 +10,7 @@
 (function () {
   'use strict';
 
-  var PASS_HASH = '6d67a81fea8a0673f25eb142cc2ecc13b882db54d5098fc2551d9a30bb6e3ed5';
+  var PASS_HASH = '0f31c318c80aefd477a226467c2c1825d77b146068e2cabf5fd79edde9ebcef5';
   var STORE = 'sw-edits';
   var PAGE = location.pathname.split('/').pop() || 'index.html';
 
