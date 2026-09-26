@@ -224,6 +224,14 @@ def block(b):
             out.append('<figure class="fig"><video src="%s" controls muted loop playsinline '
                        'preload="metadata"></video><figcaption>%s</figcaption></figure>' % (e(src), e(cap)))
         return '<div class="figrow rv">%s</div>\n' % "".join(out)
+    if kind == "links":
+        out = []
+        for tag, label, note, url in b[1]:
+            out.append('<a class="lnk" href="%s" target="_blank" rel="noopener noreferrer">'
+                       '<span class="lnk-tag">%s</span><span class="lnk-txt"><b>%s</b>%s</span>'
+                       '<span class="lnk-ar">↗</span></a>' % (
+                           e(url), e(tag), e(label), ('<em>%s</em>' % e(note)) if note else ""))
+        return '<div class="lnks rv">%s</div>\n' % "".join(out)
     if kind == "shotfig":
         _, src, cap, figcap = b
         return ('<figure class="fig rv"><button class="shot" data-src="%s" data-cap="%s" '
@@ -293,7 +301,7 @@ def content_card(c):
     <div class="st">%s</div>
   </div>
 </a>
-""" % (e(c["slug"]), cov, e(c["meta"]), e(c["title"]), e(c["summary"]), e(c["stat"]))
+""" % (e(c["slug"]), cov, e(c["meta"]), e(c["title"]), e(c["summary"]), e(c["role"].split(" · ")[0]))
 
 
 # ──────────────────────────────────────────────────────── 갤러리
@@ -424,20 +432,6 @@ def build_index():
 </section>
 """ % (stats, feats, "".join("<li>%s</li>" % x for x in h["bullets"])))
 
-    # 프로젝트
-    out.append("""<section id="projects">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <p class="eyebrow">Projects</p>
-      <h2>참여한 6개 프로젝트</h2>
-      <p class="note">카드를 누르면 프로젝트별 상세 문서로 들어갑니다. 대표 프로젝트인 <b>왕좌의 게임: 킹스로드</b>는 지역·던전 10종의 작업 과정을 따로 정리해 두었습니다.</p>
-    </div>
-    %s
-    <div class="pgrid">%s</div>
-  </div>
-</section>
-""" % (project_card(kingsroad), "".join(project_card(p) for p in others)))
-
     # R&D 배너
     out.append("""<section id="rnd">
   <div class="wrap">
@@ -462,6 +456,40 @@ def build_index():
 </section>
 """)
 
+    # 프로젝트
+    out.append("""<section id="projects">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">Projects</p>
+      <h2>참여한 6개 프로젝트</h2>
+      <p class="note">카드를 누르면 프로젝트별 상세 문서로 들어갑니다. 대표 프로젝트인 <b>왕좌의 게임: 킹스로드</b>는 지역·던전 10종의 작업 과정을 따로 정리해 두었습니다.</p>
+    </div>
+    %s
+    <div class="pgrid">%s</div>
+  </div>
+</section>
+""" % (project_card(kingsroad), "".join(project_card(p) for p in others)))
+
+    # 개인 작업
+    own_cards = "".join(
+        '<a class="pcard rv" href="personal.html#%s">%s<div class="pbody"><h3>%s</h3>'
+        '<div class="m">%s</div><p>%s</p>'
+        '<div class="more">자세히 보기 <span class="ar">→</span></div></div></a>'
+        % (e(w["slug"]), cover_html(None, w.get("mono"), w["title"]), e(w["title"]),
+           e(w["meta"]), e(w["desc"]))
+        for w in C.PERSONAL["own"])
+    out.append("""<section id="personal">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">Personal Works</p>
+      <h2>회사 밖에서 만든 것들</h2>
+      <p class="note">시킨 사람이 없어도 만듭니다. 개인 제작 프로젝트와 함께, 지난 프로젝트의 기획 문서 %d편과 플레이 영상 %d편을 <a href="personal.html" style="color:var(--accent)">자료실</a>에 모아 뒀습니다.</p>
+    </div>
+    <div class="pgrid">%s</div>
+  </div>
+</section>
+""" % (len(C.PERSONAL["docs"]), sum(len(v[1]) for v in C.PERSONAL["videos"]), own_cards))
+
     # 경력
     out.append("""<section id="career">
   <div class="wrap">
@@ -474,6 +502,7 @@ def build_index():
     <h3 class="h3 rv">업계 외 경력</h3>
     <p class="body-p rv">게임 업계에 오기 전 영화를 전공했고, 시나리오 작가와 영화 스탭으로 일했습니다. 스토리텔링이 중요한 게임에서 이 경력이 크게 작용합니다.</p>
     <ul class="bul rv">%s</ul>
+    <figure class="fig rv" style="max-width:620px"><img src="img/cov/offindustry.webp" alt="보조작가로 참여한 드라마와 만화" loading="lazy" decoding="async" width="1000" height="563"><figcaption>보조작가로 참여한 어린이 드라마와 만화 · 애니메이션 작업 일부</figcaption></figure>
   </div>
 </section>
 """ % (jobs, edu, off))
@@ -542,16 +571,16 @@ def build_kingsroad():
     <div class="sec-head rv">
       <p class="eyebrow">Beyond Terrain</p>
       <h2>지형 밖에서 한 일</h2>
-      <p class="note">지형과 동선만이 아니라, 그 위에서 벌어질 일에 필요한 기능과 작업 방식까지 만들었습니다.</p>
+      <p class="note">지형과 동선만이 아니라, 그 위에서 벌어질 일에 필요한 시스템과 작업 방식까지 만들었습니다.</p>
     </div>
     <a class="banner rv" href="%s">
       <div class="banner-body">
         <p class="eyebrow plain">Systems · 2022–2026</p>
         <h3>레벨 기능 · 기믹 기획</h3>
-        <p>이동 규칙 · 레벨 기믹 · 가젯 · 전투 연출을 사양 문서로 쓰고 6개 부서에 발주했습니다. 2026년에는 엘리베이터 · 사다리 중간 취소 · 렛지그랩을 상세기획서 개정으로 확정했습니다.</p>
+        <p>이동 규칙 · 레벨 기믹 · 가젯 · 전투 연출을 사양 문서로 직접 기획했습니다. 2026년에는 엘리베이터 · 사다리 중간 취소 · 렛지그랩을 상세기획서 개정으로 확정했습니다.</p>
         <div class="kpi">
-          <div><span class="n">100</span><span class="l">타 부서 발주 이슈</span></div>
-          <div><span class="n">6</span><span class="l">협업 부서</span></div>
+          <div><span class="n">4</span><span class="l">레벨 시스템 유형</span></div>
+          <div><span class="n">12</span><span class="l">상세기획서 개정 (최다)</span></div>
         </div>
         <div class="more" style="margin-top:12px;font-family:var(--mono);font-size:11.5px;color:var(--accent);letter-spacing:.06em">문서 보기 <span class="ar">→</span></div>
       </div>
@@ -602,11 +631,11 @@ def build_content(c, prev, next_):
            bar("킹스로드"),
            crumb([("index.html", "홈"), ("kingsroad.html", "왕좌의 게임: 킹스로드"), (None, c["nav"])]),
            phero("%s · %s" % (kind, c["badge"][1]), c["title"],
-                 "%s<span class=\"dot\">·</span><b>%s</b>" % (e(c["meta"]), e(c["stat"])),
+                 "%s<span class=\"dot\">·</span><b>%s</b>" % (e(c["meta"]), e(c["badge"][1])),
                  c["desc"], cover=c.get("cover"), num=c["num"])]
 
     out.append('<main>\n<section class="tight"><div class="wrap">')
-    out.append(block(("kv", [("담당", c["role"]), ("구분", c["meta"]), ("작업량", c["stat"])])))
+    out.append(block(("kv", [("담당", c["role"]), ("구분", c["meta"])])))
     if c.get("undisclosed"):
         out.append('<p class="undisclosed rv">%s</p>\n' % e(c["undisclosed"]))
     g = gallery(c)
@@ -653,6 +682,42 @@ def build_aura():
     return "".join(out)
 
 
+def build_personal():
+    P = C.PERSONAL
+    out = [head("개인 작업 · 자료실 · 손석완", P["note"]),
+           bar("개인 작업"),
+           crumb([("index.html", "홈"), (None, "개인 작업")]),
+           phero(P["eyebrow"], P["title"], P["tag"], P["note"])]
+    out.append('<main>\n<section class="tight"><div class="wrap">')
+
+    out.append('<h3 class="h3 rv" id="own">직접 만든 것</h3>')
+    out.append('<p class="body-p rv">회사 업무가 아니라 개인적으로 파고들어 만든 작업입니다.</p>')
+    for w in P["own"]:
+        links = ""
+        if w["links"]:
+            links = block(("links", w["links"]))
+        out.append('<article class="own rv" id="%s"><div class="own-mk">%s</div>'
+                   '<div class="own-b"><h4>%s</h4><div class="m">%s</div><p>%s</p></div></article>\n%s'
+                   % (e(w["slug"]), e(w.get("mono", "·")), e(w["title"]), e(w["meta"]),
+                      e(w["desc"]), links))
+
+    out.append('<h3 class="h3 rv" id="docs" style="margin-top:46px">기획 문서</h3>')
+    out.append('<p class="body-p rv">지난 프로젝트에서 쓴 기획 문서입니다. 구글 드라이브에서 열립니다.</p>')
+    out.append(block(("links", [(tag, label, note, url) for tag, label, note, url in P["docs"]])))
+
+    out.append('<h3 class="h3 rv" id="videos" style="margin-top:46px">플레이 영상</h3>')
+    out.append('<p class="body-p rv">직접 만든 콘텐츠가 실제로 돌아가는 화면입니다. 새 탭에서 열립니다.</p>')
+    for group, items in P["videos"]:
+        out.append('<p class="grp rv">%s</p>' % e(group))
+        out.append(block(("links", [("영상", label, None, url) for label, url in items])))
+
+    out.append('</div></section>\n</main>\n')
+    out.append(pager(("index.html", "홈"), ("kingsroad.html", "왕좌의 게임: 킹스로드")))
+    out.append(foot())
+    out.append(tail(with_lightbox=False))
+    return "".join(out)
+
+
 def build_prev_project(p, page, prev, next_):
     out = [head("%s · 손석완 포트폴리오" % p["title"], page["note"]),
            bar("프로젝트"),
@@ -689,6 +754,7 @@ def main():
         made.append(write(seq[i][0], build_content(c, prev, seq[i + 1])))
     made.append(write(C.SYSTEMS["page"], build_systems(seq[-2], ("aura.html", "AI 목업 파이프라인"))))
     made.append(write("aura.html", build_aura()))
+    made.append(write("personal.html", build_personal()))
 
     prevs = [p for p in C.PROJECTS if not p.get("featured")]
     for i, p in enumerate(prevs):

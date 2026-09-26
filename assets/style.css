@@ -530,3 +530,36 @@ figure{margin:0}
   html{scroll-behavior:auto}
   .rv{opacity:1;transform:none}
 }
+
+/* ─────────────────────────────────────────── 링크 목록 (문서 · 영상) */
+.lnks{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px;margin-top:16px}
+.lnk{display:flex;align-items:center;gap:13px;text-decoration:none;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r-s);padding:13px 15px;box-shadow:var(--shadow);
+  transition:border-color .18s,transform .18s}
+.lnk:hover{border-color:var(--accent);transform:translateY(-2px)}
+.lnk:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.lnk-tag{flex-shrink:0;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.08em;
+  color:var(--accent);border:1px solid var(--accent);background:var(--accent-soft);
+  border-radius:4px;padding:3px 7px}
+.lnk-txt{min-width:0;flex:1}
+.lnk-txt b{display:block;font-size:14.5px;font-weight:600;color:var(--ink);letter-spacing:-.015em}
+.lnk-txt em{display:block;font-style:normal;font-size:12.5px;color:var(--ink2);margin-top:2px}
+.lnk-ar{flex-shrink:0;font-family:var(--mono);font-size:13px;color:var(--ink3)}
+.lnk:hover .lnk-ar{color:var(--accent)}
+.grp{font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.1em;color:var(--ink3);
+  text-transform:uppercase;margin-top:26px}
+
+/* 개인 제작 항목 */
+.own{display:grid;grid-template-columns:76px 1fr;gap:18px;align-items:start;margin-top:20px;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;
+  box-shadow:var(--shadow);scroll-margin-top:90px}
+.own-mk{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-.03em;color:var(--accent);
+  border:1px solid var(--accent);background:var(--accent-soft);border-radius:var(--r-s);
+  display:grid;place-items:center;aspect-ratio:1;width:100%}
+.own-b h4{font-size:17px;letter-spacing:-.025em}
+.own-b .m{font-family:var(--mono);font-size:11.5px;color:var(--ink3);margin-top:4px}
+.own-b p{font-size:14.5px;color:var(--ink2);margin-top:10px;max-width:var(--read)}
+@media(max-width:560px){
+  .own{grid-template-columns:1fr;gap:12px}
+  .own-mk{width:56px;aspect-ratio:1}
+}
