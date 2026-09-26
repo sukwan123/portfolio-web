@@ -338,7 +338,7 @@ def project_card(p):
     <p class="role" style="color:var(--ink);font-weight:500;font-size:14.5px">%s</p>
     <p>%s</p>
     %s
-    <div class="more" style="margin-top:14px;font-family:var(--mono);font-size:11.5px;color:var(--accent);letter-spacing:.06em">담당 콘텐츠 10종 보기 <span class="ar">→</span></div>
+    <div class="more">담당 콘텐츠 10종 보기 <span class="ar">→</span></div>
   </div>
 </a>
 """ % (e(p["page"]), cov, e(p["title"]), e(p["meta"]), e(p["role"]), p["summary"], mini)
@@ -357,7 +357,7 @@ def project_card(p):
 
 def content_card(c):
     n = shots_of(c)
-    extra = '<span class="shotc">이미지 %d장</span>' % n if n else ""
+    extra = ('<span class="shotc">이미지 %d장</span>' % n if n else "") + '<span class="go">\u2192</span>'
     cov = cover_html(c.get("cover"), c.get("mono"), c["title"] + " 대표 이미지", c.get("badge"), extra)
     return """<a class="ccard rv" href="kr-%s.html">
   %s
@@ -530,7 +530,7 @@ def build_index():
           <div><span class="n">31%%</span><span class="l">목업 제작 시간 절감</span></div>
           <div><span class="n">50%%+</span><span class="l">Meshy 밑그림 방식 효율</span></div>
         </div>
-        <div class="more" style="margin-top:12px;font-family:var(--mono);font-size:11.5px;color:var(--accent);letter-spacing:.06em">R&amp;D 리포트 읽기 <span class="ar">→</span></div>
+        <div class="more">R&amp;D 리포트 읽기 <span class="ar">→</span></div>
       </div>
       <div class="pcover"><img src="img/cov/aura.webp" alt="Aura로 생성한 목업" loading="lazy" decoding="async" width="1000" height="563"><span class="veil"></span></div>
     </a>
@@ -647,7 +647,7 @@ def build_kingsroad():
           <div><span class="n">4</span><span class="l">레벨 시스템 유형</span></div>
           <div><span class="n">12</span><span class="l">상세기획서 개정 (최다)</span></div>
         </div>
-        <div class="more" style="margin-top:12px;font-family:var(--mono);font-size:11.5px;color:var(--accent);letter-spacing:.06em">문서 보기 <span class="ar">→</span></div>
+        <div class="more">문서 보기 <span class="ar">→</span></div>
       </div>
       <div class="pcover"><img src="img/cov/systems.webp" alt="레벨 기믹 작업 화면" loading="lazy" decoding="async" width="1000" height="563"><span class="veil"></span></div>
     </a>
@@ -660,7 +660,7 @@ def build_kingsroad():
           <div><span class="n">31%%</span><span class="l">목업 제작 시간 절감</span></div>
           <div><span class="n">50%%+</span><span class="l">Meshy 밑그림 방식 효율</span></div>
         </div>
-        <div class="more" style="margin-top:12px;font-family:var(--mono);font-size:11.5px;color:var(--accent);letter-spacing:.06em">R&amp;D 리포트 읽기 <span class="ar">→</span></div>
+        <div class="more">R&amp;D 리포트 읽기 <span class="ar">→</span></div>
       </div>
       <div class="pcover"><img src="img/cov/aura.webp" alt="Aura로 생성한 목업" loading="lazy" decoding="async" width="1000" height="563"><span class="veil"></span></div>
     </a>
