@@ -308,9 +308,11 @@ def cover_html(cover, mono, alt, badge=None, extra=""):
 
 
 def own_cover(w):
-    """개인 작업 커버. 영상이 있으면 유튜브 썸네일을 얹고, 못 불러오면 모노그램이 남는다."""
-    base = cover_html(None, w.get("mono"), w["title"])
-    if not w.get("videos"):
+    """개인작품 커버. 연도를 배지로 달고, 영상이 있으면 유튜브 썸네일을 얹는다
+    (못 불러오면 모노그램이 남는다)."""
+    badge = ("year", w["year"]) if w.get("year") else None
+    base = cover_html(w.get("cover"), w.get("mono"), w["title"], badge)
+    if w.get("cover") or not w.get("videos"):
         return base
     src = embed_src(w["videos"][0][1]) or ""
     vid = src.split("/embed/")[-1].split("?")[0] if "/embed/" in src else ""
@@ -516,10 +518,11 @@ def build_index():
 
     # 개인 작업
     own_cards = "".join(
-        '<a class="pcard rv" href="personal.html#%s">%s<div class="pbody"><h3>%s</h3>'
+        '<a class="pcard rv" href="%s">%s<div class="pbody"><h3>%s</h3>'
         '<div class="m">%s</div><p>%s</p>'
         '<div class="more">자세히 보기 <span class="ar">→</span></div></div></a>'
-        % (e(w["slug"]), own_cover(w), e(w["title"]), e(w["meta"]), e(w["desc"]))
+        % (e(w.get("href") or ("personal.html#" + w["slug"])), own_cover(w),
+           e(w["title"]), w["meta"], w["desc"])
         for w in C.PERSONAL["own"] if not w.get("draft"))
     out.append("""<section id="personal">
   <div class="wrap">
@@ -627,19 +630,6 @@ def build_kingsroad():
       </div>
       <div class="pcover"><img src="img/cov/systems.webp" alt="레벨 기믹 작업 화면" loading="lazy" decoding="async" width="1000" height="563"><span class="veil"></span></div>
     </a>
-    <a class="banner rv" href="aura.html" style="margin-top:16px">
-      <div class="banner-body">
-        <p class="eyebrow plain">R&amp;D · 2026</p>
-        <h3>평면도 툴 → Aura → UE5 목업 파이프라인</h3>
-        <p>목업 제작 시간을 줄이기 위해 평면도 제작 툴을 직접 만들고, 언리얼 LLM 플러그인 Aura와 연결해 기획 의도가 반영된 목업을 생성하는 파이프라인을 세웠습니다.</p>
-        <div class="kpi">
-          <div><span class="n">31%%</span><span class="l">목업 제작 시간 절감</span></div>
-          <div><span class="n">50%%+</span><span class="l">Meshy 밑그림 방식 효율</span></div>
-        </div>
-        <div class="more">R&amp;D 리포트 읽기 <span class="ar">→</span></div>
-      </div>
-      <div class="pcover"><img src="img/cov/aura.webp" alt="Aura로 생성한 목업" loading="lazy" decoding="async" width="1000" height="563"><span class="veil"></span></div>
-    </a>
   </div>
 </section>
 """ % e(s["page"]))
@@ -712,12 +702,13 @@ def build_aura():
     out = [head("AI 목업 파이프라인 · 손석완",
                 "평면도 제작 툴과 Aura를 연결한 UE5 목업 파이프라인 — 목업 제작 시간 31% 절감."),
            bar("AI 파이프라인"),
-           crumb([("index.html", "홈"), ("kingsroad.html", "왕좌의 게임: 킹스로드"), (None, "AI 목업 파이프라인")]),
+           crumb([("index.html", "홈"), ("personal.html", "개인작품 포트폴리오"),
+                  (None, "아우라 활용 — AI 목업 파이프라인")]),
            phero(a["eyebrow"], a["title"], a["tag"], a["note"], cover=a.get("cover"))]
     out.append('<main>\n<section class="tight"><div class="wrap">')
     out.append(blocks(a["blocks"]))
     out.append('</div></section>\n</main>\n')
-    out.append(pager(("kr-systems.html", "레벨 기능 · 기믹 기획"), ("index.html", "홈")))
+    out.append(pager(("personal.html", "개인작품 포트폴리오"), ("index.html", "홈")))
     out.append(foot())
     out.append(tail())
     return "".join(out)
@@ -739,10 +730,14 @@ def build_personal():
         extra = block(("links", w["links"])) if w["links"] else ""
         if w.get("videos"):
             extra += embeds(w["videos"])
+        if w.get("href"):
+            extra += block(("links", [("문서", "R&D 리포트 읽기",
+                                       "제작 과정과 결과를 따로 정리했습니다", w["href"])]))
         out.append('<article class="own rv" id="%s"><div class="own-mk">%s</div>'
-                   '<div class="own-b"><h4>%s</h4><div class="m">%s</div><p>%s</p></div></article>\n%s'
-                   % (e(w["slug"]), e(w.get("mono", "·")), e(w["title"]), e(w["meta"]),
-                      e(w["desc"]), extra))
+                   '<div class="own-b"><h4>%s</h4><div class="m">%s<span class="yr">%s</span></div>'
+                   '<p>%s</p></div></article>\n%s'
+                   % (e(w["slug"]), e(w.get("mono") or w["year"][2:]), e(w["title"]),
+                      w["meta"], e(w.get("year", "")), w["desc"], extra))
 
     out.append('</div></section>\n</main>\n')
     out.append(pager(("index.html", "홈"), ("kingsroad.html", "왕좌의 게임: 킹스로드")))

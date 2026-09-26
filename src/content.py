@@ -387,7 +387,7 @@ SYSTEMS = dict(
 # ─────────────────────────────────────────────────────────────── AI 파이프라인
 AURA = dict(
     page="aura.html", cover="aura",
-    eyebrow="R&amp;D · 2026", title="평면도 툴 → Aura → UE5 목업 파이프라인",
+    eyebrow="개인 R&amp;D · 2026", title="평면도 툴 → Aura → UE5 목업 파이프라인",
     tag="레벨 목업 자동화<span class=\"dot\">·</span><b>제작 시간 31% 절감</b>",
     note="레벨 디자이너가 시간을 가장 많이 쓰는 일은 목업 제작입니다. 그리고 만든 목업이 재미 검증에서 "
          "탈락하면, 고치는 데 처음 만들 때보다 더 걸립니다. 일정 수준 이상의 목업을 빠르게 뽑아 "
@@ -694,26 +694,24 @@ PERSONAL = dict(
     page="personal.html",
     eyebrow="Personal Works",
     title="개인작품 포트폴리오",
-    tag="레벨디자인<span class=\"dot\">·</span>목업<span class=\"dot\">·</span>인디게임",
+    tag="레벨디자인<span class=\"dot\">·</span>목업<span class=\"dot\">·</span>AI<span class=\"dot\">·</span>인디게임",
     note="회사 일로 만든 것 말고, 직접 파고들어 만든 작업들입니다.",
+    # 최신순. href 가 있으면 별도 문서로, 없으면 이 페이지 안의 항목으로 간다.
     own=[
-        dict(slug="sc-redesign", title="스타크래프트 캠페인 3D 리디자인",
-             meta="개인 작업 · 레벨디자인", mono="SC",
-             desc="원작 캠페인 미션을 3D 공간으로 다시 설계한 개인 프로젝트. 평면 RTS 미션을 "
-                  "3인칭 시점의 공간으로 옮기면 무엇이 달라지는지를 목업으로 검증하고, "
-                  "기획서와 브리핑 영상으로 정리했습니다.",
-             videos=[("목업 브리핑 영상", "https://youtu.be/-u-Y927xszk",
-                      "리디자인 의도와 공간 구성을 직접 설명한 영상")],
-             links=[]),
-        dict(slug="rpg-dungeon", title="범용성 있는 RPG 던전 목업 제작 과정",
-             meta="개인 작업 · 2024", mono="RPG",
-             desc="특정 프로젝트에 묶이지 않는 범용 RPG 던전을 기준으로, 목업을 어떤 순서로 세우고 "
-                  "무엇을 먼저 확정하는지 제작 과정 자체를 정리한 작업입니다.",
-             videos=[("목업 제작 과정 영상", "https://youtu.be/ziBouh2LaiA",
-                      "빈 공간에서 플레이 가능한 던전이 되기까지")],
-             links=[]),
-        dict(slug="cashout", title="캐시아웃",
-             meta="개인 작업 · 인디게임 · 1인 개발 · Claude로 구현", mono="CO",
+        # 프로토타입이 나오면 draft 줄만 지우면 노출된다. 그때 desc·링크도 채울 것.
+        dict(slug="maedonyeo", title="매도녀 (가제)", year="2026",
+             meta="인디게임 · 개발 중", mono="MD",
+             desc="코인 그래프와 미연시를 결합한 게임. 프로토타입 개발 중입니다.",
+             videos=[], links=[], draft=True),
+        dict(slug="aura", title="아우라 활용 — AI 목업 파이프라인", year="2026",
+             meta="AI R&amp;D · 언리얼 플러그인 · 목업 자동화", cover="aura", mono="AI",
+             href="aura.html",
+             desc="평면도 제작 툴을 직접 만들어 언리얼 LLM 플러그인 Aura와 연결하고, "
+                  "Meshy AI로 뽑은 메시를 밑그림으로 쓰는 제작법까지 정리한 개인 R&amp;D입니다. "
+                  "목업 제작 시간을 31% 줄였고, 밑그림 방식으로는 효율을 50% 이상 올렸습니다.",
+             videos=[], links=[]),
+        dict(slug="cashout", title="캐시아웃", year="2026",
+             meta="인디게임 · 1인 개발 · Claude로 구현", mono="CO",
              desc="크래시(그래프) 게임을 소재로 한 인디게임. 기획부터 개발까지 혼자 진행했고, "
                   "구현은 Claude로 했습니다. 브라우저에서 바로 플레이할 수 있습니다.",
              videos=[],
@@ -723,11 +721,21 @@ PERSONAL = dict(
                     ("문서", "그래프 게임 분석 및 신개념 가챠 시스템 제안",
                      "이 게임을 만들기 전에 정리한 장르 분석과 시스템 제안",
                      DRIVE % "1qjmRVFl6qgLccBidHyu6ZoQ5mjABMAAc")]),
-        # 프로토타입이 나오면 draft 줄만 지우면 노출된다. 그때 desc·링크도 채울 것.
-        dict(slug="maedonyeo", title="매도녀 (가제)",
-             meta="개인 작업 · 개발 중", mono="MD",
-             desc="코인 그래프와 미연시를 결합한 게임. 프로토타입 개발 중입니다.",
-             videos=[], links=[], draft=True),
+        dict(slug="sc-redesign", title="스타크래프트 캠페인 3D 리디자인", year="2025",
+             meta="레벨디자인 · 목업", mono="SC",
+             desc="원작 캠페인 미션을 3D 공간으로 다시 설계한 개인 프로젝트. 평면 RTS 미션을 "
+                  "3인칭 시점의 공간으로 옮기면 무엇이 달라지는지를 목업으로 검증하고, "
+                  "기획서와 브리핑 영상으로 정리했습니다.",
+             videos=[("목업 브리핑 영상", "https://youtu.be/-u-Y927xszk",
+                      "리디자인 의도와 공간 구성을 직접 설명한 영상")],
+             links=[]),
+        dict(slug="rpg-dungeon", title="범용성 있는 RPG 던전 목업 제작 과정", year="2024",
+             meta="레벨디자인 · 목업", mono="RPG",
+             desc="특정 프로젝트에 묶이지 않는 범용 RPG 던전을 기준으로, 목업을 어떤 순서로 세우고 "
+                  "무엇을 먼저 확정하는지 제작 과정 자체를 정리한 작업입니다.",
+             videos=[("목업 제작 과정 영상", "https://youtu.be/ziBouh2LaiA",
+                      "빈 공간에서 플레이 가능한 던전이 되기까지")],
+             links=[]),
     ],
 )
 

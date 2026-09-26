@@ -663,3 +663,5 @@ figure{margin:0}
 @media (prefers-color-scheme:dark) and (hover:none){
   :root:not([data-theme="light"]) .more{color:#14171C}
 }
+.pcover .badge.year{font-variant-numeric:tabular-nums;letter-spacing:.08em;color:#E8ECF1}
+.own-b .m .yr{margin-left:9px;padding-left:9px;border-left:1px solid var(--line-hard);color:var(--accent);font-weight:600}
