@@ -128,21 +128,45 @@
   rv.forEach(function (el) { io.observe(el); });
 })();
 
-/* ── 재생할 수 없는 유튜브 영상은 자리를 비운다
-   업로더가 퍼가기를 막았거나(101·150) 영상이 내려간 경우(100) 빈 상자만 남는다.
-   유튜브에 직접 물어보고 그런 항목만 지운다. 목록이 다 비면 제목까지 지운다.
-   유튜브 API 가 뜨지 않는 환경(차단·오프라인)에서는 아무것도 지우지 않는다. */
+/* ── 페이지에서 재생할 수 없는 유튜브 영상 처리
+   업로더가 퍼가기를 막았으면(101·150) 빈 상자가 남으므로, 유튜브로 나가는
+   썸네일 카드로 바꾼다. 영상이 아예 내려갔으면(100) 항목을 지우고, 그래서
+   목록이 다 비면 제목까지 지운다.
+   유튜브 API 가 뜨지 않는 환경(차단·오프라인)에서는 아무것도 건드리지 않는다. */
 (function () {
   var frames = Array.prototype.slice.call(
     document.querySelectorAll('.vid iframe[src*="enablejsapi=1"]'));
   if (!frames.length) return;
 
+  /* 퍼가기 차단 — 썸네일을 깔고 누르면 유튜브로 나가게 */
+  function toLink(fig) {
+    var box = fig.querySelector('.vid');
+    var lab = fig.querySelector('.vlab');
+    if (!box || !lab) return;
+    var a = document.createElement('a');
+    a.className = 'vout';
+    a.href = lab.href;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.innerHTML = '<img src="https://i.ytimg.com/vi/' + fig.dataset.yt +
+                  '/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()">' +
+                  '<span class="vout-p" aria-hidden="true"></span>' +
+                  '<span class="vout-t">유튜브에서 보기</span>';
+    box.innerHTML = '';
+    box.appendChild(a);
+  }
+
+  /* 영상이 내려감 — 자리를 지우고, 목록이 비면 제목까지 */
   function drop(fig) {
     var grid = fig.parentNode;
-    fig.parentNode.removeChild(fig);
-    if (!grid || !grid.classList.contains('vgrid')) return;
+    grid.removeChild(fig);
     if (grid.querySelector('.vfig, .lnk')) return;
-    var head = grid.previousElementSibling;
+    var slot = grid.parentNode;
+    if (slot.children.length === 2 && slot.children[0].classList.contains('slot-head')) {
+      slot.parentNode.removeChild(slot);          // 지역 페이지 — 슬롯 통째로
+      return;
+    }
+    var head = grid.previousElementSibling;       // 프로젝트 페이지 — h3 + 목록
     if (head && head.tagName === 'H3') head.parentNode.removeChild(head);
     grid.parentNode.removeChild(grid);
   }
@@ -150,11 +174,12 @@
   window.onYouTubeIframeAPIReady = function () {
     frames.forEach(function (fr) {
       var fig = fr.closest ? fr.closest('.vfig') : null;
-      if (!fig) return;
+      if (!fig || !fig.dataset.yt) return;
       new YT.Player(fr, {
         events: {
           onError: function (ev) {
-            if (ev.data === 100 || ev.data === 101 || ev.data === 150) drop(fig);
+            if (ev.data === 101 || ev.data === 150) toLink(fig);
+            else if (ev.data === 100) drop(fig);
           }
         }
       });

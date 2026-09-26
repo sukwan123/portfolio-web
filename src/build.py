@@ -108,14 +108,16 @@ def embeds(items):
                        '<span class="lnk-tag">영상</span><span class="lnk-txt"><b>%s</b></span>'
                        '<span class="lnk-ar">↗</span></a>' % (e(url), e(label)))
             continue
-        out.append('<figure class="fig vfig"><div class="vid">'
+        # data-yt — 퍼가기가 막힌 영상을 assets/app.js 가 썸네일 링크로 바꿀 때 쓴다
+        vid = src.split("/embed/")[1].split("?")[0] if "/embed/" in src else ""
+        out.append('<figure class="fig vfig"%s><div class="vid">'
                    '<iframe src="%s" title="%s" loading="lazy" allowfullscreen '
                    'allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" '
                    'referrerpolicy="strict-origin-when-cross-origin"></iframe></div>'
                    '<figcaption><a class="vlab" href="%s" target="_blank" '
                    'rel="noopener noreferrer">%s <span class="ar">↗</span></a>%s</figcaption></figure>'
-                   % (e(src), e(label), e(url), e(label),
-                      ("<em>%s</em>" % e(note)) if note else ""))
+                   % ((' data-yt="%s"' % e(vid)) if vid else "", e(src), e(label),
+                      e(url), e(label), ("<em>%s</em>" % e(note)) if note else ""))
     return '<div class="vgrid rv">%s</div>\n' % "".join(out)
 
 
