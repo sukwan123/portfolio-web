@@ -525,7 +525,7 @@ def build_index():
       <div class="banner-body">
         <p class="eyebrow plain">AI Pipeline · 2026</p>
         <h3>평면도 툴 → Aura → UE5 목업</h3>
-        <p>평면도를 픽셀 단위로 그려 구조화된 데이터를 뽑는 툴을 직접 만들고, 그 데이터를 언리얼 LLM 플러그인 Aura에 넣어 기획 의도가 반영된 목업을 생성합니다. 팀에도 확산했습니다.</p>
+        <p>평면도를 픽셀 단위로 그려 구조화된 데이터를 뽑는 툴을 직접 만들고, 그 데이터를 언리얼 LLM 플러그인 Aura에 넣어 기획 의도가 반영된 목업을 생성합니다.</p>
         <div class="kpi">
           <div><span class="n">31%%</span><span class="l">목업 제작 시간 절감</span></div>
           <div><span class="n">50%%+</span><span class="l">Meshy 밑그림 방식 효율</span></div>
@@ -550,12 +550,12 @@ def build_index():
     <div class="sec-head rv">
       <p class="eyebrow">Personal Works</p>
       <h2>회사 밖에서 만든 것들</h2>
-      <p class="note">시킨 사람이 없어도 만듭니다. 개인 제작 프로젝트와 함께, 지난 프로젝트의 기획 문서 %d편과 플레이 영상 %d편을 <a href="personal.html" style="color:var(--accent)">자료실</a>에 모아 뒀습니다.</p>
+      <p class="note">시킨 사람이 없어도 만듭니다. 회사 업무 밖에서 직접 기획하고 만든 작업들입니다.</p>
     </div>
     <div class="pgrid">%s</div>
   </div>
 </section>
-""" % (len(C.PERSONAL["docs"]), sum(len(v[1]) for v in C.PERSONAL["videos"]), own_cards))
+""" % own_cards)
 
     # 경력
     out.append("""<section id="career">
@@ -755,8 +755,8 @@ def build_personal():
            phero(P["eyebrow"], P["title"], P["tag"], P["note"])]
     out.append('<main>\n<section class="tight"><div class="wrap">')
 
-    out.append('<h3 class="h3 rv" id="own">직접 만든 것</h3>')
-    out.append('<p class="body-p rv">회사 업무가 아니라 개인적으로 파고들어 만든 작업입니다.</p>')
+    out.append('<p class="body-p rv">회사 업무가 아니라 개인적으로 파고들어 만든 작업입니다. '
+               '각 프로젝트에서 남긴 기획 문서와 플레이 영상은 해당 프로젝트 문서 안에 있습니다.</p>')
     for w in P["own"]:
         if w.get("draft"):          # 준비 중인 항목은 아직 싣지 않는다
             continue
@@ -767,17 +767,6 @@ def build_personal():
                    '<div class="own-b"><h4>%s</h4><div class="m">%s</div><p>%s</p></div></article>\n%s'
                    % (e(w["slug"]), e(w.get("mono", "·")), e(w["title"]), e(w["meta"]),
                       e(w["desc"]), extra))
-
-    out.append('<h3 class="h3 rv" id="docs" style="margin-top:46px">기획 문서</h3>')
-    out.append('<p class="body-p rv">지난 프로젝트에서 쓴 기획 문서입니다. 구글 드라이브에서 열립니다.</p>')
-    out.append(block(("links", [(tag, label, note, url) for tag, label, note, url in P["docs"]])))
-
-    out.append('<h3 class="h3 rv" id="videos" style="margin-top:46px">플레이 영상</h3>')
-    out.append('<p class="body-p rv">직접 만든 콘텐츠가 실제로 돌아가는 화면입니다. 여기서 바로 재생됩니다.</p>')
-    for group, key, page in P["videos"]:
-        out.append('<p class="grp rv">%s <a href="%s" style="color:var(--accent);'
-                   'text-transform:none;letter-spacing:0">프로젝트 문서 →</a></p>' % (e(group), e(page)))
-        out.append(embeds(C.VIDEOS[key]))
 
     out.append('</div></section>\n</main>\n')
     out.append(pager(("index.html", "홈"), ("kingsroad.html", "왕좌의 게임: 킹스로드")))

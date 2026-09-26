@@ -113,7 +113,7 @@ CONTENTS = [
         caps={"1": "던전 구조 (Top View) — 스타트 포인트·진입로·전투 공간·공중 공간(직경 110m)과 덫 설치 지점을 치수와 함께 확정.",
               "2": "Perspective View — 나루터·진입로·전투 공간·숲길·피치 오염 지대를 블록아웃으로 세우고 등장 연출 위치를 표기.",
               "3": "완성 화면 — 나루터 진입부와 전투 공간, 갱도 구간."},
-        yt="PTcLt2CsOfU", ytlab="플레이 영상 — 기억의 제단 · 그리핀 처치",
+        yt="qnxa6Iykfcs", ytlab="플레이 영상 — 기억의 제단 (던전 가이드)",
     ),
     dict(
         num="06", slug="kraken", group="dungeon",
@@ -248,7 +248,7 @@ HOME = dict(
         ("AI Pipeline", "AI를 실무 파이프라인에 넣었습니다",
          "평면도 제작 툴을 직접 만들어 언리얼 LLM 플러그인 Aura와 연결했습니다 "
          "(<b>목업 제작 시간 31% 절감</b>). Meshy AI로 뽑은 메시를 밑그림 삼는 방식으로는 "
-         "<b>목업 제작 효율을 50% 이상</b> 올렸습니다. 팀 공용 도구와 MCP 서버까지 만들어 확산했습니다."),
+         "<b>목업 제작 효율을 50% 이상</b> 올렸습니다."),
         ("Level & Systems", "레벨과, 그 레벨이 돌아갈 시스템까지 함께 만듭니다",
          "레벨 기획서에서 시작해 목업 · 화이트박스 검증 · 배경팀 전달까지 한 지역을 "
          "끝까지 따라갑니다. 거기서 멈추지 않고 이동 규칙 · 레벨 기믹 · 가젯 · 전투 연출처럼 "
@@ -267,7 +267,7 @@ HOME = dict(
              "프로토타입 직후 합류해 <b>글로벌 출시와 라이브 서비스</b>까지 참여",
              "필드 지역 5곳 · 던전 5종 <b>레벨디자인</b> 담당",
              "레벨 기믹 · 가젯 · 이동 규칙 등 <b>레벨에 필요한 시스템을 직접 기획</b>",
-             "AI 목업 파이프라인을 구축하고 팀에 확산",
+             "AI 목업 파이프라인을 직접 구축",
          ]),
         ("2022.04 – 2022.08", "너바나나", "Project ZETA",
          "콘텐츠 기획팀 · 팀원 / AAA 콘솔 액션 PvP · PS5·XBOX · UE5", [
@@ -297,9 +297,8 @@ HOME = dict(
         ("AI · 목업", "<b>Aura</b> (언리얼 LLM 플러그인) · <b>Meshy AI</b> · 자체 제작 평면도 툴 — "
                    "목업 생성 파이프라인을 세워 <b>제작 시간 31% 절감</b>, "
                    "Meshy 메시를 밑그림으로 쓰는 제작법으로 <b>효율 50% 이상 개선</b>"),
-        ("AI · 문서 · 자동화", "<b>Genspark</b> — 기획서 작성과 레퍼런스 리서치 · "
-                          "<b>Claude</b> · <b>Gemini</b> — 문서 초안과 대량 텍스트 검수 · "
-                          "MCP 서버 구축과 워크플로우 자동화 · 팀 공용 도구와 사용 가이드 제작"),
+        ("AI · 문서", "<b>Genspark</b> — 기획서 작성과 레퍼런스 리서치 · "
+                    "<b>Claude</b> · <b>Gemini</b> — 문서 초안 작성과 대량 텍스트 검수"),
         ("엔진", "<b>Unreal Engine 5</b> — 왕좌의 게임: 킹스로드 (오픈월드 액션 RPG · PC·모바일)<br>"
                  "<b>Unity</b> — 나노레전드 · 미니막스 타이니버스 (모바일·PC RTS 2종, 출시까지)"),
         ("협업", "Perforce, Jira, Confluence, 사내 업무 관리 시스템"),
@@ -346,7 +345,7 @@ KINGSROAD = dict(
          "길찾기 waypoint 정리, 네비메시 · 레벨기믹 결함 대응, 세력 은신처 개선."),
         ("2026.01 – 현재", "상세기획 · AI 파이프라인",
          "하렌홀 PvEvP 던전, 트윈스 및 챕터5 넥 지역, 맘모스 던전(진행 중), "
-         "이동 기믹 상세기획(v8 · v12), AI 파이프라인 구축 및 팀 확산."),
+         "이동 기믹 상세기획(v8 · v12), AI 목업 파이프라인 구축."),
     ],
 )
 
@@ -475,12 +474,6 @@ AURA = dict(
             "<b>프로젝트 전용 BP · 머티리얼</b> — 사다리 · 문 · 기믹 · 폴리지 같은 고유 리소스를 인식하지 "
             "못합니다. 평면도 툴에서 타일 타입별로 리소스를 연결할 수 있게 하는 것이 다음 과제입니다.",
             "<b>잔존 버그</b> — 계단 메시 방향 오정렬, 인접 벽 이음새 들뜸.",
-        ]),
-        ("h3", "팀 확산"),
-        ("bul", [
-            "시나리오 자동 분석 스킬, Jira · 업무보고 연동 MCP 서버, 사내 기획서 양식 자동 적용 도구를 "
-            "제작했습니다.",
-            "팀 공용 AI 자산을 연결하고, 팀원용 사용 안내를 작성하고, AI 활용 현황을 취합했습니다.",
         ]),
     ],
 )
@@ -692,10 +685,6 @@ VIDEOS = {
         ("성장 시스템 공식 가이드", "https://youtu.be/bWu4RU2M05Q?t=244", "공식 채널에 올라간 성장 시스템 안내"),
     ],
 }
-VIDEO_GROUPS = [("킹덤언더파이어 2", "kuf2", "p-kuf2.html"),
-                ("나노레전드", "nanolegend", "p-nanolegend.html"),
-                ("미니막스 타이니버스", "minimax", "p-minimax.html")]
-
 
 # ─────────────────────────────────────────────────────────────── 개인 작업 · 자료실
 # 2022 경력기술서(엑셀)에 걸려 있던 문서·영상 링크와, 회사 밖에서 직접 만든 작업들.
@@ -704,10 +693,9 @@ DRIVE = "https://drive.google.com/file/d/%s/view"
 PERSONAL = dict(
     page="personal.html",
     eyebrow="Personal Works",
-    title="개인 작업 · 자료실",
-    tag="개인 제작<span class=\"dot\">·</span>기획 문서<span class=\"dot\">·</span>플레이 영상",
-    note="회사 일로 만든 것 말고, 직접 파고들어 만든 작업들입니다. "
-         "지난 프로젝트에서 남긴 기획 문서와 플레이 영상도 함께 모았습니다.",
+    title="개인 작업",
+    tag="레벨디자인<span class=\"dot\">·</span>목업<span class=\"dot\">·</span>인디게임",
+    note="회사 일로 만든 것 말고, 직접 파고들어 만든 작업들입니다.",
     own=[
         dict(slug="sc-redesign", title="스타크래프트 캠페인 3D 리디자인",
              meta="개인 작업 · 레벨디자인", mono="SC",
@@ -731,29 +719,15 @@ PERSONAL = dict(
              videos=[],
              links=[("플레이", "캐시아웃 플레이하기",
                      "cashout-multi-production.up.railway.app",
-                     "https://cashout-multi-production.up.railway.app/")]),
+                     "https://cashout-multi-production.up.railway.app/"),
+                    ("문서", "그래프 게임 분석 및 신개념 가챠 시스템 제안",
+                     "이 게임을 만들기 전에 정리한 장르 분석과 시스템 제안",
+                     DRIVE % "1qjmRVFl6qgLccBidHyu6ZoQ5mjABMAAc")]),
         # 프로토타입이 나오면 draft 줄만 지우면 노출된다. 그때 desc·링크도 채울 것.
         dict(slug="maedonyeo", title="매도녀 (가제)",
              meta="개인 작업 · 개발 중", mono="MD",
              desc="코인 그래프와 미연시를 결합한 게임. 프로토타입 개발 중입니다.",
              videos=[], links=[], draft=True),
     ],
-    docs=[
-        ("시스템", "그래프 게임 분석 및 신개념 가챠 시스템 제안",
-         "확률형 상품의 체감을 바꾸는 구조를 제안한 문서입니다.",
-         DRIVE % "1qjmRVFl6qgLccBidHyu6ZoQ5mjABMAAc"),
-        ("BM", "「나노레전드」 가챠 수량 증폭 시스템",
-         "같은 재화로 더 많이 뽑게 하되 기대값은 관리하는 BM 설계.",
-         DRIVE % "1myRBM7jqWa72dop50h3PjdonaoKdEDqB"),
-        ("설정", "「나노레전드」 기초 세계관 설정",
-         "세계관과 캐릭터의 기초 설정을 정리한 문서.",
-         DRIVE % "1UOIrsKCt8WIJaRSL2C6qhs_dMEFXXIjU"),
-        ("레벨디자인", "「KUF2」 PK 필드 기획 정리",
-         "필드 엔드 콘텐츠인 PK 필드의 설계 의도와 구조.",
-         DRIVE % "1MGqK2bqs3IQ29AYzAELUYPw2SbVQjCNp"),
-        ("레벨디자인", "「KUF2」 레이드 기획 정리",
-         "최대 규모 레이드 ‘불꽃의 흉터’의 기획 정리.",
-         DRIVE % "1hTuziaclI9s303fVdUOWGqrOpslaE_JH"),
-    ],
-    videos=VIDEO_GROUPS,
 )
+

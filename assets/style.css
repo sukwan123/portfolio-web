@@ -565,7 +565,8 @@ figure{margin:0}
 }
 
 /* ─────────────────────────────────────────── 영상 임베드 */
-.vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-top:18px}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,560px));gap:14px;
+  margin-top:18px;justify-content:start}
 .vgrid .vfig{margin-top:0}
 .vid{position:relative;aspect-ratio:16/9;background:#05070A}
 .vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
