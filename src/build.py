@@ -306,6 +306,22 @@ def cover_html(cover, mono, alt, badge=None, extra=""):
     return '<div class="pcover blank"><span class="mono">%s</span>%s%s</div>' % (e(mono or "—"), b, extra)
 
 
+def own_cover(w):
+    """개인 작업 커버. 영상이 있으면 유튜브 썸네일을 얹고, 못 불러오면 모노그램이 남는다."""
+    base = cover_html(None, w.get("mono"), w["title"])
+    if not w.get("videos"):
+        return base
+    src = embed_src(w["videos"][0][1]) or ""
+    vid = src.split("/embed/")[-1].split("?")[0] if "/embed/" in src else ""
+    if not vid:
+        return base
+    # 기본은 숨김 — 썸네일이 실제로 뜬 경우에만 드러낸다 (유튜브가 막힌 환경에서도 모노그램이 남음)
+    thumb = ('<img class="ythumb" src="https://i.ytimg.com/vi/%s/hqdefault.jpg" alt="%s" '
+             'loading="lazy" decoding="async" onload="this.classList.add(\'on\')" '
+             'onerror="this.remove()">' % (e(vid), e(w["title"])))
+    return base.replace('</div>', thumb + '<span class="veil"></span></div>')
+
+
 def project_card(p):
     mini = ""
     if p.get("mini"):
@@ -522,8 +538,7 @@ def build_index():
         '<a class="pcard rv" href="personal.html#%s">%s<div class="pbody"><h3>%s</h3>'
         '<div class="m">%s</div><p>%s</p>'
         '<div class="more">자세히 보기 <span class="ar">→</span></div></div></a>'
-        % (e(w["slug"]), cover_html(None, w.get("mono"), w["title"]), e(w["title"]),
-           e(w["meta"]), e(w["desc"]))
+        % (e(w["slug"]), own_cover(w), e(w["title"]), e(w["meta"]), e(w["desc"]))
         for w in C.PERSONAL["own"])
     out.append("""<section id="personal">
   <div class="wrap">
@@ -740,13 +755,13 @@ def build_personal():
     out.append('<h3 class="h3 rv" id="own">직접 만든 것</h3>')
     out.append('<p class="body-p rv">회사 업무가 아니라 개인적으로 파고들어 만든 작업입니다.</p>')
     for w in P["own"]:
-        links = ""
-        if w["links"]:
-            links = block(("links", w["links"]))
+        extra = block(("links", w["links"])) if w["links"] else ""
+        if w.get("videos"):
+            extra += embeds(w["videos"])
         out.append('<article class="own rv" id="%s"><div class="own-mk">%s</div>'
                    '<div class="own-b"><h4>%s</h4><div class="m">%s</div><p>%s</p></div></article>\n%s'
                    % (e(w["slug"]), e(w.get("mono", "·")), e(w["title"]), e(w["meta"]),
-                      e(w["desc"]), links))
+                      e(w["desc"]), extra))
 
     out.append('<h3 class="h3 rv" id="docs" style="margin-top:46px">기획 문서</h3>')
     out.append('<p class="body-p rv">지난 프로젝트에서 쓴 기획 문서입니다. 구글 드라이브에서 열립니다.</p>')
