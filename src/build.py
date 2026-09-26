@@ -13,8 +13,10 @@ src/content.py 의 데이터로 저장소 루트에 HTML 을 쓴다.
 """
 import html
 import os
+import re
 import sys
 from datetime import date
+from urllib.parse import parse_qs, urlparse
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import content as C  # noqa: E402
@@ -68,6 +70,52 @@ def shots_of(c):
     for slot in ("1", "2", "3"):
         n += len(pick(c["num"], slot))
     return n
+
+
+# ──────────────────────────────────────────────────────── 영상 임베드
+def embed_src(url):
+    """유튜브·드라이브 주소를 iframe 에 넣을 주소로 바꾼다.
+
+    watch?v= / youtu.be / ?t=초 형태가 섞여 있어 id 와 시작 지점만 뽑아 쓴다.
+    """
+    u = urlparse(url)
+    if "drive.google.com" in u.netloc:
+        m = re.search(r"/file/d/([^/]+)", u.path)
+        return "https://drive.google.com/file/d/%s/preview" % m.group(1) if m else None
+    vid = None
+    if "youtu.be" in u.netloc:
+        vid = u.path.strip("/")
+    elif "youtube" in u.netloc:
+        vid = parse_qs(u.query).get("v", [None])[0]
+    if not vid:
+        return None
+    q = parse_qs(u.query)
+    start = (q.get("t") or q.get("start") or [""])[0].rstrip("s")
+    src = "https://www.youtube-nocookie.com/embed/%s?rel=0" % vid
+    if start.isdigit():
+        src += "&start=%s" % start
+    return src
+
+
+def embeds(items):
+    """(제목, 주소, 설명) 목록을 16:9 임베드 격자로."""
+    out = []
+    for label, url, note in items:
+        src = embed_src(url)
+        if not src:                      # 임베드가 안 되는 주소는 링크로 남긴다
+            out.append('<a class="lnk" href="%s" target="_blank" rel="noopener noreferrer">'
+                       '<span class="lnk-tag">영상</span><span class="lnk-txt"><b>%s</b></span>'
+                       '<span class="lnk-ar">↗</span></a>' % (e(url), e(label)))
+            continue
+        out.append('<figure class="fig vfig"><div class="vid">'
+                   '<iframe src="%s" title="%s" loading="lazy" allowfullscreen '
+                   'allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" '
+                   'referrerpolicy="strict-origin-when-cross-origin"></iframe></div>'
+                   '<figcaption><a class="vlab" href="%s" target="_blank" '
+                   'rel="noopener noreferrer">%s <span class="ar">↗</span></a>%s</figcaption></figure>'
+                   % (e(src), e(label), e(url), e(label),
+                      ("<em>%s</em>" % e(note)) if note else ""))
+    return '<div class="vgrid rv">%s</div>\n' % "".join(out)
 
 
 # ──────────────────────────────────────────────────────── 공통 뼈대
@@ -224,6 +272,8 @@ def block(b):
             out.append('<figure class="fig"><video src="%s" controls muted loop playsinline '
                        'preload="metadata"></video><figcaption>%s</figcaption></figure>' % (e(src), e(cap)))
         return '<div class="figrow rv">%s</div>\n' % "".join(out)
+    if kind == "embeds":
+        return embeds(C.VIDEOS[b[1]])
     if kind == "links":
         out = []
         for tag, label, note, url in b[1]:
@@ -331,11 +381,8 @@ def yt_block(c):
     if not c.get("yt"):
         return ""
     return ('<div class="slot rv"><div class="slot-head"><span class="slot-tag">영상</span>'
-            '<p class="slot-cap">실제 플레이 영상입니다. 유튜브에서 새 탭으로 열립니다.</p></div>'
-            '<a class="ytlink" href="https://www.youtube.com/watch?v=%s" target="_blank" '
-            'rel="noopener noreferrer"><span class="ico">&#9654;</span><span class="txt"><b>%s</b>'
-            '<em>youtube.com/watch?v=%s</em></span></a></div>') % (
-        e(c["yt"]), e(c["ytlab"]), e(c["yt"]))
+            '<p class="slot-cap">실제 플레이 영상입니다. 여기서 바로 재생됩니다.</p></div>'
+            '%s</div>') % embeds([(c["ytlab"], "https://youtu.be/" + c["yt"], None)])
 
 
 # ──────────────────────────────────────────────────────── 페이지 히어로
@@ -706,10 +753,11 @@ def build_personal():
     out.append(block(("links", [(tag, label, note, url) for tag, label, note, url in P["docs"]])))
 
     out.append('<h3 class="h3 rv" id="videos" style="margin-top:46px">플레이 영상</h3>')
-    out.append('<p class="body-p rv">직접 만든 콘텐츠가 실제로 돌아가는 화면입니다. 새 탭에서 열립니다.</p>')
-    for group, items in P["videos"]:
-        out.append('<p class="grp rv">%s</p>' % e(group))
-        out.append(block(("links", [("영상", label, None, url) for label, url in items])))
+    out.append('<p class="body-p rv">직접 만든 콘텐츠가 실제로 돌아가는 화면입니다. 여기서 바로 재생됩니다.</p>')
+    for group, key, page in P["videos"]:
+        out.append('<p class="grp rv">%s <a href="%s" style="color:var(--accent);'
+                   'text-transform:none;letter-spacing:0">프로젝트 문서 →</a></p>' % (e(group), e(page)))
+        out.append(embeds(C.VIDEOS[key]))
 
     out.append('</div></section>\n</main>\n')
     out.append(pager(("index.html", "홈"), ("kingsroad.html", "왕좌의 게임: 킹스로드")))

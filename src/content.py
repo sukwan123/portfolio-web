@@ -538,14 +538,7 @@ PREV_PAGES = {
                 "<b>운영</b> — 운영 시스템 구축과 커뮤니티 직접 운영.",
             ]),
             ("h3", "플레이 영상"),
-            ("links", [
-                ("영상", "PvE 첫 튜토리얼 미션 플레이", "세계관 전달과 튜토리얼을 겸한 PvE 콘텐츠 ‘모험’",
-                 "https://youtu.be/CRWUWx0-hQ0?t=38"),
-                ("영상", "랜덤덱 모드 플레이", "이벤트·일일 도전용 모드 중 하나",
-                 "https://youtu.be/_IJJ-uX8Xlo"),
-                ("영상", "패키지 · 프리미엄 패스 구입", "구독형 BM과 패키지 상품 흐름",
-                 "https://youtu.be/-SOocSAzNaw?t=29"),
-            ]),
+            ("embeds", "nanolegend"),
             ("h3", "기획 문서"),
             ("links", [
                 ("BM", "가챠 수량 증폭 시스템", None,
@@ -583,14 +576,7 @@ PREV_PAGES = {
                 "<b>퍼블리싱</b> — 스팀과 모바일 양대 마켓 자체 글로벌 퍼블리싱.",
             ]),
             ("h3", "플레이 영상"),
-            ("links", [
-                ("영상", "상점 · 인벤토리 · 성장 · BM", "담당한 아웃게임 전반",
-                 "https://youtu.be/_omHoRsK6lc"),
-                ("영상", "연속 가챠", "가챠 수량 증폭 구조가 적용된 화면",
-                 "https://www.youtube.com/watch?v=4e1PXOTKuOM"),
-                ("영상", "성장 시스템 공식 가이드", "공식 채널에 올라간 성장 시스템 안내",
-                 "https://youtu.be/bWu4RU2M05Q?t=244"),
-            ]),
+            ("embeds", "minimax"),
         ],
     ),
     "kufc": dict(
@@ -661,20 +647,7 @@ PREV_PAGES = {
                 "글로벌 6개국(러시아 · 독일 등) 서비스.",
             ]),
             ("h3", "플레이 영상"),
-            ("links", [
-                ("영상", "레이드 홍보 영상", "최대 규모 레이드 ‘불꽃의 흉터’",
-                 "https://youtu.be/k-xVaTSeDeo"),
-                ("영상", "PvP ‘격전의 도시’ 플레이", "직접 제작한 인기 PvP 맵",
-                 "https://youtu.be/31ObPMikvFg"),
-                ("영상", "도시 · 필드 플레이", "월드맵·도시와 PK 필드",
-                 "https://youtu.be/NgCVZJkbEDU"),
-                ("영상", "미션 유저 플레이", "제작·폴리싱한 스토리 미션",
-                 "https://youtu.be/bhPSSpAG6Eo"),
-                ("영상", "2014 E3 소니 컨퍼런스 발표 영상", "기획 · 레벨디자인 · 스크립트 담당",
-                 "https://youtu.be/1oiCRRD-pVA"),
-                ("영상", "필드 대화형 컷신", "직접 제작한 컷신",
-                 "https://drive.google.com/file/d/1MuZkaDxV54ZWr7iqB6G5XhqRzOA72PsM/view"),
-            ]),
+            ("embeds", "kuf2"),
             ("h3", "기획 문서"),
             ("links", [
                 ("레벨디자인", "PK 필드 기획 정리", None,
@@ -685,6 +658,38 @@ PREV_PAGES = {
         ],
     ),
 }
+
+
+# ─────────────────────────────────────────────────────────────── 영상 자료
+# 노션 포트폴리오와 2022 경력기술서(엑셀)에 흩어져 있던 링크를 한곳에 모았다.
+# 같은 영상이 watch?v= / youtu.be / ?t= 형태로 중복돼 있어 유튜브 id 기준으로 정리했다.
+VIDEOS = {
+    "kuf2": [
+        ("레이드 홍보 영상", "https://youtu.be/k-xVaTSeDeo", "최대 규모 레이드 ‘불꽃의 흉터’"),
+        ("PvP ‘격전의 도시’ 플레이", "https://youtu.be/31ObPMikvFg", "직접 제작한 인기 PvP 맵"),
+        ("3v3 PvP 경기", "https://youtu.be/lqhtfQrQcrI", "PvP 맵에서 진행된 3v3 경기"),
+        ("도시 · 필드 플레이", "https://youtu.be/NgCVZJkbEDU", "월드맵·도시와 PK 필드"),
+        ("미션 유저 플레이", "https://youtu.be/bhPSSpAG6Eo", "제작·폴리싱한 스토리 미션"),
+        ("2014 E3 소니 컨퍼런스 발표 영상", "https://youtu.be/1oiCRRD-pVA",
+         "기획 · 레벨디자인 · 스크립트 담당"),
+        ("필드 대화형 컷신", "https://drive.google.com/file/d/1MuZkaDxV54ZWr7iqB6G5XhqRzOA72PsM/view",
+         "직접 제작한 컷신"),
+    ],
+    "nanolegend": [
+        ("PvE 첫 튜토리얼 미션 플레이", "https://youtu.be/CRWUWx0-hQ0?t=38",
+         "세계관 전달과 튜토리얼을 겸한 PvE 콘텐츠 ‘모험’"),
+        ("랜덤덱 모드 플레이", "https://youtu.be/_IJJ-uX8Xlo", "이벤트·일일 도전용 모드 중 하나"),
+        ("패키지 · 프리미엄 패스 구입", "https://youtu.be/-SOocSAzNaw?t=29", "구독형 BM과 패키지 상품 흐름"),
+    ],
+    "minimax": [
+        ("상점 · 인벤토리 · 성장 · BM", "https://youtu.be/_omHoRsK6lc", "담당한 아웃게임 전반"),
+        ("연속 가챠", "https://www.youtube.com/watch?v=4e1PXOTKuOM", "가챠 수량 증폭 구조가 적용된 화면"),
+        ("성장 시스템 공식 가이드", "https://youtu.be/bWu4RU2M05Q?t=244", "공식 채널에 올라간 성장 시스템 안내"),
+    ],
+}
+VIDEO_GROUPS = [("킹덤언더파이어 2", "kuf2", "p-kuf2.html"),
+                ("나노레전드", "nanolegend", "p-nanolegend.html"),
+                ("미니막스 타이니버스", "minimax", "p-minimax.html")]
 
 
 # ─────────────────────────────────────────────────────────────── 개인 작업 · 자료실
@@ -732,24 +737,5 @@ PERSONAL = dict(
          "최대 규모 레이드 ‘불꽃의 흉터’의 기획 정리.",
          DRIVE % "1hTuziaclI9s303fVdUOWGqrOpslaE_JH"),
     ],
-    videos=[
-        ("킹덤언더파이어 2", [
-            ("레이드 홍보 영상", "https://youtu.be/k-xVaTSeDeo"),
-            ("PvP ‘격전의 도시’ 플레이", "https://youtu.be/31ObPMikvFg"),
-            ("도시 · 필드 플레이", "https://youtu.be/NgCVZJkbEDU"),
-            ("미션 유저 플레이", "https://youtu.be/bhPSSpAG6Eo"),
-            ("2014 E3 소니 컨퍼런스 발표 영상", "https://youtu.be/1oiCRRD-pVA"),
-            ("필드 대화형 컷신", DRIVE % "1MuZkaDxV54ZWr7iqB6G5XhqRzOA72PsM"),
-        ]),
-        ("나노레전드", [
-            ("PvE 첫 튜토리얼 미션 플레이", "https://youtu.be/CRWUWx0-hQ0?t=38"),
-            ("랜덤덱 모드 플레이", "https://youtu.be/_IJJ-uX8Xlo"),
-            ("패키지 · 프리미엄 패스 구입", "https://youtu.be/-SOocSAzNaw?t=29"),
-        ]),
-        ("미니막스 타이니버스", [
-            ("상점 · 인벤토리 · 성장 · BM", "https://youtu.be/_omHoRsK6lc"),
-            ("연속 가챠", "https://www.youtube.com/watch?v=4e1PXOTKuOM"),
-            ("성장 시스템 공식 가이드 영상", "https://youtu.be/bWu4RU2M05Q?t=244"),
-        ]),
-    ],
+    videos=VIDEO_GROUPS,
 )
