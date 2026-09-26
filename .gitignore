@@ -2,3 +2,4 @@
 Thumbs.db
 *.pptx
 _*/
+__pycache__/
