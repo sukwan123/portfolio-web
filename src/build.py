@@ -404,11 +404,12 @@ def gallery(c):
 
 
 def yt_block(c):
+    """지역별 플레이 영상. 항목은 ("유튜브 id" 또는 "id?t=초", 제목)."""
     if not c.get("yt"):
         return ""
     return ('<div class="slot rv"><div class="slot-head"><span class="slot-tag">영상</span>'
             '<p class="slot-cap">실제 플레이 영상입니다. 여기서 바로 재생됩니다.</p></div>'
-            '%s</div>') % embeds([(c["ytlab"], "https://youtu.be/" + c["yt"], None)])
+            '%s</div>') % embeds([(lab, "https://youtu.be/" + v, None) for v, lab in c["yt"]])
 
 
 # ──────────────────────────────────────────────────────── 페이지 히어로
