@@ -453,9 +453,8 @@ def build_index():
         for cls, tags in h["chips"])
     jobs = "".join(
         '<div class="job"><div class="when"><b>%s</b>%s</div><div><h4>%s</h4>'
-        '<div class="pos">%s</div><ul>%s</ul></div></div>' % (
-            e(when), e(co), e(title), e(pos), "".join("<li>%s</li>" % x for x in lis))
-        for when, co, title, pos, lis in h["career"])
+        '<div class="pos">%s</div></div></div>' % (e(when), e(co), e(title), pos)
+        for when, co, title, pos in h["career"])
     edu = "".join('<div class="kv-row"><div class="k">%s</div><div class="v">%s</div></div>' % (e(k), v)
                   for k, v in h["edu"])
     skills = "".join('<div class="kv-row"><div class="k">%s</div><div class="v">%s</div></div>' % (e(k), v)
