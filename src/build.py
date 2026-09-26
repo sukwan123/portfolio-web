@@ -364,10 +364,9 @@ def content_card(c):
     <div class="m">%s</div>
     <h4>%s</h4>
     <p>%s</p>
-    <div class="st">%s</div>
   </div>
 </a>
-""" % (e(c["slug"]), cov, e(c["meta"]), e(c["title"]), e(c["summary"]), e(c["role"].split(" · ")[0]))
+""" % (e(c["slug"]), cov, e(c["meta"]), e(c["title"]), e(c["summary"]))
 
 
 # ──────────────────────────────────────────────────────── 갤러리
