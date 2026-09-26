@@ -91,7 +91,8 @@ def embed_src(url):
         return None
     q = parse_qs(u.query)
     start = (q.get("t") or q.get("start") or [""])[0].rstrip("s")
-    src = "https://www.youtube-nocookie.com/embed/%s?rel=0" % vid
+    # enablejsapi — assets/app.js 가 재생 가능한지 물어보고 안 되면 자리를 지운다
+    src = "https://www.youtube-nocookie.com/embed/%s?rel=0&enablejsapi=1" % vid
     if start.isdigit():
         src += "&start=%s" % start
     return src

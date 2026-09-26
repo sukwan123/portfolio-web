@@ -127,3 +127,41 @@
   }, { rootMargin: '0px 0px -8% 0px', threshold: 0.04 });
   rv.forEach(function (el) { io.observe(el); });
 })();
+
+/* ── 재생할 수 없는 유튜브 영상은 자리를 비운다
+   업로더가 퍼가기를 막았거나(101·150) 영상이 내려간 경우(100) 빈 상자만 남는다.
+   유튜브에 직접 물어보고 그런 항목만 지운다. 목록이 다 비면 제목까지 지운다.
+   유튜브 API 가 뜨지 않는 환경(차단·오프라인)에서는 아무것도 지우지 않는다. */
+(function () {
+  var frames = Array.prototype.slice.call(
+    document.querySelectorAll('.vid iframe[src*="enablejsapi=1"]'));
+  if (!frames.length) return;
+
+  function drop(fig) {
+    var grid = fig.parentNode;
+    fig.parentNode.removeChild(fig);
+    if (!grid || !grid.classList.contains('vgrid')) return;
+    if (grid.querySelector('.vfig, .lnk')) return;
+    var head = grid.previousElementSibling;
+    if (head && head.tagName === 'H3') head.parentNode.removeChild(head);
+    grid.parentNode.removeChild(grid);
+  }
+
+  window.onYouTubeIframeAPIReady = function () {
+    frames.forEach(function (fr) {
+      var fig = fr.closest ? fr.closest('.vfig') : null;
+      if (!fig) return;
+      new YT.Player(fr, {
+        events: {
+          onError: function (ev) {
+            if (ev.data === 100 || ev.data === 101 || ev.data === 150) drop(fig);
+          }
+        }
+      });
+    });
+  };
+
+  var s = document.createElement('script');
+  s.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(s);
+})();
