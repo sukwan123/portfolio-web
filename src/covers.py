@@ -1,0 +1,75 @@
+# -*- coding: utf-8 -*-
+"""카드·히어로용 커버 이미지 생성.
+
+원본(img/*.jpg)에서 16:9 로 센터 크롭해 webp 로 굽는다.
+결과는 img/cov/ 에 들어가고, 페이지에서 카드 썸네일·히어로 배경으로 쓴다.
+
+    python3 src/covers.py
+"""
+import os
+from PIL import Image
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+IMG = os.path.join(ROOT, "img")
+OUT = os.path.join(IMG, "cov")
+
+# 커버 이름 → (원본 파일, 세로 포커스 0=위 .5=중앙 1=아래)
+CARDS = {
+    "kingsroad":   ("02-final-10.jpg", 0.45),
+    "last-hearth": ("01-final-05.jpg", 0.5),
+    "oldtown":     ("02-final-05.jpg", 0.5),
+    "highgarden":  ("03-final-04.jpg", 0.5),
+    "crows-nest":  ("04-final-05.jpg", 0.5),
+    "griffin":     ("05-final-03.jpg", 0.5),
+    "kraken":      ("06-final-02.jpg", 0.5),
+    "beyond-wall": ("07-final-02.jpg", 0.5),
+    "mammoth":     ("08-mock.jpg", 0.5),
+    "harrenhal":   ("09-mock-01.jpg", 0.5),
+    "systems":     ("04-final-12.jpg", 0.5),
+    "aura":        ("aura_08.png", 0.5),
+}
+
+# 히어로 배경 (가로로 더 길게)
+HEROES = {
+    "home":      ("02-final-10.jpg", 0.45),
+    "kingsroad": ("03-final-01.jpg", 0.42),
+}
+
+CARD_W, CARD_H = 1000, 563       # 16:9
+HERO_W, HERO_H = 2000, 900       # 20:9
+
+
+def crop(src, w, h, focus):
+    im = Image.open(src).convert("RGB")
+    sw, sh = im.size
+    want = w / h
+    have = sw / sh
+    if have > want:                       # 원본이 더 넓다 → 좌우 자름
+        nw = int(sh * want)
+        x = (sw - nw) // 2
+        im = im.crop((x, 0, x + nw, sh))
+    else:                                 # 원본이 더 높다 → 상하 자름
+        nh = int(sw / want)
+        y = int((sh - nh) * focus)
+        im = im.crop((0, y, sw, y + nh))
+    return im.resize((w, h), Image.LANCZOS)
+
+
+def main():
+    os.makedirs(OUT, exist_ok=True)
+    total = 0
+    for name, (src, focus) in sorted(CARDS.items()):
+        p = os.path.join(OUT, name + ".webp")
+        crop(os.path.join(IMG, src), CARD_W, CARD_H, focus).save(p, "WEBP", quality=72, method=6)
+        total += os.path.getsize(p)
+        print("card  %-14s %-16s %6.1f KB" % (name, src, os.path.getsize(p) / 1024))
+    for name, (src, focus) in sorted(HEROES.items()):
+        p = os.path.join(OUT, "hero-" + name + ".webp")
+        crop(os.path.join(IMG, src), HERO_W, HERO_H, focus).save(p, "WEBP", quality=64, method=6)
+        total += os.path.getsize(p)
+        print("hero  %-14s %-16s %6.1f KB" % (name, src, os.path.getsize(p) / 1024))
+    print("합계 %.1f KB" % (total / 1024))
+
+
+if __name__ == "__main__":
+    main()
