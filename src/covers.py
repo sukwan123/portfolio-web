@@ -23,8 +23,8 @@ CARDS = {
     "griffin":     ("05-final-03.jpg", 0.5),
     "kraken":      ("06-final-02.jpg", 0.5),
     "beyond-wall": ("07-final-02.jpg", 0.5),
-    "mammoth":     ("08-mock.jpg", 0.5),
-    "harrenhal":   ("09-mock-01.jpg", 0.5),
+    "mammoth":     ("redacted/08.webp", 0.5),   # 목업은 대외비 — 블러본 사용
+    "harrenhal":   ("redacted/09.webp", 0.5),   # 목업은 대외비 — 블러본 사용
     "systems":     ("04-final-12.jpg", 0.5),
     "aura":        ("aura_08.png", 0.5),
     # 아래 넷은 2022 경력기술서(엑셀)에 들어 있던 공식 이미지, zeta 는 사용자가 준 포스터.

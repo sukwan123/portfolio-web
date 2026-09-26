@@ -372,24 +372,31 @@ def content_card(c):
 
 # ──────────────────────────────────────────────────────── 갤러리
 def gallery(c):
+    """평면도·목업은 대외비라 블러 몽타주 한 장으로 대신하고, 완성 화면만 그대로 싣는다."""
     out = []
-    for slot in ("1", "2", "3"):
-        cap = c["caps"].get(slot)
-        if not cap:
-            continue
-        fs = pick(c["num"], slot)
-        if not fs:
-            continue
+    red = os.path.join(IMG, "redacted", "%s.webp" % c["num"])
+    if os.path.exists(red):
+        n = len(pick(c["num"], "1")) + len(pick(c["num"], "2"))
+        out.append('<div class="slot rv"><div class="slot-head"><span class="slot-tag">작업 과정</span>'
+                   '<p class="slot-cap">평면도와 목업 %s— 회사 대외비 자료라 형태만 남기고 '
+                   '되돌릴 수 없게 흐리게 처리했습니다.</p></div>'
+                   '<figure class="redact"><img src="img/redacted/%s.webp" '
+                   'alt="%s 평면도·목업 (대외비 처리)" loading="lazy" decoding="async">'
+                   '<figcaption>대외비 처리된 작업 기록</figcaption></figure></div>'
+                   % (("%d장 " % n) if n else "", e(c["num"]), e(c["title"])))
+    cap = c["caps"].get("3")
+    fs = pick(c["num"], "3")
+    if cap and fs:
         cls = "g1" if len(fs) == 1 else ("g2" if len(fs) <= 4 else "g3")
         cells = []
         for i, f in enumerate(fs):
-            alt = "%s %s %d" % (c["title"], SLOT_LABEL[slot], i + 1)
+            alt = "%s %s %d" % (c["title"], SLOT_LABEL["3"], i + 1)
             cells.append('<button class="shot" data-src="img/%s" data-cap="%s" aria-label="%s 확대">'
                          '<img src="img/%s" alt="%s" loading="lazy" decoding="async"></button>'
                          % (e(f), e(cap), e(alt), e(f), e(alt)))
         out.append('<div class="slot rv"><div class="slot-head"><span class="slot-tag">%s</span>'
                    '<p class="slot-cap">%s</p></div><div class="grid %s">%s</div></div>'
-                   % (SLOT_LABEL[slot], e(cap), cls, "".join(cells)))
+                   % (SLOT_LABEL["3"], e(cap), cls, "".join(cells)))
     return "".join(out)
 
 

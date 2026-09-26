@@ -619,3 +619,10 @@ figure{margin:0}
   width:min(720px,92vw);height:220px;padding:12px;font-family:var(--mono);font-size:12px;
   border:1px solid var(--line-hard);border-radius:10px;background:var(--surface);color:var(--ink)}
 @media print{.ed-bar,.ed-modal,.ed-toast,.ed-out{display:none!important}}
+
+/* 대외비 처리된 작업 기록 몽타주 — 원본 대신 싣는 블러본 */
+.redact{max-width:760px;border:1px solid var(--line);border-radius:var(--r-s);overflow:hidden;
+  background:var(--surface);box-shadow:var(--shadow)}
+.redact img{width:100%;display:block}
+.redact figcaption{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink3);padding:8px 13px;border-top:1px solid var(--line);background:var(--surface-3)}
