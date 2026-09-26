@@ -34,6 +34,8 @@ CARDS = {
     "kuf2":        ("../src/media/kuf2-art.jpg", 0.42),
     "offindustry": ("../src/media/offindustry.jpg", 0.5),
     "zeta":        ("../src/media/zeta-poster.png", 0.5),
+    # 캐시아웃은 직접 만든 게임이라 실제 플레이 화면(그래프)을 잘라 쓴다
+    "cashout":     ("../src/media/cashout-chart.png", 0.5),
 }
 
 # 히어로 배경 (가로로 더 길게)

@@ -705,7 +705,7 @@ PERSONAL = dict(
                   "목업 제작 시간을 31% 줄였고, 밑그림 방식으로는 효율을 50% 이상 올렸습니다.",
              videos=[], links=[]),
         dict(slug="cashout", page="pw-cashout.html", title="캐시아웃", year="2026",
-             meta="인디게임 · 1인 개발 · Claude로 구현", mono="CO",
+             meta="인디게임 · 1인 개발 · Claude로 구현", cover="cashout", mono="CO",
              desc="크래시(그래프) 게임을 소재로 한 인디게임. 기획부터 개발까지 혼자 진행했고, "
                   "구현은 Claude로 했습니다. 브라우저에서 바로 플레이할 수 있습니다.",
              videos=[],
