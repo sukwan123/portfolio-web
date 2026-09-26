@@ -448,7 +448,7 @@ def build_index():
                   for k, v in h["edu"])
     skills = "".join('<div class="kv-row"><div class="k">%s</div><div class="v">%s</div></div>' % (e(k), v)
                      for k, v in h["skills"])
-    off = "".join("<li>%s</li>" % x for x in h["offindustry"])   # 본문 데이터는 서식 태그를 그대로 쓴다
+    off = "".join('<span class="chip">%s</span>' % x for x in h["offindustry"])
 
     out = [head("손석완 · 레벨 디자이너 포트폴리오",
                 "레벨 디자이너 손석완의 포트폴리오. 왕좌의 게임: 킹스로드 필드·던전 레벨디자인."),
@@ -521,8 +521,8 @@ def build_index():
         <h3>평면도 툴 → Aura → UE5 목업</h3>
         <p>평면도를 픽셀 단위로 그려 구조화된 데이터를 뽑는 툴을 직접 만들고, 그 데이터를 언리얼 LLM 플러그인 Aura에 넣어 기획 의도가 반영된 목업을 생성합니다. 팀에도 확산했습니다.</p>
         <div class="kpi">
-          <div><span class="n">53%%</span><span class="l">평균 활용률</span></div>
-          <div><span class="n">31%%</span><span class="l">평균 시간 절감</span></div>
+          <div><span class="n">31%%</span><span class="l">목업 제작 시간 절감</span></div>
+          <div><span class="n">50%%+</span><span class="l">Meshy 밑그림 방식 효율</span></div>
         </div>
         <div class="more" style="margin-top:12px;font-family:var(--mono);font-size:11.5px;color:var(--accent);letter-spacing:.06em">R&amp;D 리포트 읽기 <span class="ar">→</span></div>
       </div>
@@ -561,9 +561,7 @@ def build_index():
     <div class="career rv">%s</div>
     <div class="kv rv">%s</div>
     <h3 class="h3 rv">업계 외 경력</h3>
-    <p class="body-p rv">게임 업계에 오기 전 영화를 전공했고, 시나리오 작가와 영화 스탭으로 일했습니다. 글쓰기는 지금도 이어가고 있어서, 스토리텔링과 연출이 중요한 레벨에서 이 경력이 크게 작용합니다.</p>
-    <ul class="bul rv">%s</ul>
-    <figure class="fig rv" style="max-width:620px"><img src="img/cov/offindustry.webp" alt="보조작가로 참여한 드라마와 만화" loading="lazy" decoding="async" width="1000" height="563"><figcaption>보조작가로 참여한 어린이 드라마와 만화 · 애니메이션 작업 일부</figcaption></figure>
+    <div class="chips rv" style="margin-top:14px">%s</div>
   </div>
 </section>
 """ % (jobs, edu, off))
@@ -653,8 +651,8 @@ def build_kingsroad():
         <h3>평면도 툴 → Aura → UE5 목업 파이프라인</h3>
         <p>목업 제작 시간을 줄이기 위해 평면도 제작 툴을 직접 만들고, 언리얼 LLM 플러그인 Aura와 연결해 기획 의도가 반영된 목업을 생성하는 파이프라인을 세웠습니다.</p>
         <div class="kpi">
-          <div><span class="n">53%%</span><span class="l">평균 활용률</span></div>
-          <div><span class="n">31%%</span><span class="l">평균 시간 절감</span></div>
+          <div><span class="n">31%%</span><span class="l">목업 제작 시간 절감</span></div>
+          <div><span class="n">50%%+</span><span class="l">Meshy 밑그림 방식 효율</span></div>
         </div>
         <div class="more" style="margin-top:12px;font-family:var(--mono);font-size:11.5px;color:var(--accent);letter-spacing:.06em">R&amp;D 리포트 읽기 <span class="ar">→</span></div>
       </div>
@@ -730,7 +728,7 @@ def build_systems(prev, next_):
 def build_aura():
     a = C.AURA
     out = [head("AI 목업 파이프라인 · 손석완",
-                "평면도 제작 툴과 Aura를 연결한 UE5 목업 파이프라인 — 활용률 53%, 시간 절감 31%."),
+                "평면도 제작 툴과 Aura를 연결한 UE5 목업 파이프라인 — 목업 제작 시간 31% 절감."),
            bar("AI 파이프라인"),
            crumb([("index.html", "홈"), ("kingsroad.html", "왕좌의 게임: 킹스로드"), (None, "AI 목업 파이프라인")]),
            phero(a["eyebrow"], a["title"], a["tag"], a["note"], cover=a.get("cover"))]
