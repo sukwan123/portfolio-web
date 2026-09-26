@@ -1,0 +1,17 @@
+# Railway 는 $PORT 를 주입한다. 로컬 테스트는 8080.
+:{$PORT:8080} {
+	root * /srv
+	encode zstd gzip
+
+	# 이미지·영상은 오래 캐시, HTML 은 항상 재검증
+	@static path *.jpg *.jpeg *.png *.webp *.mp4 *.woff2
+	header @static Cache-Control "public, max-age=31536000, immutable"
+	header /index.html Cache-Control "public, max-age=0, must-revalidate"
+
+	# 검색엔진 비노출
+	header X-Robots-Tag "noindex, nofollow, noarchive"
+	header X-Content-Type-Options "nosniff"
+	header Referrer-Policy "no-referrer"
+
+	file_server
+}
