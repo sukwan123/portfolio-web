@@ -294,7 +294,7 @@ HOME = dict(
                     "<b>Claude</b> · <b>Gemini</b> — 문서 초안 작성과 대량 텍스트 검수"),
         ("엔진", "<b>Unreal Engine 5</b> — 왕좌의 게임: 킹스로드 (오픈월드 액션 RPG · PC·모바일)<br>"
                  "<b>Unity</b> — 나노레전드 · 미니막스 타이니버스 (모바일·PC RTS 2종, 출시까지)"),
-        ("협업", "Perforce, Jira, Confluence, 사내 업무 관리 시스템"),
+        ("협업", "Perforce, Jira, <b>Trello</b>, Confluence, 사내 업무 관리 시스템"),
     ],
     # 본문이 아니라 키워드로만 — 중요한 이력은 아니지만 연출·서사 강점의 근거다
     offindustry=[
