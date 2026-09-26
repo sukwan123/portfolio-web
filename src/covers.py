@@ -27,6 +27,13 @@ CARDS = {
     "harrenhal":   ("09-mock-01.jpg", 0.5),
     "systems":     ("04-final-12.jpg", 0.5),
     "aura":        ("aura_08.png", 0.5),
+    # 아래 넷은 2022 경력기술서(엑셀)에 들어 있던 공식 이미지, zeta 는 사용자가 준 포스터.
+    # 원본은 배포되지 않는 src/media/ 에 둔다.
+    "nanolegend":  ("../src/media/nanolegend-store.jpg", 0.5),
+    "minimax":     ("../src/media/minimax-promo.jpg", 0.5),
+    "kuf2":        ("../src/media/kuf2-art.jpg", 0.42),
+    "offindustry": ("../src/media/offindustry.jpg", 0.5),
+    "zeta":        ("../src/media/zeta-poster.png", 0.5),
 }
 
 # 히어로 배경 (가로로 더 길게)

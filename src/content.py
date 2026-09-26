@@ -188,7 +188,7 @@ PROJECTS = [
         slug="zeta", page="p-zeta.html",
         title="Project ZETA", company="너바나나",
         meta="너바나나 · 2022.04 – 2022.08 · AAA 콘솔 액션 PvP · PS5·XBOX · UE5",
-        badge=("live", "출시 · 크래프톤 퍼블리싱"), cover=None, mono="ZETA",
+        badge=("live", "출시 · 크래프톤 퍼블리싱"), cover="zeta",
         role="콘텐츠 기획팀 / 하이컨셉 기초 기획",
         summary="하이컨셉 단계부터 참여해 기초 룰 · 세계관 · 월드 · 캐릭터 · 핵심 시스템 · 캠페인의 "
                 "기초 기획을 진행했습니다. 이후 크래프톤 퍼블리싱으로 출시됐습니다.",
@@ -509,6 +509,8 @@ PREV_PAGES = {
                 "세계관 · 월드 · 캐릭터 컨셉과 핵심 시스템의 기초 기획을 담당했습니다.",
                 "캠페인 구조의 초안을 세웠습니다.",
             ]),
+            ("h3", "소개 영상"),
+            ("embeds", "zeta"),
             ("note", "제가 참여한 시점은 하이컨셉·프로토타이핑 단계라, 공개된 최종 빌드의 내용과는 "
                       "차이가 있을 수 있습니다. 이후 크래프톤 퍼블리싱으로 출시됐습니다."),
         ],
@@ -675,6 +677,10 @@ VIDEOS = {
         ("대화형 컷신 — 듀란과의 대화",
          "https://drive.google.com/file/d/1MuZkaDxV54ZWr7iqB6G5XhqRzOA72PsM/view",
          "필드·도시 퀘스트 컷신의 40%가량을 직접 제작했습니다"),
+    ],
+    "zeta": [
+        ("공식 인게임 트레일러", "https://www.youtube.com/watch?v=-NCpfGbZXt8",
+         "너바나나·크래프톤 공식 채널 — 제가 참여한 하이컨셉 단계 이후의 최종 빌드입니다"),
     ],
     "nanolegend": [
         ("PvE 첫 튜토리얼 미션 플레이", "https://youtu.be/CRWUWx0-hQ0?t=38",
