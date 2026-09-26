@@ -672,8 +672,9 @@ VIDEOS = {
         ("미션 유저 플레이", "https://youtu.be/bhPSSpAG6Eo", "제작·폴리싱한 스토리 미션"),
         ("2014 E3 소니 컨퍼런스 발표 영상", "https://youtu.be/1oiCRRD-pVA",
          "기획 · 레벨디자인 · 스크립트 담당"),
-        ("필드 대화형 컷신", "https://drive.google.com/file/d/1MuZkaDxV54ZWr7iqB6G5XhqRzOA72PsM/view",
-         "직접 제작한 컷신"),
+        ("대화형 컷신 — 듀란과의 대화",
+         "https://drive.google.com/file/d/1MuZkaDxV54ZWr7iqB6G5XhqRzOA72PsM/view",
+         "필드·도시 퀘스트 컷신의 40%가량을 직접 제작했습니다"),
     ],
     "nanolegend": [
         ("PvE 첫 튜토리얼 미션 플레이", "https://youtu.be/CRWUWx0-hQ0?t=38",
