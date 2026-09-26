@@ -14,6 +14,7 @@ src/content.py 의 데이터로 저장소 루트에 HTML 을 쓴다.
 import html
 import os
 import sys
+from datetime import date
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import content as C  # noqa: E402
@@ -24,6 +25,34 @@ FILES = sorted(os.listdir(IMG))
 
 SLOT_LABEL = {"1": "평면도", "2": "목업 전경", "3": "완성 화면"}
 SLOT_FILE = {"1": "plan", "2": "mock", "3": "final"}
+
+
+# ──────────────────────────────────────────────────────── 경력 기간 (실시간)
+# 빌드 시점 값을 본문에 적어 두고, 같은 시작일을 data-since 로 넘겨
+# 브라우저에서 다시 계산한다. 페이지를 안 고쳐도 달이 바뀌면 숫자가 따라간다.
+def months_since(start):
+    y, m = (int(x) for x in start.split("-"))
+    today = date.today()
+    return (today.year - y) * 12 + (today.month - m)
+
+
+def dur_text(months):
+    y, m = divmod(max(months, 0), 12)
+    return "%d년 %d개월" % (y, m) if m else "%d년" % y
+
+
+def live_span(start, kind="dur", tag="b"):
+    n = months_since(start)
+    text = str(n // 12) if kind == "years" else dur_text(n)
+    return '<%s class="live" data-since="%s" data-kind="%s">%s</%s>' % (tag, start, kind, text, tag)
+
+
+def tokens(text):
+    s = C.SITE
+    return (text
+            .replace("{{career}}", live_span(s["career_start"]))
+            .replace("{{nm_dur}}", live_span(s["netmarble_start"], tag="span"))
+            .replace("{{nm_years}}", live_span(s["netmarble_start"], kind="years", tag="span")))
 
 
 def e(s):
@@ -552,7 +581,7 @@ def build_kingsroad():
   <div class="wrap">
     <div class="sec-head rv">
       <p class="eyebrow">Timeline</p>
-      <h2>킹스로드에서의 4년</h2>
+      <h2>킹스로드에서의 {{nm_years}}년</h2>
     </div>
     <ul class="tl rv">%s</ul>
   </div>
@@ -641,6 +670,7 @@ def build_prev_project(p, page, prev, next_):
 
 # ──────────────────────────────────────────────────────── 실행
 def write(name, text):
+    text = tokens(text)
     path = os.path.join(ROOT, name)
     with open(path, "w", encoding="utf-8") as f:
         f.write(text)

@@ -52,9 +52,67 @@
     });
   }
 
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── 경력 기간을 열어본 시점 기준으로 다시 계산
+        (data-since="2014-02", data-kind="dur" | "years") */
+  Array.prototype.forEach.call(document.querySelectorAll('.live[data-since]'), function (el) {
+    var p = (el.getAttribute('data-since') || '').split('-');
+    if (p.length !== 2) return;
+    var now = new Date();
+    var months = (now.getFullYear() - +p[0]) * 12 + (now.getMonth() + 1 - +p[1]);
+    if (months < 0) months = 0;
+    var y = Math.floor(months / 12), m = months % 12;
+    el.textContent = el.getAttribute('data-kind') === 'years'
+      ? String(y)
+      : (m ? y + '년 ' + m + '개월' : y + '년');
+  });
+
+  /* ── 숫자 롤링 — 화면에 들어올 때 0에서 올라간다 */
+  var nums = Array.prototype.slice.call(document.querySelectorAll('.stat .n, .kpi .n'));
+  if (nums.length && !reduce) {
+    var roll = function (el) {
+      var raw = el.innerHTML;
+      var head = raw.match(/^\s*([\d,]+)/);
+      if (!head) return;                       // "진행 중" 처럼 숫자가 아닌 값은 건너뛴다
+      var target = parseInt(head[1].replace(/,/g, ''), 10);
+      if (!isFinite(target) || target === 0) return;
+      var grouped = head[1].indexOf(',') >= 0;
+      var tail = raw.slice(head[0].length);
+      var w = el.getBoundingClientRect().width;
+      if (w) el.style.minWidth = w + 'px';     // 자릿수가 늘어도 칸이 흔들리지 않게
+      var dur = target > 100 ? 1150 : 750;
+      var t0 = 0;
+      var paint = function (v) {
+        el.innerHTML = (grouped ? v.toLocaleString('en-US') : String(v)) + tail;
+      };
+      paint(0);
+      var step = function (ts) {
+        if (!t0) t0 = ts;
+        var k = Math.min((ts - t0) / dur, 1);
+        k = 1 - Math.pow(1 - k, 3);            // ease-out
+        paint(Math.round(target * k));
+        if (k < 1) requestAnimationFrame(step);
+        else { paint(target); el.style.minWidth = ''; }
+      };
+      requestAnimationFrame(step);
+    };
+    if ('IntersectionObserver' in window) {
+      var nio = new IntersectionObserver(function (es) {
+        es.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          nio.unobserve(en.target);
+          roll(en.target);
+        });
+      }, { threshold: 0.35 });
+      nums.forEach(function (el) { nio.observe(el); });
+    } else {
+      nums.forEach(roll);
+    }
+  }
+
   /* ── 스크롤 등장 */
   var rv = Array.prototype.slice.call(document.querySelectorAll('.rv'));
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!rv.length) return;
   if (reduce || !('IntersectionObserver' in window)) {
     rv.forEach(function (el) { el.classList.add('in'); });
