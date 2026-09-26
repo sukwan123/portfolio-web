@@ -125,7 +125,19 @@ p{margin:0}
   background-size:54px 54px;
   -webkit-mask-image:radial-gradient(120% 95% at 76% 0%,#000 0%,transparent 72%);
   mask-image:radial-gradient(120% 95% at 76% 0%,#000 0%,transparent 72%)}
-.hero-in{position:relative;max-width:var(--maxw);margin:0 auto;padding:78px var(--gut) 66px}
+.hero-in{position:relative;max-width:var(--maxw);margin:0 auto;padding:78px var(--gut) 66px;
+  display:grid;grid-template-columns:minmax(0,1fr) 284px;gap:46px;align-items:center}
+.hero-col{min-width:0}
+
+/* 프로필 사진 */
+.portrait{margin:0;position:relative;border-radius:14px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04);
+  box-shadow:0 26px 60px -26px rgba(0,0,0,.85)}
+.portrait img{width:100%;height:auto;display:block;filter:saturate(.96) contrast(1.02)}
+@media(max-width:900px){
+  .hero-in{grid-template-columns:1fr;gap:26px;padding-top:44px}
+  .portrait{order:-1;width:126px;border-radius:11px}
+}
 .hero .eyebrow{color:#D7B27C}
 .hero .eyebrow::after{background:linear-gradient(90deg,rgba(215,178,124,.6),transparent)}
 .hero h1{font-size:clamp(40px,8vw,72px);font-weight:700;letter-spacing:-.05em;line-height:1;

@@ -359,16 +359,21 @@ def build_index():
   <div class="hero-scrim"></div>
   <div class="hero-grid"></div>
   <div class="hero-in">
-    <p class="eyebrow">Level Designer · Portfolio 2026</p>
-    <h1>손석완</h1>
-    <p class="role">Level Designer / 레벨 디자이너</p>
-    <p class="lede">%s</p>
-    <p class="sub">%s</p>
-    <div class="hero-cta">
-      <a class="btn btn-pri" href="kingsroad.html">대표 프로젝트 보기 <span class="ar">→</span></a>
-      <a class="btn btn-ghost" href="#projects">프로젝트 6종 <span class="ar">↓</span></a>
+    <div class="hero-col">
+      <p class="eyebrow">Level Designer · Portfolio 2026</p>
+      <h1>손석완</h1>
+      <p class="role">Level Designer / 레벨 디자이너</p>
+      <p class="lede">%s</p>
+      <p class="sub">%s</p>
+      <div class="hero-cta">
+        <a class="btn btn-pri" href="kingsroad.html">대표 프로젝트 보기 <span class="ar">→</span></a>
+        <a class="btn btn-ghost" href="#projects">프로젝트 6종 <span class="ar">↓</span></a>
+      </div>
+      <div class="chips">%s<a class="chip" href="mailto:%s">%s</a></div>
     </div>
-    <div class="chips">%s<a class="chip" href="mailto:%s">%s</a></div>
+    <figure class="portrait">
+      <img src="img/profile.webp" alt="손석완 프로필 사진" width="660" height="880" fetchpriority="high">
+    </figure>
   </div>
 </div>
 """ % (h["lede"], h["sub"], chips, e(C.SITE["email"]), e(C.SITE["email"])))
