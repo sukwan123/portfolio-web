@@ -473,8 +473,8 @@ def build_index():
       <p class="lede">%s</p>
       <p class="sub">%s</p>
       <div class="hero-cta">
-        <a class="btn btn-pri" href="kingsroad.html">대표 프로젝트 보기 <span class="ar">→</span></a>
-        <a class="btn btn-ghost" href="#projects">프로젝트 6종 <span class="ar">↓</span></a>
+        <a class="btn btn-pri" href="#projects">프로젝트 <span class="ar">↓</span></a>
+        <a class="btn btn-ghost" href="personal.html">개인작품 포트폴리오 <span class="ar">→</span></a>
       </div>
       <div class="chips">%s<a class="chip" href="mailto:%s">%s</a></div>
     </div>
@@ -514,30 +514,6 @@ def build_index():
 </section>
 """ % (project_card(kingsroad), "".join(project_card(p) for p in others)))
 
-    # R&D 배너
-    out.append("""<section id="rnd">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <p class="eyebrow">R&amp;D</p>
-      <h2>목업 제작을 파이프라인으로 만들었습니다</h2>
-    </div>
-    <a class="banner rv" href="aura.html">
-      <div class="banner-body">
-        <p class="eyebrow plain">AI Pipeline · 2026</p>
-        <h3>평면도 툴 → Aura → UE5 목업</h3>
-        <p>평면도를 픽셀 단위로 그려 구조화된 데이터를 뽑는 툴을 직접 만들고, 그 데이터를 언리얼 LLM 플러그인 Aura에 넣어 기획 의도가 반영된 목업을 생성합니다.</p>
-        <div class="kpi">
-          <div><span class="n">31%%</span><span class="l">목업 제작 시간 절감</span></div>
-          <div><span class="n">50%%+</span><span class="l">Meshy 밑그림 방식 효율</span></div>
-        </div>
-        <div class="more">R&amp;D 리포트 읽기 <span class="ar">→</span></div>
-      </div>
-      <div class="pcover"><img src="img/cov/aura.webp" alt="Aura로 생성한 목업" loading="lazy" decoding="async" width="1000" height="563"><span class="veil"></span></div>
-    </a>
-  </div>
-</section>
-""")
-
     # 개인 작업
     own_cards = "".join(
         '<a class="pcard rv" href="personal.html#%s">%s<div class="pbody"><h3>%s</h3>'
@@ -549,7 +525,7 @@ def build_index():
   <div class="wrap">
     <div class="sec-head rv">
       <p class="eyebrow">Personal Works</p>
-      <h2>회사 밖에서 만든 것들</h2>
+      <h2>개인작품 포트폴리오</h2>
       <p class="note">시킨 사람이 없어도 만듭니다. 회사 업무 밖에서 직접 기획하고 만든 작업들입니다.</p>
     </div>
     <div class="pgrid">%s</div>
@@ -750,8 +726,8 @@ def build_aura():
 def build_personal():
     P = C.PERSONAL
     out = [head("개인 작업 · 자료실 · 손석완", P["note"]),
-           bar("개인 작업"),
-           crumb([("index.html", "홈"), (None, "개인 작업")]),
+           bar("개인작품"),
+           crumb([("index.html", "홈"), (None, "개인작품 포트폴리오")]),
            phero(P["eyebrow"], P["title"], P["tag"], P["note"])]
     out.append('<main>\n<section class="tight"><div class="wrap">')
 

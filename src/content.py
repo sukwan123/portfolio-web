@@ -19,10 +19,10 @@ SITE = dict(
 
 # ── 상단 내비게이션 (홈 기준 앵커)
 NAV = [
-    ("aura.html", "AI 파이프라인"),
     ("index.html#projects", "프로젝트"),
-    ("personal.html", "개인 작업"),
+    ("personal.html", "개인작품"),
     ("kingsroad.html", "킹스로드"),
+    ("aura.html", "AI 파이프라인"),
     ("index.html#career", "경력"),
     ("index.html#contact", "연락"),
 ]
@@ -693,7 +693,7 @@ DRIVE = "https://drive.google.com/file/d/%s/view"
 PERSONAL = dict(
     page="personal.html",
     eyebrow="Personal Works",
-    title="개인 작업",
+    title="개인작품 포트폴리오",
     tag="레벨디자인<span class=\"dot\">·</span>목업<span class=\"dot\">·</span>인디게임",
     note="회사 일로 만든 것 말고, 직접 파고들어 만든 작업들입니다.",
     own=[
