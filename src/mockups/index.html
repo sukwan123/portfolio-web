@@ -1,0 +1,324 @@
+<title>포트폴리오 디자인 시안</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Hahmlet:wght@400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap">
+<style>
+:root{
+  --chrome-bg:#EDEEF0; --chrome-surface:#FFFFFF; --chrome-ink:#16181C;
+  --chrome-ink2:#5B626C; --chrome-line:#D6DAE0; --chrome-accent:#8A6636;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --chrome-bg:#101317; --chrome-surface:#191D23; --chrome-ink:#E6E9EE;
+    --chrome-ink2:#98A1AC; --chrome-line:#2A3038; --chrome-accent:#C79A5B;
+  }
+}
+:root[data-theme="dark"]{
+  --chrome-bg:#101317; --chrome-surface:#191D23; --chrome-ink:#E6E9EE;
+  --chrome-ink2:#98A1AC; --chrome-line:#2A3038; --chrome-accent:#C79A5B;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--chrome-bg);color:var(--chrome-ink);
+  font-family:"Noto Sans KR",system-ui,sans-serif;font-size:15px;line-height:1.7}
+img{max-width:100%;display:block}
+h1,h2,h3,h4{margin:0;text-wrap:balance;line-height:1.25}
+p{margin:0}
+
+/* ===== chrome ===== */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--chrome-bg);
+  border-bottom:1px solid var(--chrome-line)}
+.top-in{max-width:1080px;margin:0 auto;padding:12px 20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.top-t{font-size:13.5px;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+.top-t span{font-weight:400;color:var(--chrome-ink2);margin-left:8px}
+.tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.tab{font-family:inherit;font-size:13px;font-weight:500;padding:7px 14px;border-radius:7px;cursor:pointer;
+  border:1px solid var(--chrome-line);background:var(--chrome-surface);color:var(--chrome-ink2)}
+.tab:hover{color:var(--chrome-ink)}
+.tab[aria-selected="true"]{background:var(--chrome-accent);border-color:var(--chrome-accent);color:#fff}
+.intro{max-width:1080px;margin:0 auto;padding:22px 20px 0}
+.intro p{color:var(--chrome-ink2);font-size:14.5px;max-width:62ch}
+.pane-note{max-width:1080px;margin:0 auto;padding:18px 20px 10px;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.pane-note b{font-size:15px}
+.pane-note span{color:var(--chrome-ink2);font-size:13.5px}
+.frame{max-width:1080px;margin:0 auto 46px;padding:0 20px}
+.frame-in{border:1px solid var(--chrome-line);border-radius:14px;overflow:hidden;
+  box-shadow:0 2px 6px rgba(0,0,0,.05),0 20px 50px -30px rgba(0,0,0,.4)}
+
+/* ================= 시안 A · 다크 시네마틱 ================= */
+.tA{background:#0C0E11;color:#E9ECF1;font-family:"Noto Sans KR",sans-serif}
+.tA .pad{padding:44px 38px}
+.tA .eb{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#C9A063;font-weight:500}
+.tA h1{font-family:"Hahmlet",serif;font-size:clamp(34px,5.6vw,54px);font-weight:700;letter-spacing:-.03em;
+  margin-top:14px;color:#F6F8FA}
+.tA .role{font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:#7E8A99;margin-top:12px}
+.tA .lede{font-family:"Hahmlet",serif;font-size:clamp(17px,2.3vw,21px);line-height:1.75;color:#C6CEd8;
+  margin-top:24px;max-width:38ch;font-weight:400}
+.tA .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.tA .chip{font-size:11.5px;padding:6px 13px;border-radius:100px;border:1px solid #2A313B;
+  color:#98A3B1;background:#14181D;letter-spacing:.02em}
+.tA .chip b{color:#C9A063;font-weight:500}
+.tA .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:26px;
+  margin-top:40px;padding-top:30px;border-top:1px solid #1D232B}
+.tA .stat .n{font-family:"Hahmlet",serif;font-size:32px;font-weight:600;color:#E9C88A;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums}
+.tA .stat .l{font-size:12px;color:#7E8A99;margin-top:5px}
+.tA .band{border-top:1px solid #1D232B;padding:40px 38px}
+.tA .rid{font-size:11px;letter-spacing:.2em;color:#C9A063;text-transform:uppercase}
+.tA h3{font-family:"Hahmlet",serif;font-size:26px;font-weight:600;margin-top:11px;color:#F2F5F8}
+.tA .meta{font-size:12px;color:#6D7987;margin-top:7px;letter-spacing:.03em}
+.tA .body{font-size:14.5px;color:#A9B3BF;margin-top:16px;max-width:60ch;line-height:1.8}
+.tA .hero-shot{margin-top:26px;border-radius:10px;overflow:hidden;position:relative;background:#000}
+.tA .hero-shot img{width:100%;opacity:.96}
+.tA .cap{font-size:11.5px;color:#6D7987;margin-top:10px;letter-spacing:.02em}
+.tA .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.tA .g3 img{border-radius:7px;transition:transform .35s ease,box-shadow .35s ease}
+.tA .g3 a{display:block;overflow:hidden;border-radius:7px}
+.tA .g3 img:hover{transform:scale(1.04);box-shadow:0 0 0 1px #C9A06355,0 14px 34px rgba(0,0,0,.6)}
+.tA .slotlab{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#5E6875;margin-top:30px}
+@media(max-width:620px){.tA .pad,.tA .band{padding:30px 20px}.tA .g3{grid-template-columns:repeat(2,1fr)}}
+
+/* ================= 시안 B · 에디토리얼 ================= */
+.tB{background:#F4F2EE;color:#191A18;font-family:"Noto Sans KR",sans-serif}
+.tB .pad{padding:46px 40px}
+.tB .eb{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#2A4D5C;font-weight:700}
+.tB h1{font-family:"Gowun Batang",serif;font-size:clamp(34px,5.6vw,52px);font-weight:700;
+  letter-spacing:-.02em;margin-top:16px;color:#14201F}
+.tB .role{font-family:"Gowun Batang",serif;font-size:16px;color:#5E6B66;margin-top:10px;font-style:italic}
+.tB .rule{height:1px;background:#CDC8BE;margin:30px 0}
+.tB .lede{font-family:"Gowun Batang",serif;font-size:clamp(18px,2.4vw,23px);line-height:1.8;
+  color:#26302E;max-width:32ch;font-weight:400}
+.tB .two{display:grid;grid-template-columns:1.25fr 1fr;gap:38px;align-items:start}
+@media(max-width:700px){.tB .two{grid-template-columns:1fr;gap:22px}}
+.tB .side .k{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#8A8377;font-weight:700}
+.tB .side .v{font-size:14px;color:#3D4744;margin-top:4px;margin-bottom:16px;line-height:1.65}
+.tB .side .v b{color:#14201F;font-weight:700}
+.tB .stats{display:flex;flex-wrap:wrap;gap:34px;margin-top:34px;padding-top:26px;border-top:2px solid #14201F}
+.tB .stat .n{font-family:"Gowun Batang",serif;font-size:31px;font-weight:700;color:#2A4D5C;
+  font-variant-numeric:tabular-nums;line-height:1}
+.tB .stat .l{font-size:12px;color:#7A7468;margin-top:6px}
+.tB .band{border-top:1px solid #DCD7CD;padding:42px 40px;background:#FAF9F6}
+.tB .rid{font-family:"Gowun Batang",serif;font-size:13px;color:#2A4D5C;letter-spacing:.08em}
+.tB h3{font-family:"Gowun Batang",serif;font-size:30px;font-weight:700;margin-top:8px;color:#14201F}
+.tB .meta{font-size:12px;color:#8A8377;margin-top:8px;letter-spacing:.06em;text-transform:uppercase}
+.tB .body{font-size:15px;color:#3D4744;margin-top:18px;max-width:58ch;line-height:1.85}
+.tB .body::first-letter{font-family:"Gowun Batang",serif;font-size:48px;float:left;line-height:.9;
+  padding:4px 10px 0 0;color:#2A4D5C;font-weight:700}
+.tB .lead-shot{margin-top:28px;border:1px solid #DCD7CD;background:#fff;padding:10px}
+.tB .cap{font-size:12px;color:#8A8377;margin-top:10px;font-style:italic}
+.tB .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.tB .g3 img{border:1px solid #DCD7CD;background:#fff}
+.tB .slotlab{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#8A8377;
+  margin-top:32px;font-weight:700;border-bottom:1px solid #DCD7CD;padding-bottom:7px}
+@media(max-width:620px){.tB .pad,.tB .band{padding:30px 20px}.tB .g3{grid-template-columns:repeat(2,1fr)}}
+
+/* ================= 시안 C · 미니멀 스튜디오 ================= */
+.tC{background:#FFFFFF;color:#101010;font-family:"Noto Sans KR",sans-serif}
+.tC .pad{padding:56px 44px}
+.tC .eb{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#9A9A9A;font-weight:500}
+.tC h1{font-size:clamp(30px,4.6vw,44px);font-weight:700;letter-spacing:-.045em;margin-top:20px;color:#0A0A0A}
+.tC .role{font-size:13px;color:#8C8C8C;margin-top:8px;letter-spacing:.01em}
+.tC .lede{font-size:clamp(16px,2vw,19px);line-height:1.8;color:#2E2E2E;margin-top:34px;
+  max-width:40ch;font-weight:400;letter-spacing:-.01em}
+.tC .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));
+  gap:1px;background:#E8E8E8;border:1px solid #E8E8E8;margin-top:44px}
+.tC .stat{background:#fff;padding:18px 16px}
+.tC .stat .n{font-size:26px;font-weight:700;letter-spacing:-.04em;font-variant-numeric:tabular-nums;color:#0A0A0A}
+.tC .stat .l{font-size:11.5px;color:#9A9A9A;margin-top:4px}
+.tC .band{border-top:1px solid #EDEDED;padding:52px 44px}
+.tC .rowhead{display:grid;grid-template-columns:52px 1fr;gap:22px;align-items:start}
+.tC .rid{font-size:11px;color:#B5B5B5;letter-spacing:.06em;padding-top:6px;font-variant-numeric:tabular-nums}
+.tC h3{font-size:22px;font-weight:700;letter-spacing:-.03em;color:#0A0A0A}
+.tC .meta{font-size:11.5px;color:#9A9A9A;margin-top:6px;letter-spacing:.02em}
+.tC .body{font-size:14.5px;color:#4A4A4A;margin-top:14px;max-width:56ch;line-height:1.8}
+.tC .shot-main{margin-top:34px}
+.tC .cap{font-size:11.5px;color:#9A9A9A;margin-top:9px}
+.tC .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:10px}
+.tC .g3 img{transition:opacity .25s}
+.tC .g3 a{display:block;background:#000}
+.tC .g3 a:hover img{opacity:.72}
+.tC .slotlab{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#B5B5B5;margin-top:40px}
+@media(max-width:620px){.tC .pad,.tC .band{padding:32px 20px}
+  .tC .rowhead{grid-template-columns:1fr;gap:6px}.tC .g3{grid-template-columns:repeat(2,1fr)}}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="top-t">포트폴리오 디자인 시안<span>손석완 · 레벨 디자이너</span></div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tabA" aria-selected="true" aria-controls="pA">A · 다크 시네마틱</button>
+      <button class="tab" role="tab" id="tabB" aria-selected="false" aria-controls="pB">B · 에디토리얼</button>
+      <button class="tab" role="tab" id="tabC" aria-selected="false" aria-controls="pC">C · 미니멀 스튜디오</button>
+    </div>
+  </div>
+</header>
+
+<div class="intro">
+  <p>같은 내용(하이가든 지역)을 세 가지 외형으로 만든 비교용 시안입니다. 실제 이미지와 실제 문구를 그대로 썼습니다. 마음에 드는 번호를 알려주시면 전체 페이지를 그 방향으로 다시 만들겠습니다.</p>
+</div>
+
+<!-- ============ A ============ -->
+<div id="pA" role="tabpanel" aria-labelledby="tabA">
+  <div class="pane-note"><b>시안 A — 다크 시네마틱</b><span>어두운 배경에서 스크린샷이 발광하듯 뜹니다. 세리프 제목(Hahmlet) + 황금빛 강조. 이미지에 마우스를 올려보세요.</span></div>
+  <div class="frame"><div class="frame-in tA">
+    <div class="pad">
+      <p class="eb">Level Designer · Portfolio 2026</p>
+      <h1>손석완</h1>
+      <p class="role">Netmarble Neo · Game of Thrones: Kingsroad</p>
+      <p class="lede">지형과 동선을 만드는 데서 멈추지 않고, 레벨에 필요한 기능을 직접 기획해 타 부서에 발주하고 완성까지 끌고 갑니다.</p>
+      <div class="chips">
+        <span class="chip">경력 <b>12년 7개월</b></span>
+        <span class="chip">출시작 <b>4종</b></span>
+        <span class="chip">Unreal Engine 5</span>
+        <span class="chip">필드 · 던전 · <b>PvEvP</b></span>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="n">1,637</div><div class="l">Perforce 서브밋</div></div>
+        <div class="stat"><div class="n">597</div><div class="l">Jira 이슈</div></div>
+        <div class="stat"><div class="n">100</div><div class="l">타 부서 발주</div></div>
+        <div class="stat"><div class="n">5+5</div><div class="l">필드 · 던전</div></div>
+      </div>
+    </div>
+    <div class="band">
+      <p class="rid">Field 03</p>
+      <h3>하이가든</h3>
+      <p class="meta">챕터 2.3 · 2023 · 서브밋 138건</p>
+      <p class="body">리치 남부의 정원 도시. 평면도·기획서를 1차 / 최종으로 나눠 개정하며 성·마을과 필드를 단계적으로 확정했습니다. 필드 콘텐츠로 세력 은신처와 위기의 성소를 배치했습니다.</p>
+      <p class="slotlab">01 — 평면도</p>
+      <div class="hero-shot"><img src="img/03-plan.jpg" alt="하이가든 평면도" loading="lazy"></div>
+      <p class="cap">성채를 중심으로 한 필드 구성과 진입 동선.</p>
+      <p class="slotlab">02 — 목업 전경</p>
+      <div class="g3">
+        <a href="#pA"><img src="img/03-mock-01.jpg" alt="하이가든 목업 1" loading="lazy"></a>
+        <a href="#pA"><img src="img/03-mock-02.jpg" alt="하이가든 목업 2" loading="lazy"></a>
+        <a href="#pA"><img src="img/03-mock-03.jpg" alt="하이가든 목업 3" loading="lazy"></a>
+      </div>
+      <p class="slotlab">03 — 완성 화면</p>
+      <div class="g3">
+        <a href="#pA"><img src="img/03-final-01.jpg" alt="하이가든 완성 1" loading="lazy"></a>
+        <a href="#pA"><img src="img/03-final-02.jpg" alt="하이가든 완성 2" loading="lazy"></a>
+        <a href="#pA"><img src="img/03-final-03.jpg" alt="하이가든 완성 3" loading="lazy"></a>
+      </div>
+      <p class="cap">성채와 정원, 연회장·축제장, 본성 영접실.</p>
+    </div>
+  </div></div>
+</div>
+
+<!-- ============ B ============ -->
+<div id="pB" role="tabpanel" aria-labelledby="tabB" hidden>
+  <div class="pane-note"><b>시안 B — 에디토리얼</b><span>작품집·잡지 레이아웃. 명조 제목(고운바탕)과 본문 드롭캡, 좌우 2단 구성. 읽는 포트폴리오에 가깝습니다.</span></div>
+  <div class="frame"><div class="frame-in tB">
+    <div class="pad">
+      <p class="eb">Level Designer — Portfolio 2026</p>
+      <h1>손석완</h1>
+      <p class="role">넷마블네오 · 왕좌의 게임: 킹스로드</p>
+      <div class="rule"></div>
+      <div class="two">
+        <p class="lede">지형과 동선을 만드는 데서 멈추지 않고, 레벨에 필요한 기능을 직접 기획해 타 부서에 발주하고 완성까지 끌고 갑니다.</p>
+        <div class="side">
+          <div class="k">경력</div><div class="v"><b>12년 7개월</b> · 6개 프로젝트 · 4개 출시</div>
+          <div class="k">전문</div><div class="v">액션 RPG · RTS / 필드 · 던전 · PvEvP</div>
+          <div class="k">엔진</div><div class="v">Unreal Engine 5 · Unity</div>
+          <div class="k">특이</div><div class="v">영화 전공 · 시나리오 작가 출신</div>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="n">1,637</div><div class="l">Perforce 서브밋</div></div>
+        <div class="stat"><div class="n">597</div><div class="l">Jira 이슈</div></div>
+        <div class="stat"><div class="n">100</div><div class="l">타 부서 발주</div></div>
+        <div class="stat"><div class="n">5+5</div><div class="l">필드 · 던전</div></div>
+      </div>
+    </div>
+    <div class="band">
+      <p class="rid">필드 03</p>
+      <h3>하이가든</h3>
+      <p class="meta">챕터 2.3 · 2023 · 서브밋 138건</p>
+      <p class="body">리치 남부의 정원 도시. 평면도·기획서를 1차 / 최종으로 나눠 개정하며 성·마을과 필드를 단계적으로 확정했습니다. 필드 콘텐츠로 세력 은신처와 위기의 성소를 배치했습니다.</p>
+      <p class="slotlab">01 — 평면도</p>
+      <figure class="lead-shot"><img src="img/03-plan.jpg" alt="하이가든 평면도" loading="lazy"></figure>
+      <p class="cap">성채를 중심으로 한 필드 구성과 진입 동선.</p>
+      <p class="slotlab">02 — 목업 전경</p>
+      <div class="g3">
+        <img src="img/03-mock-01.jpg" alt="하이가든 목업 1" loading="lazy">
+        <img src="img/03-mock-02.jpg" alt="하이가든 목업 2" loading="lazy">
+        <img src="img/03-mock-03.jpg" alt="하이가든 목업 3" loading="lazy">
+      </div>
+      <p class="slotlab">03 — 완성 화면</p>
+      <div class="g3">
+        <img src="img/03-final-01.jpg" alt="하이가든 완성 1" loading="lazy">
+        <img src="img/03-final-02.jpg" alt="하이가든 완성 2" loading="lazy">
+        <img src="img/03-final-03.jpg" alt="하이가든 완성 3" loading="lazy">
+      </div>
+      <p class="cap">성채와 정원, 연회장·축제장, 본성 영접실.</p>
+    </div>
+  </div></div>
+</div>
+
+<!-- ============ C ============ -->
+<div id="pC" role="tabpanel" aria-labelledby="tabC" hidden>
+  <div class="pane-note"><b>시안 C — 미니멀 스튜디오</b><span>흰 바탕, 장식 없음. 이미지 그리드를 거의 붙여 배치해 작업량 자체가 인상이 되게 했습니다.</span></div>
+  <div class="frame"><div class="frame-in tC">
+    <div class="pad">
+      <p class="eb">Level Designer / 2026</p>
+      <h1>손석완</h1>
+      <p class="role">넷마블네오 — 왕좌의 게임: 킹스로드</p>
+      <p class="lede">지형과 동선을 만드는 데서 멈추지 않고, 레벨에 필요한 기능을 직접 기획해 타 부서에 발주하고 완성까지 끌고 갑니다.</p>
+      <div class="stats">
+        <div class="stat"><div class="n">1,637</div><div class="l">서브밋</div></div>
+        <div class="stat"><div class="n">597</div><div class="l">Jira</div></div>
+        <div class="stat"><div class="n">100</div><div class="l">발주</div></div>
+        <div class="stat"><div class="n">5</div><div class="l">필드</div></div>
+        <div class="stat"><div class="n">5</div><div class="l">던전</div></div>
+      </div>
+    </div>
+    <div class="band">
+      <div class="rowhead">
+        <div class="rid">03</div>
+        <div>
+          <h3>하이가든</h3>
+          <p class="meta">필드 · 챕터 2.3 · 2023 · 서브밋 138건</p>
+          <p class="body">리치 남부의 정원 도시. 평면도·기획서를 1차 / 최종으로 나눠 개정하며 성·마을과 필드를 단계적으로 확정했습니다.</p>
+        </div>
+      </div>
+      <p class="slotlab">평면도</p>
+      <div class="shot-main" style="margin-top:10px"><img src="img/03-plan.jpg" alt="하이가든 평면도" loading="lazy"></div>
+      <p class="cap">성채를 중심으로 한 필드 구성과 진입 동선.</p>
+      <p class="slotlab">목업 전경</p>
+      <div class="g3">
+        <a href="#pC"><img src="img/03-mock-01.jpg" alt="하이가든 목업 1" loading="lazy"></a>
+        <a href="#pC"><img src="img/03-mock-02.jpg" alt="하이가든 목업 2" loading="lazy"></a>
+        <a href="#pC"><img src="img/03-mock-03.jpg" alt="하이가든 목업 3" loading="lazy"></a>
+      </div>
+      <p class="slotlab">완성 화면</p>
+      <div class="g3">
+        <a href="#pC"><img src="img/03-final-01.jpg" alt="하이가든 완성 1" loading="lazy"></a>
+        <a href="#pC"><img src="img/03-final-02.jpg" alt="하이가든 완성 2" loading="lazy"></a>
+        <a href="#pC"><img src="img/03-final-03.jpg" alt="하이가든 완성 3" loading="lazy"></a>
+      </div>
+      <p class="cap">성채와 정원, 연회장·축제장, 본성 영접실.</p>
+    </div>
+  </div></div>
+</div>
+
+<script>
+(function(){
+  var map = [['tabA','pA'],['tabB','pB'],['tabC','pC']];
+  function pick(id){
+    map.forEach(function(pair){
+      var t = document.getElementById(pair[0]);
+      var p = document.getElementById(pair[1]);
+      var on = pair[0] === id;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      p.hidden = !on;
+    });
+    try{ localStorage.setItem('sw-mock-tab', id); }catch(e){}
+    window.scrollTo({top:0, behavior:'auto'});
+  }
+  map.forEach(function(pair){
+    document.getElementById(pair[0]).addEventListener('click', function(){ pick(pair[0]); });
+  });
+  try{
+    var saved = localStorage.getItem('sw-mock-tab');
+    if(saved && document.getElementById(saved)) pick(saved);
+  }catch(e){}
+})();
+</script>
