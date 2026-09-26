@@ -122,6 +122,11 @@ def embeds(items):
 
 
 # ──────────────────────────────────────────────────────── 공통 뼈대
+def strip(html):
+    """메타 설명에 쓸 평문 — 태그와 엔티티를 걷어낸다."""
+    return re.sub(r"<[^>]+>", "", html).replace("&amp;", "&")
+
+
 def head(title, desc=""):
     return """<!doctype html>
 <html lang="ko">
@@ -326,6 +331,25 @@ def own_cover(w):
              'loading="lazy" decoding="async" onload="this.classList.add(\'on\')" '
              'onerror="this.remove()">' % (e(vid), e(w["title"])))
     return base.replace('</div>', thumb + '<span class="veil"></span></div>')
+
+
+def shown(works):
+    """draft 는 아직 내보내지 않는다 — 그 줄만 지우면 목차와 문서가 함께 생긴다."""
+    return [w for w in works if not w.get("draft")]
+
+
+def own_card(w):
+    """개인 작품 카드. 누르면 그 작품의 문서로 간다 — 프로젝트 카드와 같은 모양."""
+    return """<a class="pcard rv" href="%s">
+  %s
+  <div class="pbody">
+    <h3>%s</h3>
+    <div class="m">%s</div>
+    <p>%s</p>
+    <div class="more">자세히 보기 <span class="ar">→</span></div>
+  </div>
+</a>
+""" % (e(w["page"]), own_cover(w), e(w["title"]), w["meta"], w["desc"])
 
 
 def project_card(p):
@@ -703,7 +727,7 @@ def build_systems(prev, next_):
     return "".join(out)
 
 
-def build_aura():
+def build_aura(prev, next_):
     a = C.AURA
     out = [head("AI 목업 파이프라인 · 손석완",
                 "평면도 제작 툴과 Aura를 연결한 UE5 목업 파이프라인 — 목업 제작 시간 31% 절감."),
@@ -714,37 +738,44 @@ def build_aura():
     out.append('<main>\n<section class="tight"><div class="wrap">')
     out.append(blocks(a["blocks"]))
     out.append('</div></section>\n</main>\n')
-    out.append(pager(("personal.html", "개인 작품"), ("index.html", "홈")))
+    out.append(pager(prev, next_))
     out.append(foot())
     out.append(tail())
     return "".join(out)
 
 
+def build_own(w, prev, next_):
+    """개인 작품 한 편. 설명은 히어로에 두고, 본문은 자료와 영상."""
+    out = [head("%s · 손석완" % w["title"], strip(w["desc"])),
+           bar("개인 작품"),
+           crumb([("index.html", "홈"), ("personal.html", "개인 작품"), (None, w["title"])]),
+           phero("Personal Work · %s" % w["year"], w["title"], w["meta"], w["desc"],
+                 cover=w.get("cover"), num=w.get("mono"))]
+    out.append('<main>\n<section class="tight"><div class="wrap">')
+    if w.get("links"):
+        out.append(block(("h3", "자료")))
+        out.append(block(("links", w["links"])))
+    if w.get("videos"):
+        out.append(block(("h3", "영상")))
+        out.append(embeds(w["videos"]))
+    out.append('</div></section>\n</main>\n')
+    out.append(pager(prev, next_))
+    out.append(foot())
+    out.append(tail(with_lightbox=False))
+    return "".join(out)
+
+
 def build_personal():
+    """개인 작품 목차. 각 작품의 세부는 자기 문서로 넘긴다."""
     P = C.PERSONAL
-    out = [head("개인 작업 · 자료실 · 손석완", P["note"]),
+    out = [head("개인 작품 · 손석완", P["note"]),
            bar("개인 작품"),
            crumb([("index.html", "홈"), (None, "개인 작품")]),
            phero(P["eyebrow"], P["title"], P["tag"], P["note"])]
     out.append('<main>\n<section class="tight"><div class="wrap">')
-
     out.append('<p class="body-p rv">회사 업무가 아니라 개인적으로 파고들어 만든 작업입니다. '
-               '각 프로젝트에서 남긴 기획 문서와 플레이 영상은 해당 프로젝트 문서 안에 있습니다.</p>')
-    for w in P["own"]:
-        if w.get("draft"):          # 준비 중인 항목은 아직 싣지 않는다
-            continue
-        extra = block(("links", w["links"])) if w["links"] else ""
-        if w.get("videos"):
-            extra += embeds(w["videos"])
-        if w.get("href"):
-            extra += block(("links", [("문서", "R&D 리포트 읽기",
-                                       "제작 과정과 결과를 따로 정리했습니다", w["href"])]))
-        out.append('<article class="own rv" id="%s"><div class="own-mk">%s</div>'
-                   '<div class="own-b"><h4>%s</h4><div class="m">%s<span class="yr">%s</span></div>'
-                   '<p>%s</p></div></article>\n%s'
-                   % (e(w["slug"]), e(w.get("mono") or w["year"][2:]), e(w["title"]),
-                      w["meta"], e(w.get("year", "")), w["desc"], extra))
-
+               '각 작품의 기획 문서와 플레이 영상은 해당 문서 안에 있습니다.</p>')
+    out.append('<div class="pgrid">%s</div>' % "".join(own_card(w) for w in shown(P["own"])))
     out.append('</div></section>\n</main>\n')
     out.append(pager(("index.html", "홈"), ("kingsroad.html", "왕좌의 게임: 킹스로드")))
     out.append(foot())
@@ -787,8 +818,16 @@ def main():
         prev = seq[i - 1] if i else ("kingsroad.html", "왕좌의 게임: 킹스로드")
         made.append(write(seq[i][0], build_content(c, prev, seq[i + 1])))
     made.append(write(C.SYSTEMS["page"], build_systems(seq[-2], ("aura.html", "AI 목업 파이프라인"))))
-    made.append(write("aura.html", build_aura()))
     made.append(write("personal.html", build_personal()))
+
+    # 개인 작품: 목차 → 작품 문서들 → 홈 순서로 이어 붙인다
+    works = shown(C.PERSONAL["own"])
+    pseq = [(w["page"], w["title"]) for w in works]
+    for i, w in enumerate(works):
+        before = pseq[i - 1] if i else ("personal.html", "개인 작품")
+        after = pseq[i + 1] if i + 1 < len(pseq) else ("index.html", "홈")
+        page = build_aura(before, after) if w["slug"] == "aura" else build_own(w, before, after)
+        made.append(write(w["page"], page))
 
     prevs = [p for p in C.PROJECTS if not p.get("featured")]
     for i, p in enumerate(prevs):

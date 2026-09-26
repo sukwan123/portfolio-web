@@ -116,7 +116,7 @@ CONTENTS = [
     ),
     dict(
         num="06", slug="kraken", group="dungeon",
-        nav="크라켄 던전", title="크라켄 던전 (기억의 제단 → 심연의 제단)",
+        nav="크라켄 던전", title="크라켄 던전 (심연의 제단)",
         meta="던전 · 2023–2026", stat="서브밋 26건", badge=("live", "출시"),
         cover="kraken",
         summary="해저 동굴 던전. 페이즈 전환 동선과 낙사 지점을 설계했습니다.",
@@ -127,7 +127,7 @@ CONTENTS = [
               "2": "목업 전경 — 해안 요새·난파선·등대를 블록아웃으로 배치해 페이즈 간 동선을 검증.",
               "3": "완성 화면 — 해안 요새와 난파선, 페이즈별 전투 공간."},
         yt=[("pWnUNvTq0wU", "플레이 영상 — 심연의 제단 · 강철군도 해안의 크라켄"),
-            ("XHa8DoGmubU", "플레이 영상 — 크라켄 던전")],
+            ("XHa8DoGmubU", "플레이 영상 — 심연의 제단 · 크라켄")],
     ),
     dict(
         num="07", slug="beyond-wall", group="dungeon",
@@ -691,21 +691,20 @@ PERSONAL = dict(
     title="개인 작품",
     tag="레벨디자인<span class=\"dot\">·</span>목업<span class=\"dot\">·</span>AI<span class=\"dot\">·</span>인디게임",
     note="회사 일로 만든 것 말고, 직접 파고들어 만든 작업들입니다.",
-    # 최신순. href 가 있으면 별도 문서로, 없으면 이 페이지 안의 항목으로 간다.
+    # 최신순. 각 항목은 page 로 자기 문서를 하나씩 가진다.
     own=[
         # 프로토타입이 나오면 draft 줄만 지우면 노출된다. 그때 desc·링크도 채울 것.
-        dict(slug="maedonyeo", title="매도녀 (가제)", year="2026",
+        dict(slug="maedonyeo", page="pw-maedonyeo.html", title="매도녀 (가제)", year="2026",
              meta="인디게임 · 개발 중", mono="MD",
              desc="코인 그래프와 미연시를 결합한 게임. 프로토타입 개발 중입니다.",
              videos=[], links=[], draft=True),
-        dict(slug="aura", title="아우라 활용 — AI 목업 파이프라인", year="2026",
+        dict(slug="aura", page="aura.html", title="아우라 활용 — AI 목업 파이프라인", year="2026",
              meta="AI R&amp;D · 언리얼 플러그인 · 목업 자동화", cover="aura", mono="AI",
-             href="aura.html",
              desc="평면도 제작 툴을 직접 만들어 언리얼 LLM 플러그인 Aura와 연결하고, "
                   "Meshy AI로 뽑은 메시를 밑그림으로 쓰는 제작법까지 정리한 개인 R&amp;D입니다. "
                   "목업 제작 시간을 31% 줄였고, 밑그림 방식으로는 효율을 50% 이상 올렸습니다.",
              videos=[], links=[]),
-        dict(slug="cashout", title="캐시아웃", year="2026",
+        dict(slug="cashout", page="pw-cashout.html", title="캐시아웃", year="2026",
              meta="인디게임 · 1인 개발 · Claude로 구현", mono="CO",
              desc="크래시(그래프) 게임을 소재로 한 인디게임. 기획부터 개발까지 혼자 진행했고, "
                   "구현은 Claude로 했습니다. 브라우저에서 바로 플레이할 수 있습니다.",
@@ -716,7 +715,8 @@ PERSONAL = dict(
                     ("문서", "그래프 게임 분석 및 신개념 가챠 시스템 제안",
                      "이 게임을 만들기 전에 정리한 장르 분석과 시스템 제안",
                      DRIVE % "1qjmRVFl6qgLccBidHyu6ZoQ5mjABMAAc")]),
-        dict(slug="sc-redesign", title="스타크래프트 캠페인 3D 리디자인", year="2025",
+        dict(slug="sc-redesign", page="pw-starcraft.html",
+             title="스타크래프트 캠페인 3D 리디자인", year="2025",
              meta="레벨디자인 · 목업", mono="SC",
              desc="원작 캠페인 미션을 3D 공간으로 다시 설계한 개인 프로젝트. 평면 RTS 미션을 "
                   "3인칭 시점의 공간으로 옮기면 무엇이 달라지는지를 목업으로 검증하고, "
@@ -724,7 +724,8 @@ PERSONAL = dict(
              videos=[("목업 브리핑 영상", "https://youtu.be/-u-Y927xszk",
                       "리디자인 의도와 공간 구성을 직접 설명한 영상")],
              links=[]),
-        dict(slug="rpg-dungeon", title="범용성 있는 RPG 던전 목업 제작 과정", year="2024",
+        dict(slug="rpg-dungeon", page="pw-rpg-dungeon.html",
+             title="범용성 있는 RPG 던전 목업 제작 과정", year="2024",
              meta="레벨디자인 · 목업", mono="RPG",
              desc="특정 프로젝트에 묶이지 않는 범용 RPG 던전을 기준으로, 목업을 어떤 순서로 세우고 "
                   "무엇을 먼저 확정하는지 제작 과정 자체를 정리한 작업입니다.",
