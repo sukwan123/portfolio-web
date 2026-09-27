@@ -557,14 +557,8 @@ def build_index():
 </section>
 """ % (project_card(kingsroad), "".join(project_card(p) for p in others)))
 
-    # 개인 작업
-    own_cards = "".join(
-        '<a class="pcard rv" href="%s">%s<div class="pbody"><h3>%s</h3>'
-        '<div class="m">%s</div><p>%s</p>'
-        '<div class="more">자세히 보기 <span class="ar">→</span></div></div></a>'
-        % (e(w.get("href") or ("personal.html#" + w["slug"])), own_cover(w),
-           e(w["title"]), w["meta"], w["desc"])
-        for w in C.PERSONAL["own"] if not w.get("draft"))
+    # 개인 작업 — 카드를 누르면 personal.html 이 아니라 그 작품 문서로 바로 이동해야 한다
+    own_cards = "".join(own_card(w) for w in C.PERSONAL["own"] if not w.get("draft"))
     out.append("""<section id="personal">
   <div class="wrap">
     <div class="sec-head rv">
