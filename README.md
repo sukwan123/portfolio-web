@@ -5,7 +5,8 @@ Caddy 정적 서버로 Railway 에 배포한다.
 - `index.html` 외 루트의 `*.html` 19장 — `src/build.py` 가 생성한다. 직접 고치지 않는다
 - `assets/` 스타일시트와 스크립트 (직접 고치는 파일)
 - `img/` 완성 화면 이미지 + `img/cov/` 카드·히어로 커버 + `img/redacted/` 대외비 블러 몽타주
-- `vid/` 아우라 목업 플레이 영상 2편
+  - `img/maedo_*` 매도녀. **노출 부위는 파일 자체를 흐려서 넣는다** — CSS 로 가리면 원본이 그대로 내려받아진다
+- `vid/` 아우라 목업 플레이 영상 2편 + 매도녀 루프 3편(알파 webm)
 - `src/` 내용 원본과 빌드 스크립트 — 배포 이미지에는 들어가지 않는다
 - `Dockerfile` / `Caddyfile` 배포 설정
 - `robots.txt` + `X-Robots-Tag` 헤더로 검색엔진 전체 차단

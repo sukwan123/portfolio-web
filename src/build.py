@@ -281,6 +281,24 @@ def block(b):
             out.append('<figure class="fig"><video src="%s" controls muted loop playsinline '
                        'preload="metadata"></video><figcaption>%s</figcaption></figure>' % (e(src), e(cap)))
         return '<div class="figrow rv">%s</div>\n' % "".join(out)
+    if kind == "shots":
+        # 화면 캡처 격자. 세로로 긴 휴대폰 화면이라 한 줄에 여럿 깔고
+        # **눌러서 크게 보게** 한다 — figrow 에 그대로 넣으면 한 장이 화면을 덮는다.
+        cols = b[2] if len(b) > 2 else 3
+        cells = []
+        for src, cap in b[1]:
+            cells.append('<button class="shot" data-src="%s" data-cap="%s" aria-label="%s 확대">'
+                         '<img src="%s" alt="%s" loading="lazy" decoding="async"></button>'
+                         % (e(src), e(cap), e(cap), e(src), e(cap)))
+        return '<div class="grid g%d rv">%s</div>\n' % (cols, "".join(cells))
+    if kind == "loops":
+        # 알파가 있는 루프(webm)는 밝은 판에서 가장자리가 튄다. 어두운 칸에 얹는다.
+        out = []
+        for src, cap in b[1]:
+            out.append('<figure class="fig dk"><video src="%s" autoplay muted loop playsinline '
+                       'preload="metadata"></video><figcaption>%s</figcaption></figure>'
+                       % (e(src), e(cap)))
+        return '<div class="figrow rv">%s</div>\n' % "".join(out)
     if kind == "embeds":
         return embeds(C.VIDEOS[b[1]])
     if kind == "links":
@@ -751,13 +769,21 @@ def build_aura(prev, next_):
 
 
 def build_own(w, prev, next_):
-    """개인 작품 한 편. 설명은 히어로에 두고, 본문은 자료와 영상."""
+    """개인 작품 한 편. 설명은 히어로에 두고, 본문은 자료와 영상.
+
+    blocks 를 주면 아우라 페이지처럼 본문을 통째로 쓴다 — 자료 링크만
+    있는 짧은 문서와 한 파일에서 같이 나온다.
+    """
     out = [head("%s · 손석완" % w["title"], strip(w["desc"])),
            bar("개인 작품"),
            crumb([("index.html", "홈"), ("personal.html", "개인 작품"), (None, w["title"])]),
            phero("Personal Work · %s" % w["year"], w["title"], w["meta"], w["desc"],
                  cover=w.get("cover"), num=w.get("mono"))]
     out.append('<main>\n<section class="tight"><div class="wrap">')
+    if w.get("goal"):
+        out.append('<div class="goal rv"><p>%s</p></div>' % w["goal"])
+    if w.get("blocks"):
+        out.append(blocks(w["blocks"]))
     if w.get("deck"):
         out.append(block(("h3", "기획서")))
         out.append(block(("deck",) + w["deck"]))
@@ -770,7 +796,7 @@ def build_own(w, prev, next_):
     out.append('</div></section>\n</main>\n')
     out.append(pager(prev, next_))
     out.append(foot())
-    out.append(tail(with_lightbox=bool(w.get("deck"))))
+    out.append(tail(with_lightbox=bool(w.get("deck") or w.get("blocks"))))
     return "".join(out)
 
 

@@ -699,3 +699,7 @@ figure{margin:0}
 .pcover .badge,.pcover .shotc,.pcover .go{z-index:3}
 .pcover .veil{z-index:2}
 .pcover.blank .ythumb{z-index:1}
+
+/* 알파 루프 영상 — 어두운 판에 얹는다 (매도녀) */
+.fig.dk,.fig.dk video{background:#12151B}
+.fig.dk video{max-height:620px;object-fit:contain}
