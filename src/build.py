@@ -286,9 +286,9 @@ def block(b):
         # **지연 로딩을 걸지 않는다** — 첫 화면에서 빈 칸으로 보이면 안 된다.
         src, url, title, note = b[1], b[2], b[3], b[4]
         return ('<a class="play rv" href="%s" target="_blank" rel="noopener noreferrer">'
-                '<img src="%s" alt="%s" decoding="async">'
+                '<span class="play-img"><img src="%s" alt="%s" decoding="async"></span>'
                 '<span class="play-t"><b>%s</b><em>%s</em></span>'
-                '<span class="play-ar">▶</span></a>\n') % (
+                '<span class="play-go">▶ 플레이 <span class="ar">→</span></span></a>\n') % (
             e(url), e(src), e(title), e(title), e(note))
     if kind == "shots":
         # 화면 캡처 격자. 세로로 긴 휴대폰 화면이라 한 줄에 여럿 깔고

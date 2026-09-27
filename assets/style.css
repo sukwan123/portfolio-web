@@ -7,7 +7,7 @@
   --bg:#E9EBEF; --surface:#F7F8FA; --surface-2:#FFFFFF; --surface-3:#EFF1F4;
   --ink:#14171C; --ink2:#4A5159; --ink3:#7C848F;
   --line:#CFD5DC; --line-soft:#DFE3E9; --line-hard:#B8C0C9;
-  --accent:#8A6636; --accent-ink:#6E4F27; --accent-2:#35566F; --accent-soft:#F0E7D9;
+  --accent:#8A6636; --accent-ink:#6E4F27; --accent-2:#35566F; --accent-soft:#F0E7D9; --accent-on:#FFFFFF;
   --blank-a:#DCE2EA; --blank-b:#BFC8D3;
   --shadow:0 1px 2px rgba(18,22,28,.05), 0 12px 28px -18px rgba(18,22,28,.32);
   --shadow-lift:0 2px 6px rgba(18,22,28,.07), 0 26px 48px -26px rgba(18,22,28,.42);
@@ -21,7 +21,7 @@
     --bg:#0F1218; --surface:#171C23; --surface-2:#1D232B; --surface-3:#141920;
     --ink:#E6EAEF; --ink2:#A2ABB7; --ink3:#6D7682;
     --line:#282F39; --line-soft:#1F252E; --line-hard:#39424E;
-    --accent:#C79A5B; --accent-ink:#DDB47A; --accent-2:#85ACC9; --accent-soft:#251E12;
+    --accent:#C79A5B; --accent-ink:#DDB47A; --accent-2:#85ACC9; --accent-soft:#251E12; --accent-on:#191308;
     --blank-a:#1B222B; --blank-b:#10161D;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 14px 30px -18px rgba(0,0,0,.8);
     --shadow-lift:0 2px 8px rgba(0,0,0,.5), 0 28px 54px -26px rgba(0,0,0,.9);
@@ -32,7 +32,7 @@
   --bg:#0F1218; --surface:#171C23; --surface-2:#1D232B; --surface-3:#141920;
   --ink:#E6EAEF; --ink2:#A2ABB7; --ink3:#6D7682;
   --line:#282F39; --line-soft:#1F252E; --line-hard:#39424E;
-  --accent:#C79A5B; --accent-ink:#DDB47A; --accent-2:#85ACC9; --accent-soft:#251E12;
+  --accent:#C79A5B; --accent-ink:#DDB47A; --accent-2:#85ACC9; --accent-soft:#251E12; --accent-on:#191308;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 14px 30px -18px rgba(0,0,0,.8);
   --shadow-lift:0 2px 8px rgba(0,0,0,.5), 0 28px 54px -26px rgba(0,0,0,.9);
 }
@@ -704,22 +704,32 @@ figure{margin:0}
 .fig.dk,.fig.dk video{background:#12151B}
 .fig.dk video{max-height:620px;object-fit:contain}
 
-/* 플레이 단추 — 개인 작품 맨 위 (매도녀) */
+/* 플레이 단추 — 개인 작품 맨 위 (매도녀)
+   본문 카드와 섞여 보이면 안 된다. 채워진 알약 단추로 눌러서 들어가는 것임을
+   알린다. 좁은 화면에서는 단추를 가로로 꽉 채운다. */
 .play{display:flex;align-items:center;gap:18px;text-decoration:none;margin-top:6px;
-  padding:14px 18px 14px 14px;background:var(--surface);border:1px solid var(--line);
+  padding:14px 18px 14px 14px;background:var(--surface);border:1px solid var(--line-hard);
   border-radius:var(--r);box-shadow:var(--shadow);
   transition:border-color .2s,transform .2s,box-shadow .2s}
 .play:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow-lift)}
 .play:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.play-img{position:relative;flex-shrink:0;display:block;line-height:0}
 .play img{width:192px;height:108px;object-fit:cover;border-radius:var(--r-s);
-  border:1px solid var(--line-soft);flex-shrink:0;background:#0C0F14}
+  border:1px solid var(--line-soft);background:#0C0F14;display:block}
 .play-t{min-width:0;flex:1}
 .play-t b{display:block;font-size:17px;font-weight:700;color:var(--ink);letter-spacing:-.02em}
 .play-t em{display:block;font-style:normal;font-family:var(--mono);font-size:12.5px;
   color:var(--ink2);margin-top:5px}
-.play-ar{flex-shrink:0;font-size:15px;color:var(--accent-ink)}
+.play-go{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 22px;border-radius:999px;background:var(--accent);color:var(--accent-on);
+  font-size:14.5px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;
+  box-shadow:0 2px 8px rgba(18,22,28,.18);transition:background .2s,transform .16s}
+.play-go .ar{font-family:var(--mono);font-size:12px;transition:transform .16s}
+.play:hover .play-go{background:var(--accent-ink)}
+.play:hover .play-go .ar{transform:translateX(3px)}
 @media(max-width:520px){
   .play{flex-direction:column;align-items:stretch;gap:12px;padding:12px}
+  .play-img{width:100%}
   .play img{width:100%;height:auto;aspect-ratio:16/9}
-  .play-ar{display:none}
+  .play-go{padding:14px 22px;font-size:15px}
 }
