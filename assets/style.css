@@ -239,6 +239,12 @@ ul.bul{display:flex;flex-direction:column;gap:11px;margin:24px 0 0;max-width:var
 .feat h3{position:relative;font-size:17px;margin-top:10px;letter-spacing:-.025em}
 .feat p{position:relative;font-size:14.5px;color:var(--ink2);margin-top:9px}
 
+/* 기획 의도 / 목표 콜아웃 */
+.goal{max-width:var(--read);margin-top:6px;padding:22px 26px;background:var(--accent-soft);
+  border-left:3px solid var(--accent);border-radius:0 var(--r) var(--r) 0;box-shadow:var(--shadow)}
+.goal p{font-size:19px;line-height:1.65;font-weight:500;color:var(--ink)}
+.goal p b{color:var(--accent-ink);font-weight:700}
+
 /* ─────────────────────────────────────────── 프로젝트 카드 */
 .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(288px,1fr));gap:16px;margin-top:26px}
 .pcard{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);

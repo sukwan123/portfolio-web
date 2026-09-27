@@ -570,7 +570,7 @@ def build_index():
     <div class="sec-head rv">
       <p class="eyebrow">Personal Works</p>
       <h2>개인 작품</h2>
-      <p class="note">시킨 사람이 없어도 만듭니다. 회사 업무 밖에서 직접 기획하고 만든 작업들입니다.</p>
+      <p class="note">실무 능력을 참고하실 수 있게 정리한 개인 포트폴리오입니다.</p>
     </div>
     <div class="pgrid">%s</div>
   </div>
@@ -747,6 +747,7 @@ def build_aura(prev, next_):
                   (None, "아우라 활용 — AI 목업 파이프라인")]),
            phero(a["eyebrow"], a["title"], a["tag"], a["note"], cover=a.get("cover"))]
     out.append('<main>\n<section class="tight"><div class="wrap">')
+    out.append('<div class="goal rv"><p>%s</p></div>' % a["goal"])
     out.append(blocks(a["blocks"]))
     out.append('</div></section>\n</main>\n')
     out.append(pager(prev, next_))
@@ -787,8 +788,8 @@ def build_personal():
            crumb([("index.html", "홈"), (None, "개인 작품")]),
            phero(P["eyebrow"], P["title"], P["tag"], P["note"])]
     out.append('<main>\n<section class="tight"><div class="wrap">')
-    out.append('<p class="body-p rv">회사 업무가 아니라 개인적으로 파고들어 만든 작업입니다. '
-               '각 작품의 기획 문서와 플레이 영상은 해당 문서 안에 있습니다.</p>')
+    out.append('<p class="body-p rv">개인적으로 틈틈히 준비한 포트폴리오입니다. '
+               '각 작품의 상세내용은 하위 페이지를 참고바랍니다.</p>')
     out.append('<div class="pgrid">%s</div>' % "".join(own_card(w) for w in shown(P["own"])))
     out.append('</div></section>\n</main>\n')
     out.append(pager(("index.html", "홈"), ("kingsroad.html", "왕좌의 게임: 킹스로드")))
