@@ -478,6 +478,26 @@ figure{margin:0}
   border-left:2px solid var(--accent);padding:11px 15px;background:var(--surface);
   border-radius:0 var(--r-s) var(--r-s) 0}
 
+/* 접는 절(節) — 소제목이 곧 결론이라 그것만 세우고 근거는 눌러서 편다 */
+.fold{border:1px solid var(--line);border-radius:var(--r-s);background:var(--surface);
+  margin-top:10px;box-shadow:var(--shadow);overflow:hidden}
+.fold+.fold{margin-top:8px}
+.fold summary{display:flex;align-items:center;gap:13px;padding:15px 16px;cursor:pointer;
+  list-style:none;transition:background .16s}
+.fold summary::-webkit-details-marker{display:none}
+.fold summary:hover{background:var(--surface-3)}
+.fold summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.fold-n{flex-shrink:0;font-family:var(--mono);font-size:11px;font-weight:600;
+  letter-spacing:.08em;color:var(--accent);padding-top:2px}
+.fold-t{flex:1;min-width:0;font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-.025em}
+.fold-ar{flex-shrink:0;width:9px;height:9px;border-right:1.5px solid var(--ink3);
+  border-bottom:1.5px solid var(--ink3);transform:rotate(45deg) translate(-2px,-2px);
+  transition:transform .2s,border-color .2s}
+.fold summary:hover .fold-ar{border-color:var(--accent)}
+.fold[open] .fold-ar{transform:rotate(-135deg) translate(-3px,-3px)}
+.fold-b{padding:2px 16px 20px;border-top:1px solid var(--line-soft)}
+.fold-b>*:first-child{margin-top:16px}
+
 /* 본문 소제목 */
 .h3{font-size:18px;margin-top:38px;letter-spacing:-.025em;display:flex;align-items:center;gap:11px}
 .h3::before{content:"";width:6px;height:6px;border:1.5px solid var(--accent);transform:rotate(45deg);

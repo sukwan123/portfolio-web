@@ -1101,7 +1101,7 @@ PERSONAL = dict(
              videos=[],
              links=[("전작", "캐시아웃 — 크래시(그래프) 게임",
                      "이 게임이 시작된 자리입니다", "pw-cashout.html")],
-             blocks=MAEDO_BLOCKS),
+             fold=True, blocks=MAEDO_BLOCKS),
         dict(slug="aura", page="aura.html", title="아우라 활용 — AI 목업 파이프라인", year="2026",
              meta="AI R&amp;D · 언리얼 플러그인 · 목업 자동화", cover="aura", mono="AI",
              desc="평면도 제작 툴을 직접 만들어 언리얼 LLM 플러그인 Aura와 연결하고, "

@@ -343,6 +343,31 @@ def blocks(bs):
     return "".join(block(b) for b in bs)
 
 
+def folded(bs):
+    """긴 문서를 소제목 목차로 접는다.
+
+    매도녀처럼 절(節)이 스무 개 넘는 문서는 통째로 펼쳐 두면 휴대폰에서 스무
+    화면이 넘는다. 소제목이 이미 결론 문장이므로 그것만 세우고 근거는 눌러서
+    펴게 한다. 첫 소제목 앞의 블록(도입·지표)은 항상 보인다.
+    """
+    head_blocks, sections = [], []
+    for b in bs:
+        if b[0] == "h3":
+            sections.append([b[1], []])
+        elif sections:
+            sections[-1][1].append(b)
+        else:
+            head_blocks.append(b)
+    out = [blocks(head_blocks)]
+    for i, (title, body) in enumerate(sections, 1):
+        out.append('<details class="fold rv"%s><summary>'
+                   '<span class="fold-n">%02d</span><span class="fold-t">%s</span>'
+                   '<span class="fold-ar" aria-hidden="true"></span></summary>'
+                   '<div class="fold-b">%s</div></details>\n'
+                   % (" open" if i == 1 else "", i, e(title), blocks(body)))
+    return "".join(out)
+
+
 # ──────────────────────────────────────────────────────── 카드
 def cover_html(cover, mono, alt, badge=None, extra=""):
     b = ('<span class="badge %s">%s</span>' % (e(badge[0]), e(badge[1]))) if badge else ""
@@ -795,7 +820,7 @@ def build_own(w, prev, next_):
     if w.get("goal"):
         out.append('<div class="goal rv"><p>%s</p></div>' % w["goal"])
     if w.get("blocks"):
-        out.append(blocks(w["blocks"]))
+        out.append((folded if w.get("fold") else blocks)(w["blocks"]))
     if w.get("deck"):
         out.append(block(("h3", "기획서")))
         out.append(block(("deck",) + w["deck"]))

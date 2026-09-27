@@ -190,3 +190,17 @@
   s.src = 'https://www.youtube.com/iframe_api';
   document.head.appendChild(s);
 })();
+
+/* ── 접힌 절 안의 블록은 화면에 걸린 적이 없어 .rv 가 풀리지 않는다.
+   펼치는 순간 한꺼번에 드러낸다. */
+(function () {
+  var folds = document.querySelectorAll('details.fold');
+  if (!folds.length) return;
+  function reveal(d) {
+    d.querySelectorAll('.rv').forEach(function (el) { el.classList.add('in'); });
+  }
+  folds.forEach(function (d) {
+    if (d.open) reveal(d);
+    d.addEventListener('toggle', function () { if (d.open) reveal(d); });
+  });
+})();
