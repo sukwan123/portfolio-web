@@ -439,8 +439,9 @@ ol.steps{display:flex;flex-direction:column;gap:14px;margin:26px 0 0;padding:0}
 .grid.g1{grid-template-columns:1fr}
 .grid.g2{grid-template-columns:repeat(2,1fr)}
 .grid.g3{grid-template-columns:repeat(3,1fr)}
-@media(max-width:700px){.grid.g3{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:440px){.grid.g2,.grid.g3{grid-template-columns:1fr}}
+/* 좁은 화면에서 1열로 무너뜨리면 스샷 10여 장이 전부 전체 폭으로 쌓여
+   스크롤이 감당이 안 된다. 2열을 유지하고, 크게 볼 일은 라이트박스로 넘긴다. */
+@media(max-width:700px){.grid.g3{grid-template-columns:repeat(2,1fr);gap:7px}}
 .shot{padding:0;border:1px solid var(--line);background:var(--surface);cursor:zoom-in;
   border-radius:var(--r-s);overflow:hidden;display:block;width:100%;position:relative;
   transition:border-color .18s,transform .18s,box-shadow .18s}
@@ -471,7 +472,7 @@ figure{margin:0}
 .fig figcaption{font-size:13px;color:var(--ink2);padding:11px 15px;border-top:1px solid var(--line)}
 .figrow{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:22px}
 .figrow .fig{margin-top:0}
-@media(max-width:620px){.figrow{grid-template-columns:1fr}}
+@media(max-width:620px){.figrow{gap:9px}}
 
 .undisclosed{margin-top:20px;font-family:var(--mono);font-size:12.5px;color:var(--ink3);
   border-left:2px solid var(--accent);padding:11px 15px;background:var(--surface);
