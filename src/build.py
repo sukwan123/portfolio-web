@@ -820,7 +820,7 @@ def build_own(w, prev, next_):
     if w.get("goal"):
         out.append('<div class="goal rv"><p>%s</p></div>' % w["goal"])
     if w.get("blocks"):
-        out.append((folded if w.get("fold") else blocks)(w["blocks"]))
+        out.append(blocks(w["blocks"]))
     if w.get("deck"):
         out.append(block(("h3", "기획서")))
         out.append(block(("deck",) + w["deck"]))
@@ -830,6 +830,12 @@ def build_own(w, prev, next_):
     if w.get("videos"):
         out.append(block(("h3", "영상")))
         out.append(embeds(w["videos"]))
+    if w.get("deep"):
+        # 본문에서 다 말하지 않은 판단과 실패 — 읽고 싶은 사람만 편다
+        out.append(block(("h3", "개발 기록")))
+        out.append('<p class="body-p rv">본문에서 줄인 판단과 실패를 절별로 접어 뒀습니다. '
+                   '제목을 누르면 펴집니다.</p>')
+        out.append(folded(w["deep"]))
     out.append('</div></section>\n</main>\n')
     out.append(pager(prev, next_))
     out.append(foot())
