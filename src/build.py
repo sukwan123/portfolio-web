@@ -281,6 +281,15 @@ def block(b):
             out.append('<figure class="fig"><video src="%s" controls muted loop playsinline '
                        'preload="metadata"></video><figcaption>%s</figcaption></figure>' % (e(src), e(cap)))
         return '<div class="figrow rv">%s</div>\n' % "".join(out)
+    if kind == "play":
+        # 맨 위에 거는 큰 플레이 단추. 썸네일이 곧 그 게임의 얼굴이라
+        # **지연 로딩을 걸지 않는다** — 첫 화면에서 빈 칸으로 보이면 안 된다.
+        src, url, title, note = b[1], b[2], b[3], b[4]
+        return ('<a class="play rv" href="%s" target="_blank" rel="noopener noreferrer">'
+                '<img src="%s" alt="%s" decoding="async">'
+                '<span class="play-t"><b>%s</b><em>%s</em></span>'
+                '<span class="play-ar">▶</span></a>\n') % (
+            e(url), e(src), e(title), e(title), e(note))
     if kind == "shots":
         # 화면 캡처 격자. 세로로 긴 휴대폰 화면이라 한 줄에 여럿 깔고
         # **눌러서 크게 보게** 한다 — figrow 에 그대로 넣으면 한 장이 화면을 덮는다.
@@ -780,6 +789,9 @@ def build_own(w, prev, next_):
            phero("Personal Work · %s" % w["year"], w["title"], w["meta"], w["desc"],
                  cover=w.get("cover"), num=w.get("mono"))]
     out.append('<main>\n<section class="tight"><div class="wrap">')
+    if w.get("play"):
+        # 플레이 단추는 goal 보다 위다 — 읽기 전에 눌러 볼 수 있어야 한다
+        out.append(block(("play",) + tuple(w["play"])))
     if w.get("goal"):
         out.append('<div class="goal rv"><p>%s</p></div>' % w["goal"])
     if w.get("blocks"):
