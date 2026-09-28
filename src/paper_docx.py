@@ -196,7 +196,7 @@ def main():
 
     # 학력 · 기타
     h2(doc, "학력 · 기타")
-    kv_table(doc, list(C.HOME["edu"]) + [("업계 외", " · ".join(C.HOME["offindustry"]))])
+    kv_table(doc, list(C.HOME["edu"]) + [("업계 외", P.OFFINDUSTRY)])
 
     zoom = doc.settings.element.find(qn("w:zoom"))
     if zoom is not None and zoom.get(qn("w:percent")) is None:

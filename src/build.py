@@ -664,7 +664,7 @@ def build_kingsroad():
     dungeons = [c for c in C.CONTENTS if c["group"] == "dungeon"]
 
     out = [head("왕좌의 게임: 킹스로드 · 손석완 레벨디자인",
-                "넷마블네오 왕좌의 게임: 킹스로드에서 담당한 필드 5곳과 던전 5종."),
+                "넷마블네오 왕좌의 게임: 킹스로드에서 담당한 필드 5곳과 던전 7종."),
            bar("프로젝트"),
            crumb([("index.html", "홈"), (None, "왕좌의 게임: 킹스로드")]),
            phero("Current · 넷마블네오", "왕좌의 게임: 킹스로드",
@@ -684,8 +684,8 @@ def build_kingsroad():
   <div class="wrap">
     <div class="sec-head rv">
       <p class="eyebrow">Work · 담당 콘텐츠</p>
-      <h2>필드 5곳 · 던전 5종</h2>
-      <p class="note">각 문서는 <b>평면도 → 목업 → 완성 화면</b> 순으로 실제 작업 과정을 그대로 실었습니다. 카드를 누르면 지역별 상세 문서로 들어갑니다.</p>
+      <h2>필드 5곳 · 던전 7종</h2>
+      <p class="note">각 문서는 <b>평면도 → 목업 → 완성 화면</b> 순으로 실제 작업 과정을 그대로 실었습니다. 카드를 누르면 지역별 상세 문서로 들어갑니다. 던전 7종 가운데 필드 지역 안에 있는 대형 던전 2종은 해당 지역 문서에 함께 담았습니다.</p>
     </div>
     <h3 class="h3 rv">필드 지역</h3>
     <div class="cgrid">%s</div>
