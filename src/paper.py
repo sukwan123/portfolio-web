@@ -64,73 +64,116 @@ def photo():
     return PHOTO
 
 CSS = """
-@page { size: A4; margin: 16mm 15mm 14mm; }
+@page { size: A4; margin: 13mm 13mm 12mm; }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'NanumGothic',sans-serif;font-size:10pt;line-height:1.62;color:#14171C;
-  word-break:keep-all}
+body{font-family:'NanumGothic',sans-serif;font-size:9.5pt;line-height:1.6;color:#14171C;
+  word-break:keep-all;background:#fff}
 a{color:inherit}
+b{font-weight:700}
 .ln{color:#6E4F27;text-decoration:none;border-bottom:.5pt solid #C9B48E;white-space:nowrap}
 .ln::after{content:" \\2197";font-size:7.5pt}
 .pend{color:#8E959E;border-bottom-style:dotted}
+.mono{font-family:'DejaVu Sans Mono','NanumGothic',monospace}
 
-header{border-bottom:1.6pt solid #14171C;padding-bottom:9pt;margin-bottom:14pt}
-header.with-photo{display:flex;justify-content:space-between;align-items:flex-start;gap:12pt}
-.photo{width:28mm;height:37mm;object-fit:cover;border:.5pt solid #C7CCD3;flex-shrink:0}
-h1{font-size:21pt;letter-spacing:-.02em;display:inline-block}
-h1 small{font-size:10pt;font-weight:400;color:#6B727B;margin-left:8pt;letter-spacing:.02em}
-.role{margin-top:3pt;font-size:10.5pt;color:#3C434B;font-weight:700}
-.meta{margin-top:7pt;font-size:9pt;color:#4A5159}
-.meta b{font-weight:700;color:#14171C}
+/* 첫 화면 — 웹의 검은 히어로 */
+.hero{background:#14171C;color:#E6EAEF;border-radius:9pt;padding:15pt 18pt 14pt;
+  margin-bottom:14pt;break-inside:avoid}
+.hero .eyebrow{color:#D7B27C;border:0;margin:0 0 9pt}
+.hero .eyebrow::after{background:linear-gradient(90deg,rgba(215,178,124,.5),transparent)}
+.hrow{display:flex;justify-content:space-between;align-items:flex-start;gap:14pt}
+.hrow>div{flex:1;min-width:0}
+h1{font-size:23pt;letter-spacing:-.02em;line-height:1.15;color:#fff}
+h1 small{font-size:9.5pt;font-weight:400;color:#A2ABB7;margin-left:8pt;letter-spacing:.04em}
+.role{margin-top:2pt;font-size:10pt;color:#D7B27C;font-weight:700}
+.hero .lede{margin-top:10pt;font-size:12pt;font-weight:700;line-height:1.5;color:#fff}
+.hero .sub{margin-top:6pt;font-size:9.5pt;line-height:1.65;color:#C3CAD3}
+.hero .sub b{color:#fff}
+.photo{width:27mm;height:36mm;object-fit:cover;border-radius:4pt;border:.8pt solid #3A414B;flex-shrink:0}
+.tiles{display:flex;gap:6pt;margin-top:12pt}
+.tile{flex:1;padding:7pt 9pt 6pt;background:#1D232B;border:.6pt solid #2C333D;border-radius:5pt}
+.tile b{display:block;font-size:14.5pt;letter-spacing:-.02em;color:#fff;line-height:1.2}
+.tile span{font-size:7.5pt;color:#A2ABB7;letter-spacing:.02em}
+.hcontact{margin-top:10pt;padding-top:8pt;border-top:.6pt solid #2C333D;font-size:8.5pt;color:#A2ABB7;
+  display:flex;justify-content:space-between;gap:8pt;flex-wrap:wrap}
+.hcontact b{color:#E6EAEF}
+.hero .ln{color:#D7B27C;border-bottom-color:#7A6338}
 
-h2{font-size:10.5pt;letter-spacing:.02em;margin:15pt 0 7pt;padding-bottom:3pt;
-  border-bottom:.8pt solid #C7CCD3;color:#14171C}
-h2:first-of-type{margin-top:0}
-h3{font-size:10.5pt;margin:13pt 0 4pt;color:#14171C}
-p{margin-bottom:6pt}
-.lede{font-size:11pt;font-weight:700;line-height:1.55;margin-bottom:7pt}
+/* 구획 제목 — 웹의 ◇ 아이브로우 */
+.eyebrow{display:flex;align-items:center;gap:7pt;font-size:8pt;font-weight:700;
+  letter-spacing:.16em;color:#8A6636;margin:16pt 0 8pt;break-after:avoid}
+.eyebrow::before{content:"\\25C7";font-size:8pt}
+.eyebrow::after{content:"";flex:1;height:.6pt;background:linear-gradient(90deg,#C7CCD3,transparent)}
+.eyebrow em{font-style:normal;font-size:11.5pt;letter-spacing:-.01em;color:#14171C;
+  font-family:'NanumGothic',sans-serif}
 
-.tiles{display:flex;gap:0;border:.8pt solid #C7CCD3;margin-bottom:4pt}
-.tile{flex:1;padding:7pt 9pt;border-right:.8pt solid #C7CCD3}
-.tile:last-child{border-right:0}
-.tile b{display:block;font-size:14pt;letter-spacing:-.02em}
-.tile span{font-size:8pt;color:#5A616A}
+/* 카드 */
+.card{background:#F7F8FA;border:.7pt solid #DDE1E6;border-radius:7pt;padding:11pt 13pt;
+  margin-bottom:8pt;break-inside:avoid}
+.card.feat{border-left:2.4pt solid #8A6636}
+.chip{display:inline-block;font-size:7.5pt;font-weight:700;letter-spacing:.1em;color:#6E4F27;
+  background:#F0E7D9;border-radius:3pt;padding:1pt 5pt;margin-bottom:4pt}
+.card h3{font-size:11.5pt;letter-spacing:-.01em;margin-bottom:4pt;color:#14171C}
+.card p{font-size:9.5pt;line-height:1.7;color:#2B3139}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8pt}
+.grid2 .card{margin-bottom:0}
+.grid2 .span{grid-column:1/-1}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8pt}
+.grid3 .card{margin-bottom:0;padding:9pt 11pt}
+.grid3 .card h3{font-size:10.5pt;margin:0;line-height:1.4}
 
+/* 경력 — 타임라인 */
+.tl{margin:2pt 0 0 4pt;border-left:1pt solid #C7CCD3;padding-left:0}
+.tl li{list-style:none;position:relative;padding:0 0 7pt 14pt;break-inside:avoid}
+.tl li::before{content:"";position:absolute;left:-3.6pt;top:5pt;width:6pt;height:6pt;border-radius:50%;
+  background:#8A6636;border:1.4pt solid #fff;box-shadow:0 0 0 .8pt #8A6636}
+.tl li:last-child{padding-bottom:0}
+.tl .co{font-size:8.5pt;color:#4A5159;display:flex;gap:6pt;align-items:baseline}
+.tl .co b{color:#14171C;font-size:9.5pt}
+.tl .ti{font-size:11pt;font-weight:700;margin-top:1pt}
+.tl .po{font-size:8.5pt;color:#5A616A;margin-top:1pt}
+
+/* 경력 상세 — 프로젝트 카드 */
+.proj{background:#fff;border:.7pt solid #DDE1E6;border-radius:7pt;overflow:hidden;
+  margin-bottom:9pt}
+.proj tr{break-inside:avoid}
+.ph{display:flex;gap:11pt;padding:10pt 12pt 8pt;background:#F7F8FA;border-bottom:.6pt solid #E5E8EC;
+  break-inside:avoid;break-after:avoid}
+.ph img{width:34mm;height:19mm;object-fit:cover;border-radius:4pt;flex-shrink:0;background:#0C0F14}
+.ph .mo{width:34mm;height:19mm;border-radius:4pt;flex-shrink:0;background:#14171C;color:#D7B27C;
+  display:flex;align-items:center;justify-content:center;font-size:12pt;font-weight:700;letter-spacing:.06em}
+.ph>div{flex:1;min-width:0}
+.ph .top{display:flex;justify-content:space-between;align-items:baseline;gap:8pt}
+.ph .top b{font-size:12pt;letter-spacing:-.01em}
+.ph .top span{font-size:8.5pt;color:#4A5159;white-space:nowrap}
+.tags{margin-top:3pt;display:flex;flex-wrap:wrap;gap:3pt}
+.tag{font-size:7.5pt;color:#4A5159;background:#EDEFF2;border:.5pt solid #DDE1E6;border-radius:3pt;padding:0 4pt}
+.pr{font-size:9pt;color:#2B3139;margin-top:5pt}
+.pr b{color:#14171C}
 table{width:100%;border-collapse:collapse}
-td{padding:5pt 0;vertical-align:top;border-bottom:.5pt solid #E1E5EA}
-tr:last-child td{border-bottom:0}
-td.when{width:26%;font-size:8.5pt;color:#4A5159;padding-right:8pt}
-td.when b{display:block;font-size:9.5pt;color:#14171C}
-td.what b{font-size:10.5pt}
-td.what div{font-size:9pt;color:#4A5159;margin-top:1pt}
-td.k{width:19%;font-size:9pt;font-weight:700;padding-right:8pt}
-td.v{font-size:9pt;color:#3C434B}
+.proj table{margin:0}
+.proj td{padding:4.5pt 12pt;vertical-align:top;border-bottom:.5pt solid #EEF0F3;font-size:9pt}
+.proj tr:last-child td{border-bottom:0}
+.proj td.k{width:22%;font-weight:700;color:#6E4F27;font-size:8.5pt;padding-right:0}
+.proj td.v{color:#2B3139}
+.proj td.v b{color:#14171C}
 
-ul{list-style:none}
-li{position:relative;padding-left:9pt;margin-bottom:3pt;font-size:9.5pt}
-li::before{content:"";position:absolute;left:0;top:6.5pt;width:3pt;height:3pt;
-  background:#8A6636;border-radius:50%}
-.kw{font-size:9pt;color:#3C434B}
-.kw b{color:#14171C}
+/* 기술 · 개인 작업 · 학력 */
+.sk .k{font-size:8pt;font-weight:700;letter-spacing:.08em;color:#8A6636;margin-bottom:3pt}
+.sk .v{font-size:9pt;line-height:1.65;color:#2B3139}
+.sk .v b{color:#14171C}
+.own{display:flex;gap:9pt;align-items:flex-start}
+.own img{width:26mm;height:15mm;object-fit:cover;border-radius:4pt;flex-shrink:0;background:#0C0F14}
+.own .mo{width:26mm;height:15mm;border-radius:4pt;flex-shrink:0;background:#14171C;color:#D7B27C;
+  display:flex;align-items:center;justify-content:center;font-size:10pt;font-weight:700;letter-spacing:.06em}
+.own .yr{font-size:7.5pt;color:#8A6636;font-weight:700;letter-spacing:.08em}
+.own .ti{font-size:10pt;font-weight:700;line-height:1.35}
+.own .me{font-size:8.5pt;color:#5A616A;margin:1pt 0 2pt}
 
-.proj{margin-bottom:11pt;break-inside:avoid}
-.ph{display:flex;justify-content:space-between;align-items:baseline;gap:8pt}
-.ph b{font-size:11pt}
-.ph span{font-size:8.5pt;color:#4A5159;white-space:nowrap}
-.pg{font-size:8.5pt;color:#6B727B;margin-top:1pt}
-.pr{font-size:9pt;color:#3C434B;margin:2pt 0 4pt}
-.proj td{padding:3pt 0}
-.proj td.k{width:15%;font-size:8.5pt;color:#6E4F27}
-.proj td.v{font-size:9pt}
-header.hl{border-bottom:1.6pt solid #14171C;padding-bottom:10pt;margin-bottom:14pt}
-h1.big{font-size:19pt;line-height:1.3;letter-spacing:-.02em;display:block}
-h1.big .doc{font-size:10pt;font-weight:400;color:#6B727B;margin-left:8pt}
-.who{margin-top:6pt;font-size:10pt;color:#3C434B}
-.who b{font-size:11pt;color:#14171C}
+.note{margin-top:14pt;padding:9pt 12pt;background:#F4F1EA;border-left:2pt solid #8A6636;
+  border-radius:0 5pt 5pt 0;font-size:9pt;color:#3C434B;break-inside:avoid}
 .note b{color:#14171C}
-.sig{margin-top:16pt;padding-top:8pt;border-top:.8pt solid #C7CCD3;
-  font-size:8.5pt;color:#6B727B;display:flex;justify-content:space-between}
-.note{margin-top:10pt;padding:8pt 10pt;background:#F4F1EA;border-left:2pt solid #8A6636;
-  font-size:9pt;color:#3C434B}
+.sig{margin-top:16pt;padding-top:7pt;border-top:.6pt solid #C7CCD3;
+  font-size:8pt;color:#6B727B;display:flex;justify-content:space-between}
 """
 
 
@@ -142,23 +185,49 @@ def page(title, body):
                                  e(C.SITE["updated"]))
 
 
-def header(doc_name, career=None):
-    site = ('<b>포트폴리오</b> %s' % link("index.html", SITE.replace("https://", "")
-                                      if SITE else "웹 포트폴리오"))
-    return ('<header class="with-photo"><div><h1>%s<small>%s</small></h1>'
-            '<div class="role">레벨 디자이너 · %s</div>'
-            '<div class="meta"><b>%s</b> · <b>%s</b><br>%s</div></div>'
-            '<img class="photo" src="file://%s" alt="증명사진"></header>'
-            % (e(C.SITE["name"]), e(doc_name), e(career or CAREER),
-               e(C.SITE["email"]), e(C.SITE["tel"]), site, photo()))
+def sec(title, en=""):
+    """구획 제목. 웹의 '◇ 제목' 아이브로우와 같은 모양."""
+    return '<div class="eyebrow"><em>%s</em>%s</div>' % (e(title), (" " + e(en)) if en else "")
 
 
-def headline(title, career):
-    """자기소개서 머리글. 이 사람을 한 마디로 말하는 제목이 먼저, 이름은 그 아래.
-    연락처와 포트폴리오 주소는 여기 두지 않는다 — 맨 아래 한 번이면 된다."""
-    return ('<header class="hl"><h1 class="big">%s</h1>'
-            '<div class="who"><b>%s</b> · 레벨 디자이너 · %s</div></header>'
-            % (title, e(C.SITE["name"]), e(career)))
+def tiles():
+    return '<div class="tiles">%s</div>' % "".join(
+        '<div class="tile"><b>%s</b><span>%s</span></div>'
+        % (e(CAREER if "{{" in n else n), e(lab)) for n, lab in C.HOME["stats"])
+
+
+def cover(slug, label, cls=""):
+    """표지 그림. 없으면 웹처럼 약자 배지."""
+    p = os.path.join(ROOT, "img", "cov", "%s.webp" % slug) if slug else ""
+    if p and os.path.exists(p):
+        # PDF 가 무거워지지 않게 작은 jpg 로 줄여 쓴다
+        from PIL import Image
+        th = os.path.join(OUT, "th"); os.makedirs(th, exist_ok=True)
+        q = os.path.join(th, "%s.jpg" % slug)
+        if not os.path.exists(q):
+            im = Image.open(p).convert("RGB"); im.thumbnail((480, 480)); im.save(q, "JPEG", quality=82)
+        return '<img src="file://%s" alt="">' % q
+    return '<div class="mo">%s</div>' % e(label)
+
+
+def hero(doc_name, with_photo, career_line, contacts):
+    """웹 첫 화면을 그대로 옮긴 검은 머리 블록 — 한 줄 소개 · 요약 · 지표 네 칸."""
+    site = SITE.replace("https://", "") if SITE else "웹 포트폴리오"
+    b = ['<div class="hero"><div class="eyebrow mono">LEVEL DESIGNER · SINCE %s · %s</div>'
+         % (C.SITE["career_start"][:4], e(doc_name)),
+         '<div class="hrow"><div><h1>%s</h1><div class="role">%s</div>'
+         % (e(C.SITE["name"]), e(career_line)),
+         '<p class="lede">%s</p>' % e(C.HOME["lede"]),
+         '<p class="sub">%s</p></div>' % C.HOME["sub"].replace("{{career}}", "<b>%s</b>" % CAREER)]
+    if with_photo:
+        b.append('<img class="photo" src="file://%s" alt="증명사진">' % photo())
+    b.append('</div>')
+    b.append(tiles())
+    if contacts:
+        b.append('<div class="hcontact"><span><b>%s</b> · %s</span><span>포트폴리오 %s</span></div>'
+                 % (e(C.SITE["email"]), e(C.SITE["tel"]), link("index.html", site)))
+    b.append('</div>')
+    return "".join(b)
 
 
 def contact_note():
@@ -232,52 +301,64 @@ OFFINDUSTRY = ("오디오드라마 <b>집필 · 연출 · 제작</b> (현재)<br
 
 # ─────────────────────────────────────────────────────────────── 이력서
 def resume():
-    b = [header("이력서")]
+    b = [hero("이력서", True, "레벨 디자이너 · %s" % CAREER, True)]
 
-    b.append('<h2>요약</h2>')
-    b.append('<p class="lede">%s</p>' % e(C.HOME["lede"]))
-    b.append('<p>%s</p>' % C.HOME["sub"].replace("{{career}}", "<b>%s</b>" % CAREER))
+    # 강점 세 장 — 웹 첫 화면의 카드. 이력서에서는 제목만 짧게 보인다.
+    # 강점 세 장 — 본문은 자기소개서에 있으므로 여기서는 제목만
+    b.append(sec("강점"))
+    b.append('<div class="grid3">')
+    for lab, title, _ in C.HOME["feats"]:
+        b.append('<div class="card feat"><span class="chip mono">%s</span><h3>%s</h3></div>'
+                 % (e(lab.upper()), e(title)))
+    b.append('</div>')
 
-    tiles = "".join('<div class="tile"><b>%s</b><span>%s</span></div>'
-                    % (e(CAREER if "{{" in n else n), e(lab))
-                    for n, lab in C.HOME["stats"])
-    b.append('<div class="tiles">%s</div>' % tiles)
-
-    b.append('<h2>경력</h2><table>')
+    b.append(sec("경력"))
+    b.append('<ul class="tl">')
     for when, co, title, pos in C.HOME["career"]:
-        b.append('<tr><td class="when"><b>%s</b>%s</td>'
-                 '<td class="what"><b>%s</b><div>%s</div></td></tr>'
-                 % (e(co), e(when), e(title), pos))
-    b.append('</table>')
+        b.append('<li><div class="co"><b>%s</b><span>%s</span></div>'
+                 '<div class="ti">%s</div><div class="po">%s</div></li>' % (e(co), e(when), e(title), pos))
+    b.append('</ul>')
 
-    b.append('<h2>경력 상세</h2>')
+    b.append(sec("경력 상세"))
+    bypage = {p["page"]: p for p in C.PROJECTS}
     for co, when, title, genre, role, items, ln in DETAIL:
+        pj = bypage.get(ln[0], {})
         rows = "".join('<tr><td class="k">%s</td><td class="v">%s</td></tr>' % (e(k), v)
                        for k, v in items)
-        b.append('<div class="proj"><div class="ph"><b>%s</b><span>%s · %s</span></div>'
-                 '<div class="pg">%s</div><div class="pr">%s · %s</div>'
+        tags = "".join('<span class="tag">%s</span>' % e(t.strip()) for t in genre.split("·"))
+        b.append('<div class="proj"><div class="ph">%s<div>'
+                 '<div class="top"><b>%s</b><span>%s · %s</span></div>'
+                 '<div class="tags">%s</div><div class="pr">%s · %s</div></div></div>'
                  '<table>%s</table></div>'
-                 % (e(title), e(co), e(when), e(genre), role, link(ln[0], ln[1]), rows))
+                 % (cover(pj.get("cover"), pj.get("mono") or title[:4]), e(title), e(co), e(when),
+                    tags, role, link(ln[0], ln[1]), rows))
 
-    b.append('<h2>보유 기술</h2><table>')
-    for k, v in C.HOME["skills"]:
-        b.append('<tr><td class="k">%s</td><td class="v">%s</td></tr>' % (e(k), v))
-    b.append('</table>')
+    b.append(sec("보유 기술"))
+    b.append('<div class="grid2">')
+    sk = C.HOME["skills"]
+    for i, (k, v) in enumerate(sk):
+        b.append('<div class="card sk%s"><div class="k">%s</div><div class="v">%s</div></div>'
+                 % (" span" if (i == len(sk) - 1 and len(sk) % 2) else "", e(k), v))
+    b.append('</div>')
 
-    b.append('<h2>개인 작업</h2><table>')
-    for w in C.PERSONAL["own"]:
-        if w.get("draft"):
-            continue
-        b.append('<tr><td class="k">%s</td><td class="v"><b>%s</b> — %s<br>%s</td></tr>'
-                 % (e(w["year"]), e(w["title"]), strip(w["meta"]),
-                    link(w["page"], "웹에서 보기")))
-    b.append('</table>')
+    b.append(sec("개인 작업"))
+    b.append('<div class="grid2">')
+    own = [w for w in C.PERSONAL["own"] if not w.get("draft")]
+    for i, w in enumerate(own):
+        b.append('<div class="card own%s">%s<div><div class="yr mono">%s</div><div class="ti">%s</div>'
+                 '<div class="me">%s</div>%s</div></div>'
+                 % (" span" if (i == len(own) - 1 and len(own) % 2) else "",
+                    cover(w.get("cover"), w.get("mono") or ""), e(w["year"]), e(w["title"]),
+                    strip(w["meta"]), link(w["page"], "웹에서 보기")))
+    b.append('</div>')
 
-    b.append('<h2>학력 · 기타</h2><table>')
-    for k, v in C.HOME["edu"]:
-        b.append('<tr><td class="k">%s</td><td class="v">%s</td></tr>' % (e(k), v))
-    b.append('<tr><td class="k">업계 외</td><td class="v kw">%s</td></tr>' % OFFINDUSTRY)
-    b.append('</table>')
+    b.append(sec("학력 · 기타"))
+    b.append('<div class="grid2">')
+    edu = list(C.HOME["edu"]) + [("업계 외", OFFINDUSTRY)]
+    for i, (k, v) in enumerate(edu):
+        b.append('<div class="card sk%s"><div class="k">%s</div><div class="v">%s</div></div>'
+                 % (" span" if (i == len(edu) - 1 and len(edu) % 2) else "", e(k), v))
+    b.append('</div>')
     return page("손석완 이력서", "".join(b))
 
 
@@ -286,14 +367,11 @@ def letter():
     """웹 포트폴리오 첫 화면(한 줄 소개 · 요약)과 강점 카드 세 장을 그대로 옮긴다.
     덧붙인 문장은 없다. 사이트 문안이 바뀌면 여기도 같이 바뀐다."""
     years = months_since(C.SITE["career_start"]) // 12 + 1
-    b = ['<header class="hl"><h1 class="big">%s<small class="doc">자기소개서</small></h1>'
-         '<div class="who">레벨 디자이너 · %d년 차 (Since %s)</div></header>'
-         % (e(C.SITE["name"]), years, C.SITE["career_start"][:4])]
-    b.append('<p class="lede">%s</p>' % e(C.HOME["lede"]))
-    b.append('<p>%s</p>' % C.HOME["sub"].replace("{{career}}", "<b>%s</b>" % CAREER))
-    for _, title, text in C.HOME["feats"]:
-        b.append('<h2>%s</h2>' % e(title))
-        b.append('<p>%s</p>' % text)
+    b = [hero("자기소개서", False, "레벨 디자이너 · %d년 차 (Since %s)" % (years, C.SITE["career_start"][:4]),
+              False)]
+    for lab, title, text in C.HOME["feats"]:
+        b.append('<div class="card feat"><span class="chip mono">%s</span><h3>%s</h3><p>%s</p></div>'
+                 % (e(lab.upper()), e(title), text))
     b.append(contact_note())
     return page("손석완 자기소개서", "".join(b))
 
