@@ -299,7 +299,7 @@ def block(b):
             cells.append('<button class="shot" data-src="%s" data-cap="%s" aria-label="%s 확대">'
                          '<img src="%s" alt="%s" loading="lazy" decoding="async"></button>'
                          % (e(src), e(cap), e(cap), e(src), e(cap)))
-        return '<div class="grid g%d rv">%s</div>\n' % (cols, "".join(cells))
+        return '<div class="grid shots g%d rv">%s</div>\n' % (cols, "".join(cells))
     if kind == "loops":
         # 알파가 있는 루프(webm)는 밝은 판에서 가장자리가 튄다. 어두운 칸에 얹는다.
         out = []
