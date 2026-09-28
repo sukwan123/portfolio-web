@@ -128,16 +128,20 @@ def main():
     doc.styles["Normal"].font.name = FONT
     doc.styles["Normal"]._element.rPr.rFonts.set(qn("w:eastAsia"), FONT)
 
-    # 머리글
-    p = para(doc, after=2)
+    # 머리글 — 왼쪽 글, 오른쪽 사진 (테두리 없는 표)
+    ht = doc.add_table(rows=1, cols=2)
+    left, right = ht.rows[0].cells
+    left.width, right.width = Mm(135), Mm(35)
+    p = left.paragraphs[0]
     font(p.add_run(C.SITE["name"]), 20, True)
     font(p.add_run("  이력서"), 10.5, False, GREY)
-    para(doc, "레벨 디자이너 · %s" % P.CAREER, 10.5, True, after=3)
-    p = para(doc, after=2)
-    font(p.add_run("%s · %s" % (C.SITE["email"], C.SITE["tel"])), 9.5)
-    p = para(doc, after=10)
-    font(p.add_run("포트폴리오  "), 9.5, True)
+    p = left.add_paragraph(); font(p.add_run("레벨 디자이너 · %s" % P.CAREER), 10.5, True)
+    p = left.add_paragraph(); font(p.add_run("%s · %s" % (C.SITE["email"], C.SITE["tel"])), 9.5)
+    p = left.add_paragraph(); font(p.add_run("포트폴리오  "), 9.5, True)
     hyperlink(p, P.SITE + "/index.html", P.SITE.replace("https://", ""))
+    right.paragraphs[0].add_run().add_picture(P.photo(), width=Mm(28))
+    right.paragraphs[0].alignment = 2                   # 오른쪽 정렬
+    para(doc, after=6)
 
     # 요약
     h2(doc, "요약")

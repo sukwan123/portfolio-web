@@ -44,6 +44,24 @@ def link(page, label):
 
 
 CAREER = dur_text(months_since(C.SITE["career_start"]))
+PHOTO = os.path.join(OUT, "photo.jpg")
+
+
+def photo():
+    """이력서용 증명사진. 원본을 3:4 로 가운데 크롭해 굽는다."""
+    from PIL import Image
+    src = os.path.join(ROOT, "src", "media", "profile.png")
+    if not os.path.exists(src):
+        src = os.path.join(ROOT, "img", "profile.webp")
+    im = Image.open(src).convert("RGB")
+    w, h = im.size
+    if w / h > 3 / 4:
+        nw = int(h * 3 / 4); im = im.crop(((w - nw) // 2, 0, (w - nw) // 2 + nw, h))
+    else:
+        nh = int(w * 4 / 3); im = im.crop((0, 0, w, nh))
+    os.makedirs(OUT, exist_ok=True)
+    im.resize((600, 800), Image.LANCZOS).save(PHOTO, "JPEG", quality=90)
+    return PHOTO
 
 CSS = """
 @page { size: A4; margin: 16mm 15mm 14mm; }
@@ -56,6 +74,8 @@ a{color:inherit}
 .pend{color:#8E959E;border-bottom-style:dotted}
 
 header{border-bottom:1.6pt solid #14171C;padding-bottom:9pt;margin-bottom:14pt}
+header.with-photo{display:flex;justify-content:space-between;align-items:flex-start;gap:12pt}
+.photo{width:28mm;height:37mm;object-fit:cover;border:.5pt solid #C7CCD3;flex-shrink:0}
 h1{font-size:21pt;letter-spacing:-.02em;display:inline-block}
 h1 small{font-size:10pt;font-weight:400;color:#6B727B;margin-left:8pt;letter-spacing:.02em}
 .role{margin-top:3pt;font-size:10.5pt;color:#3C434B;font-weight:700}
@@ -103,6 +123,7 @@ li::before{content:"";position:absolute;left:0;top:6.5pt;width:3pt;height:3pt;
 .proj td.v{font-size:9pt}
 header.hl{border-bottom:1.6pt solid #14171C;padding-bottom:10pt;margin-bottom:14pt}
 h1.big{font-size:19pt;line-height:1.3;letter-spacing:-.02em;display:block}
+h1.big .doc{font-size:10pt;font-weight:400;color:#6B727B;margin-left:8pt}
 .who{margin-top:6pt;font-size:10pt;color:#3C434B}
 .who b{font-size:11pt;color:#14171C}
 .note b{color:#14171C}
@@ -124,11 +145,12 @@ def page(title, body):
 def header(doc_name, career=None):
     site = ('<b>포트폴리오</b> %s' % link("index.html", SITE.replace("https://", "")
                                       if SITE else "웹 포트폴리오"))
-    return ('<header><h1>%s<small>%s</small></h1>'
+    return ('<header class="with-photo"><div><h1>%s<small>%s</small></h1>'
             '<div class="role">레벨 디자이너 · %s</div>'
-            '<div class="meta"><b>%s</b> · <b>%s</b><br>%s</div></header>'
+            '<div class="meta"><b>%s</b> · <b>%s</b><br>%s</div></div>'
+            '<img class="photo" src="file://%s" alt="증명사진"></header>'
             % (e(C.SITE["name"]), e(doc_name), e(career or CAREER),
-               e(C.SITE["email"]), e(C.SITE["tel"]), site))
+               e(C.SITE["email"]), e(C.SITE["tel"]), site, photo()))
 
 
 def headline(title, career):
@@ -261,29 +283,17 @@ def resume():
 
 # ─────────────────────────────────────────────────────── 자기소개서
 def letter():
-    """본인이 직접 다듬은 문안(2026.09.28)이 기준이다. 두 절, 570자. 프로젝트 이름은 일부러
-    쓰지 않는다 — 이력서와 포트폴리오가 맡는다. 여기서 고친 것은 표기 둘뿐이다."""
+    """웹 포트폴리오 첫 화면(한 줄 소개 · 요약)과 강점 카드 세 장을 그대로 옮긴다.
+    덧붙인 문장은 없다. 사이트 문안이 바뀌면 여기도 같이 바뀐다."""
     years = months_since(C.SITE["career_start"]) // 12 + 1
-    target = " ".join(x for x in (COMPANY, PROJECT) if x)
-    b = [headline("모든 것을 알아야 해서,<br>모든 것을 해 본 레벨 디자이너입니다",
-                  "%d년 차 (Since %s)" % (years, C.SITE["career_start"][:4]))]
-
-    b.append('<h2>지원 동기</h2>')
-    b.append('<p>%s%s 직무에 지원합니다. %d년 동안 주로 실사풍 백뷰 액션 게임을 만들어 왔습니다. '
-             '귀사의 프로젝트는 제가 여태껏 열심히 쌓아온 경험이 가장 잘 쓰일 수 있는 곳이라고 '
-             '생각했습니다.</p>'
-             % (("%s의 " % e(target)) if target else "", e(POSITION), years))
-
-    b.append('<h2>레벨은 모든 것이 모이는 자리입니다</h2>')
-    b.append('<p>게임업에 종사하기 전에는 드라마 보조작가로서 전문 작가의 길을 걸었고, 이를 바탕으로 '
-             '업계 입문 후에는 시나리오와 퀘스트 업무를 병행했습니다. 팀에 기획자가 저 하나뿐이던 '
-             '프로젝트에서는 시스템과 밸런싱, BM, 운영까지 모두 직접 하였습니다. 전 레벨디자이너가 '
-             '단순히 평면도를 그리고 예쁜 목업만 만드는 직업이라고 생각하지 않습니다.</p>')
-    b.append('<p>레벨은 각 조직에서 공들여 만든 모든 요소들이 한데 모이는 자리입니다. 레벨 디자이너의 '
-             '일은 각 요소들이 잘 어우러지게 하여 유저가 겪을 경험 하나로 묶는 것이라고 생각합니다. '
-             '그래서 레벨 디자이너는 모든 것을 깊게 알아야 하는 올라운더여야 하고, 저는 그 모든 것을 '
-             '직접 경험을 통해 습득했기에 보다 좋은 레벨을 설계하고 완성시킬 수 있다고 자부합니다.</p>')
-
+    b = ['<header class="hl"><h1 class="big">%s<small class="doc">자기소개서</small></h1>'
+         '<div class="who">레벨 디자이너 · %d년 차 (Since %s)</div></header>'
+         % (e(C.SITE["name"]), years, C.SITE["career_start"][:4])]
+    b.append('<p class="lede">%s</p>' % e(C.HOME["lede"]))
+    b.append('<p>%s</p>' % C.HOME["sub"].replace("{{career}}", "<b>%s</b>" % CAREER))
+    for _, title, text in C.HOME["feats"]:
+        b.append('<h2>%s</h2>' % e(title))
+        b.append('<p>%s</p>' % text)
     b.append(contact_note())
     return page("손석완 자기소개서", "".join(b))
 
