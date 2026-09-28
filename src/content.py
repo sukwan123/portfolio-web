@@ -658,7 +658,6 @@ PREV_PAGES = {
 VIDEOS = {
     "kuf2": [
         ("레이드 홍보 영상", "https://youtu.be/k-xVaTSeDeo", "최대 규모 레이드 ‘불꽃의 흉터’"),
-        ("PvP ‘격전의 도시’ 플레이", "https://youtu.be/31ObPMikvFg", "직접 제작한 인기 PvP 맵"),
         ("3v3 PvP 경기", "https://youtu.be/lqhtfQrQcrI", "PvP 맵에서 진행된 3v3 경기"),
         ("도시 · 필드 플레이", "https://youtu.be/NgCVZJkbEDU", "월드맵·도시와 PK 필드"),
         ("미션 유저 플레이", "https://youtu.be/bhPSSpAG6Eo", "제작·폴리싱한 스토리 미션"),
@@ -675,12 +674,9 @@ VIDEOS = {
     "nanolegend": [
         ("PvE 첫 튜토리얼 미션 플레이", "https://youtu.be/CRWUWx0-hQ0?t=38",
          "세계관 전달과 튜토리얼을 겸한 PvE 콘텐츠 ‘모험’"),
-        ("랜덤덱 모드 플레이", "https://youtu.be/_IJJ-uX8Xlo", "이벤트·일일 도전용 모드 중 하나"),
-        ("패키지 · 프리미엄 패스 구입", "https://youtu.be/-SOocSAzNaw?t=29", "구독형 BM과 패키지 상품 흐름"),
     ],
     "minimax": [
         ("상점 · 인벤토리 · 성장 · BM", "https://youtu.be/_omHoRsK6lc", "담당한 아웃게임 전반"),
-        ("연속 가챠", "https://www.youtube.com/watch?v=4e1PXOTKuOM", "가챠 수량 증폭 구조가 적용된 화면"),
         ("성장 시스템 공식 가이드", "https://youtu.be/bWu4RU2M05Q?t=244", "공식 채널에 올라간 성장 시스템 안내"),
     ],
 }
