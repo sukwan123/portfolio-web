@@ -101,6 +101,11 @@ li::before{content:"";position:absolute;left:0;top:6.5pt;width:3pt;height:3pt;
 .proj td{padding:3pt 0}
 .proj td.k{width:15%;font-size:8.5pt;color:#6E4F27}
 .proj td.v{font-size:9pt}
+header.hl{border-bottom:1.6pt solid #14171C;padding-bottom:10pt;margin-bottom:14pt}
+h1.big{font-size:19pt;line-height:1.3;letter-spacing:-.02em;display:block}
+.who{margin-top:6pt;font-size:10pt;color:#3C434B}
+.who b{font-size:11pt;color:#14171C}
+.note b{color:#14171C}
 .sig{margin-top:16pt;padding-top:8pt;border-top:.8pt solid #C7CCD3;
   font-size:8.5pt;color:#6B727B;display:flex;justify-content:space-between}
 .note{margin-top:10pt;padding:8pt 10pt;background:#F4F1EA;border-left:2pt solid #8A6636;
@@ -124,6 +129,22 @@ def header(doc_name, career=None):
             '<div class="meta"><b>%s</b> · <b>%s</b><br>%s</div></header>'
             % (e(C.SITE["name"]), e(doc_name), e(career or CAREER),
                e(C.SITE["email"]), e(C.SITE["tel"]), site))
+
+
+def headline(title, career):
+    """자기소개서 머리글. 이 사람을 한 마디로 말하는 제목이 먼저, 이름은 그 아래.
+    연락처와 포트폴리오 주소는 여기 두지 않는다 — 맨 아래 한 번이면 된다."""
+    return ('<header class="hl"><h1 class="big">%s</h1>'
+            '<div class="who"><b>%s</b> · 레벨 디자이너 · %s</div></header>'
+            % (title, e(C.SITE["name"]), e(career)))
+
+
+def contact_note():
+    """맨 아래 — 포트폴리오 링크 하나와 연락처."""
+    return ('<div class="note">만든 레벨과 플레이 영상은 웹 포트폴리오에 있습니다. %s'
+            '<br><b>%s</b> · %s · %s</div>'
+            % (link("index.html", SITE.replace("https://", "") if SITE else "웹 포트폴리오"),
+               e(C.SITE["name"]), e(C.SITE["email"]), e(C.SITE["tel"])))
 
 
 # ─────────────────────────────────────────────────────────────── 경력 상세
@@ -244,46 +265,36 @@ def resume():
 
 # ─────────────────────────────────────────────────────── 자기소개서
 def letter():
-    """지원 동기 · 이렇게 일해 왔습니다(해 온 일 + 마음가짐) · 잘하는 것 · 능력.
-    경력은 햇수로 "13년" — 2014.02 부터 13년 차다."""
+    """짧게. 지원 동기 · 이렇게 일해 왔습니다 · 잘하는 것, 세 절. 세부 사례와 수치는
+    이력서와 포트폴리오에 있으니 여기서는 사람이 보이게만 쓴다."""
     years = months_since(C.SITE["career_start"]) // 12 + 1
     target = " ".join(x for x in (COMPANY, PROJECT) if x)
-    b = [header("자기소개서", "%d년 차" % years)]
+    b = [headline("공간이 말하게 하는<br>레벨 디자이너입니다",
+                  "%d년 차 (Since %s)" % (years, C.SITE["career_start"][:4]))]
 
     b.append('<h2>지원 동기</h2>')
     b.append('<p>%s%s 직무에 지원합니다. 공고에서 철학적 소재를 이야기하는 것을 보고 반가웠습니다. '
-             '게임에서 가장 오래 남는 것은 만드는 사람이 유저에게 건네는 메시지라고 믿어 왔기 '
-             '때문입니다. 그런 이야기를 하는 팀이라면 좋은 게임을 만들 수 있겠다고 생각했습니다.</p>'
+             '게임에서 가장 오래 남는 것은 만드는 사람이 유저에게 건네는 메시지라고 믿어 왔고, 그 말을 '
+             '먼저 꺼내는 팀이라면 좋은 게임을 만들 수 있겠다고 생각했습니다.</p>'
              % (("%s의 " % e(target)) if target else "", e(POSITION)))
 
     b.append('<h2>이렇게 일해 왔습니다</h2>')
-    b.append('<p>%d년 동안 레벨과 콘텐츠를 만들어 왔습니다. 킹덤 언더 파이어 2에서는 레벨 디자이너로 '
-             '레이드 · PvP 맵 · 퀘스트 · 컷신을 만들었고, KUFC에서는 '
-             '콘텐츠 파트장을 맡았습니다. 님블뉴런에서는 미니막스 타이니버스의 아웃게임과 나노레전드의 '
-             '기획 전반을, 너바나나에서는 Project ZETA의 하이컨셉 기획을 했습니다. 지금은 왕좌의 게임: '
-             '킹스로드에서 필드 지역 5곳과 던전 5종을 맡고 있습니다.</p>' % years)
-    b.append('<p>레벨을 만들 때 가장 먼저 정하는 것은 “유저가 이곳에서 어떤 기분을 느껴야 하는가”입니다. '
-             '지형과 동선, 전투와 연출은 모두 그 한 문장을 위해 있다고 보고, 제작 중에 무엇이 바뀌어도 '
-             '그 <b>경험</b>만은 끝까지 지켜 왔습니다. 디렉터와 팀이 세운 방향 안에서 그 경험을 가장 '
-             '선명하게 만드는 것이 제 역할이라고 생각합니다.</p>')
+    b.append('<p>%d년 동안 킹덤 언더 파이어 2, KUFC, 나노레전드, Project ZETA를 거쳐 지금은 '
+             '왕좌의 게임: 킹스로드에서 필드와 던전을 만들고 있습니다. 레벨을 시작할 때 가장 먼저 '
+             '정하는 것은 “유저가 이곳에서 어떤 기분을 느껴야 하는가”입니다. 지형과 동선, 전투와 '
+             '연출은 모두 그 한 문장을 위해 있고, 제작 중에 무엇이 바뀌어도 그 경험만은 끝까지 '
+             '지킵니다. 팀이 세운 방향 안에서 그 경험을 가장 선명하게 만드는 것이 제 일이라고 '
+             '생각합니다.</p>' % years)
 
     b.append('<h2>잘하는 것</h2>')
-    b.append('<p>공간 설계에서 멈추지 않고, 그 레벨에 필요한 <b>시스템과 기믹, 이야기와 연출</b>까지 '
-             '함께 기획합니다. 영화를 전공하고 시나리오 작가로 일했으며 지금도 오디오드라마를 쓰고 '
-             '연출하고 있어서, 환경 스토리텔링과 시선 유도, 컷신처럼 연출이 강하게 들어가는 레벨에 '
-             '특히 강합니다.</p>')
+    b.append('<p>공간만 그리지 않습니다. 그 레벨에 필요한 시스템과 기믹, 이야기와 연출까지 함께 '
+             '기획합니다. 팀에 기획자가 저 하나뿐이던 게임에서는 전투를 뺀 모든 기획을 맡아 출시부터 '
+             '서비스 종료까지 끌고 갔습니다. 영화를 전공하고 시나리오 작가로 일했으며 지금도 '
+             '오디오드라마를 쓰고 연출하고 있어서, 설명 없이 공간이 말하게 하는 레벨에 특히 '
+             '강합니다. 반복 작업은 도구로 줄입니다. 평면도 툴과 AI를 엮은 목업 파이프라인으로 '
+             '제작 시간을 31% 줄였고, 그만큼 검증을 더 돌립니다.</p>')
 
-    b.append('<h2>이런 능력이 있습니다</h2>')
-    b.append('<p><b>AI를 실무 파이프라인으로 올립니다.</b> 평면도 제작 툴을 만들어 언리얼 LLM 플러그인 '
-             'Aura와 연결해 목업 제작 시간을 31% 줄였고, Meshy AI 메시를 밑그림으로 쓰는 방식으로 '
-             '효율을 50% 이상 올렸습니다. <b>레벨 밖의 기획도 할 수 있습니다.</b> 팀 내 유일한 '
-             '기획자로 전투를 제외한 전 영역 — 시스템 · 아웃게임 · BM · 밸런싱 · 운영 — 을 맡아 '
-             '게임 하나를 출시부터 서비스 종료까지 끌고 가 봤습니다. 엔진은 언리얼 5와 유니티를 '
-             '씁니다.</p>')
-
-    b.append('<div class="note">작업물과 플레이 영상은 웹 포트폴리오에 정리해 두었습니다. %s · %s · %s</div>'
-             % (link("index.html", "포트폴리오 홈"), link("kingsroad.html", "킹스로드 담당 레벨"),
-                link("aura.html", "AI 목업 파이프라인")))
+    b.append(contact_note())
     return page("손석완 자기소개서", "".join(b))
 
 
