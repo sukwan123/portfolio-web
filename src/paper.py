@@ -172,16 +172,89 @@ table{width:100%;border-collapse:collapse}
 .note{margin-top:14pt;padding:9pt 12pt;background:#F4F1EA;border-left:2pt solid #8A6636;
   border-radius:0 5pt 5pt 0;font-size:9pt;color:#3C434B;break-inside:avoid}
 .note b{color:#14171C}
+
 .sig{margin-top:16pt;padding-top:7pt;border-top:.6pt solid #C7CCD3;
   font-size:8pt;color:#6B727B;display:flex;justify-content:space-between}
 """
 
 
-def page(title, body):
+# 이력서는 옛 판형(v5)을 그대로 쓴다 — 표 중심, 흰 바탕.
+CSS_R = """
+@page { size: A4; margin: 16mm 15mm 14mm; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'NanumGothic',sans-serif;font-size:10pt;line-height:1.62;color:#14171C;
+  word-break:keep-all}
+a{color:inherit}
+.ln{color:#6E4F27;text-decoration:none;border-bottom:.5pt solid #C9B48E;white-space:nowrap}
+.ln::after{content:" \\2197";font-size:7.5pt}
+.pend{color:#8E959E;border-bottom-style:dotted}
+
+header{border-bottom:1.6pt solid #14171C;padding-bottom:9pt;margin-bottom:14pt}
+header.with-photo{display:flex;justify-content:space-between;align-items:flex-start;gap:12pt}
+.photo{width:28mm;height:37mm;object-fit:cover;border:.5pt solid #C7CCD3;flex-shrink:0}
+h1{font-size:21pt;letter-spacing:-.02em;display:inline-block}
+h1 small{font-size:10pt;font-weight:400;color:#6B727B;margin-left:8pt;letter-spacing:.02em}
+.role{margin-top:3pt;font-size:10.5pt;color:#3C434B;font-weight:700}
+.meta{margin-top:7pt;font-size:9pt;color:#4A5159}
+.meta b{font-weight:700;color:#14171C}
+
+h2{font-size:10.5pt;letter-spacing:.02em;margin:15pt 0 7pt;padding-bottom:3pt;
+  border-bottom:.8pt solid #C7CCD3;color:#14171C}
+h2:first-of-type{margin-top:0}
+h3{font-size:10.5pt;margin:13pt 0 4pt;color:#14171C}
+p{margin-bottom:6pt}
+.lede{font-size:11pt;font-weight:700;line-height:1.55;margin-bottom:7pt}
+
+.tiles{display:flex;gap:0;border:.8pt solid #C7CCD3;margin-bottom:14pt}
+.tile{flex:1;padding:7pt 9pt;border-right:.8pt solid #C7CCD3}
+.tile:last-child{border-right:0}
+.tile b{display:block;font-size:14pt;letter-spacing:-.02em}
+.tile span{font-size:8pt;color:#5A616A}
+
+table{width:100%;border-collapse:collapse}
+td{padding:5pt 0;vertical-align:top;border-bottom:.5pt solid #E1E5EA}
+tr:last-child td{border-bottom:0}
+td.when{width:26%;font-size:8.5pt;color:#4A5159;padding-right:8pt}
+td.when b{display:block;font-size:9.5pt;color:#14171C}
+td.what b{font-size:10.5pt}
+td.what div{font-size:9pt;color:#4A5159;margin-top:1pt}
+td.k{width:19%;font-size:9pt;font-weight:700;padding-right:8pt}
+td.v{font-size:9pt;color:#3C434B}
+
+ul{list-style:none}
+li{position:relative;padding-left:9pt;margin-bottom:3pt;font-size:9.5pt}
+li::before{content:"";position:absolute;left:0;top:6.5pt;width:3pt;height:3pt;
+  background:#8A6636;border-radius:50%}
+.kw{font-size:9pt;color:#3C434B}
+.kw b{color:#14171C}
+
+.proj{margin-bottom:11pt;break-inside:avoid}
+.ph{display:flex;justify-content:space-between;align-items:baseline;gap:8pt}
+.ph b{font-size:11pt}
+.ph span{font-size:8.5pt;color:#4A5159;white-space:nowrap}
+.pg{font-size:8.5pt;color:#6B727B;margin-top:1pt}
+.pr{font-size:9pt;color:#3C434B;margin:2pt 0 4pt}
+.proj td{padding:3pt 0}
+.proj td.k{width:15%;font-size:8.5pt;color:#6E4F27}
+.proj td.v{font-size:9pt}
+header.hl{border-bottom:1.6pt solid #14171C;padding-bottom:10pt;margin-bottom:14pt}
+h1.big{font-size:19pt;line-height:1.3;letter-spacing:-.02em;display:block}
+h1.big .doc{font-size:10pt;font-weight:400;color:#6B727B;margin-left:8pt}
+.who{margin-top:6pt;font-size:10pt;color:#3C434B}
+.who b{font-size:11pt;color:#14171C}
+.note b{color:#14171C}
+.sig{margin-top:16pt;padding-top:8pt;border-top:.8pt solid #C7CCD3;
+  font-size:8.5pt;color:#6B727B;display:flex;justify-content:space-between}
+.note{margin-top:10pt;padding:8pt 10pt;background:#F4F1EA;border-left:2pt solid #8A6636;
+  font-size:9pt;color:#3C434B}
+"""
+
+
+def page(title, body, css=None):
     return ("<!doctype html><html lang=\"ko\"><head><meta charset=\"utf-8\">"
             "<title>%s</title><style>%s</style></head><body>%s"
             "<div class=\"sig\"><span>%s · 레벨 디자이너</span><span>%s</span></div>"
-            "</body></html>") % (e(title), CSS, body, e(C.SITE["name"]),
+            "</body></html>") % (e(title), css or CSS, body, e(C.SITE["name"]),
                                  e(C.SITE["updated"]))
 
 
@@ -294,72 +367,68 @@ DETAIL = [
 ]
 
 # 업계 외 — 이력서에서는 묶어서 세 줄로 (사이트의 키워드 나열과 다르다)
-OFFINDUSTRY = ("오디오드라마 <b>집필 · 연출 · 제작</b> (현재)<br>"
+OFFINDUSTRY = ("오디오드라마 집필 · 연출 · 제작 (현재)<br>"
                "시나리오 보조작가 — 어린이 드라마 · 만화 · 애니메이션 대본 · 글콘티<br>"
                "독립영화 연출부 · 제작부 · 영화 전공")
 
 
+def header(doc_name, career=None):
+    site = ('<b>포트폴리오</b> %s' % link("index.html", SITE.replace("https://", "")
+                                      if SITE else "웹 포트폴리오"))
+    return ('<header class="with-photo"><div><h1>%s<small>%s</small></h1>'
+            '<div class="role">레벨 디자이너 · %s</div>'
+            '<div class="meta"><b>%s</b> · <b>%s</b><br>%s</div></div>'
+            '<img class="photo" src="file://%s" alt="증명사진"></header>'
+            % (e(C.SITE["name"]), e(doc_name), e(career or CAREER),
+               e(C.SITE["email"]), e(C.SITE["tel"]), site, photo()))
+
+
 # ─────────────────────────────────────────────────────────────── 이력서
 def resume():
-    b = [hero("이력서", True, "레벨 디자이너 · %s" % CAREER, True)]
+    b = [header("이력서")]
 
-    # 강점 세 장 — 웹 첫 화면의 카드. 이력서에서는 제목만 짧게 보인다.
-    # 강점 세 장 — 본문은 자기소개서에 있으므로 여기서는 제목만
-    b.append(sec("강점"))
-    b.append('<div class="grid3">')
-    for lab, title, _ in C.HOME["feats"]:
-        b.append('<div class="card feat"><span class="chip mono">%s</span><h3>%s</h3></div>'
-                 % (e(lab.upper()), e(title)))
-    b.append('</div>')
+    # 한 줄 소개와 요약 문단은 자기소개서와 웹에 있으므로 여기서는 지표만 둔다
+    tiles = "".join('<div class="tile"><b>%s</b><span>%s</span></div>'
+                    % (e(CAREER if "{{" in n else n), e(lab))
+                    for n, lab in C.HOME["stats"])
+    b.append('<div class="tiles">%s</div>' % tiles)
 
-    b.append(sec("경력"))
-    b.append('<ul class="tl">')
+    b.append('<h2>경력</h2><table>')
     for when, co, title, pos in C.HOME["career"]:
-        b.append('<li><div class="co"><b>%s</b><span>%s</span></div>'
-                 '<div class="ti">%s</div><div class="po">%s</div></li>' % (e(co), e(when), e(title), pos))
-    b.append('</ul>')
+        b.append('<tr><td class="when"><b>%s</b>%s</td>'
+                 '<td class="what"><b>%s</b><div>%s</div></td></tr>'
+                 % (e(co), e(when), e(title), pos))
+    b.append('</table>')
 
-    b.append(sec("경력 상세"))
-    bypage = {p["page"]: p for p in C.PROJECTS}
+    b.append('<h2>경력 상세</h2>')
     for co, when, title, genre, role, items, ln in DETAIL:
-        pj = bypage.get(ln[0], {})
         rows = "".join('<tr><td class="k">%s</td><td class="v">%s</td></tr>' % (e(k), v)
                        for k, v in items)
-        tags = "".join('<span class="tag">%s</span>' % e(t.strip()) for t in genre.split("·"))
-        b.append('<div class="proj"><div class="ph">%s<div>'
-                 '<div class="top"><b>%s</b><span>%s · %s</span></div>'
-                 '<div class="tags">%s</div><div class="pr">%s · %s</div></div></div>'
+        b.append('<div class="proj"><div class="ph"><b>%s</b><span>%s · %s</span></div>'
+                 '<div class="pg">%s</div><div class="pr">%s · %s</div>'
                  '<table>%s</table></div>'
-                 % (cover(pj.get("cover"), pj.get("mono") or title[:4]), e(title), e(co), e(when),
-                    tags, role, link(ln[0], ln[1]), rows))
+                 % (e(title), e(co), e(when), e(genre), role, link(ln[0], ln[1]), rows))
 
-    b.append(sec("보유 기술"))
-    b.append('<div class="grid2">')
-    sk = C.HOME["skills"]
-    for i, (k, v) in enumerate(sk):
-        b.append('<div class="card sk%s"><div class="k">%s</div><div class="v">%s</div></div>'
-                 % (" span" if (i == len(sk) - 1 and len(sk) % 2) else "", e(k), v))
-    b.append('</div>')
+    b.append('<h2>보유 기술</h2><table>')
+    for k, v in C.HOME["skills"]:
+        b.append('<tr><td class="k">%s</td><td class="v">%s</td></tr>' % (e(k), v))
+    b.append('</table>')
 
-    b.append(sec("개인 작업"))
-    b.append('<div class="grid2">')
-    own = [w for w in C.PERSONAL["own"] if not w.get("draft")]
-    for i, w in enumerate(own):
-        b.append('<div class="card own%s">%s<div><div class="yr mono">%s</div><div class="ti">%s</div>'
-                 '<div class="me">%s</div>%s</div></div>'
-                 % (" span" if (i == len(own) - 1 and len(own) % 2) else "",
-                    cover(w.get("cover"), w.get("mono") or ""), e(w["year"]), e(w["title"]),
-                    strip(w["meta"]), link(w["page"], "웹에서 보기")))
-    b.append('</div>')
+    b.append('<h2>개인 작업</h2><table>')
+    for w in C.PERSONAL["own"]:
+        if w.get("draft"):
+            continue
+        b.append('<tr><td class="k">%s</td><td class="v"><b>%s</b> — %s<br>%s</td></tr>'
+                 % (e(w["year"]), e(w["title"]), strip(w["meta"]),
+                    link(w["page"], "웹에서 보기")))
+    b.append('</table>')
 
-    b.append(sec("학력 · 기타"))
-    b.append('<div class="grid2">')
-    edu = list(C.HOME["edu"]) + [("업계 외", OFFINDUSTRY)]
-    for i, (k, v) in enumerate(edu):
-        b.append('<div class="card sk%s"><div class="k">%s</div><div class="v">%s</div></div>'
-                 % (" span" if (i == len(edu) - 1 and len(edu) % 2) else "", e(k), v))
-    b.append('</div>')
-    return page("손석완 이력서", "".join(b))
+    b.append('<h2>학력 · 기타</h2><table>')
+    for k, v in C.HOME["edu"]:
+        b.append('<tr><td class="k">%s</td><td class="v">%s</td></tr>' % (e(k), v))
+    b.append('<tr><td class="k">업계 외</td><td class="v kw">%s</td></tr>' % OFFINDUSTRY)
+    b.append('</table>')
+    return page("손석완 이력서", "".join(b), CSS_R)
 
 
 # ─────────────────────────────────────────────────────── 자기소개서
