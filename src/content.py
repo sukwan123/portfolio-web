@@ -759,8 +759,8 @@ PERSONAL = dict(
         dict(slug="sc-redesign", page="pw-starcraft.html",
              title="스타크래프트 캠페인 3D 리디자인", year="2025 – 2026",
              meta="레벨디자인 · 목업 → AI로 플레이어블 빌드", mono="SC",
-             # 카드 썸네일은 예전처럼 2025 브리핑 영상의 유튜브 썸네일
-             thumb="https://youtu.be/-u-Y927xszk",
+             # 카드 썸네일 · 내려받기 단추 — 2026 빌드의 지휘 센터 스크린샷
+             cover="sc-redesign",
              desc="원작 캠페인 미션을 3D 공간으로 다시 설계한 개인 프로젝트. 2025년에 목업과 "
                   "기획서로 검증했던 것을, 2026년에 AI를 활용해 3일 만에 플레이 가능한 빌드로 "
                   "다시 만들었습니다.",
