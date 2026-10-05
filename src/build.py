@@ -285,11 +285,12 @@ def block(b):
         # 맨 위에 거는 큰 플레이 단추. 썸네일이 곧 그 게임의 얼굴이라
         # **지연 로딩을 걸지 않는다** — 첫 화면에서 빈 칸으로 보이면 안 된다.
         src, url, title, note = b[1], b[2], b[3], b[4]
+        go = b[5] if len(b) > 5 else "▶ 플레이"        # 내려받는 빌드는 단추 글자만 바꾼다
         return ('<a class="play rv" href="%s" target="_blank" rel="noopener noreferrer">'
                 '<span class="play-img"><img src="%s" alt="%s" decoding="async"></span>'
                 '<span class="play-t"><b>%s</b><em>%s</em></span>'
-                '<span class="play-go">▶ 플레이 <span class="ar">→</span></span></a>\n') % (
-            e(url), e(src), e(title), e(title), e(note))
+                '<span class="play-go">%s <span class="ar">→</span></span></a>\n') % (
+            e(url), e(src), e(title), e(title), e(note), e(go))
     if kind == "shots":
         # 화면 캡처 격자. 세로로 긴 휴대폰 화면이라 한 줄에 여럿 깔고
         # **눌러서 크게 보게** 한다 — figrow 에 그대로 넣으면 한 장이 화면을 덮는다.
