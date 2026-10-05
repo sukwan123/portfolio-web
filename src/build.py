@@ -309,7 +309,8 @@ def block(b):
                        % (e(src), e(cap)))
         return '<div class="figrow rv">%s</div>\n' % "".join(out)
     if kind == "embeds":
-        return embeds(C.VIDEOS[b[1]])
+        # 키(문자열)면 VIDEOS 에서 찾고, 목록이면 그대로 쓴다
+        return embeds(C.VIDEOS[b[1]] if isinstance(b[1], str) else b[1])
     if kind == "links":
         out = []
         for tag, label, note, url in b[1]:
