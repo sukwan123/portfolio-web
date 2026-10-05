@@ -385,9 +385,10 @@ def own_cover(w):
     (못 불러오면 모노그램이 남는다)."""
     badge = ("year", w["year"]) if w.get("year") else None
     base = cover_html(w.get("cover"), w.get("mono"), w["title"], badge)
-    if w.get("cover") or not w.get("videos"):
+    first = w.get("thumb") or (w["videos"][0][1] if w.get("videos") else "")
+    if w.get("cover") or not first:
         return base
-    src = embed_src(w["videos"][0][1]) or ""
+    src = embed_src(first) or ""
     vid = src.split("/embed/")[-1].split("?")[0] if "/embed/" in src else ""
     if not vid:
         return base
