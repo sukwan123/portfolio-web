@@ -155,10 +155,11 @@ def main():
 
     # 경력 한눈에
     h2(doc, "경력")
-    t = doc.add_table(rows=1, cols=3)
+    t = doc.add_table(rows=1, cols=4)
     t.style = "Table Grid"
-    for i, head in enumerate(("기간 · 회사", "프로젝트", "소속 · 직책 / 장르")):
+    for i, head in enumerate(("기간 · 회사", "프로젝트", "소속 · 직책 / 장르", "최종 연봉")):
         font(t.rows[0].cells[i].paragraphs[0].add_run(head), 8.5, True, GREY)
+    seen = set()
     for when, co, title, pos in C.HOME["career"]:
         cells = t.add_row().cells
         font(cells[0].paragraphs[0].add_run(co), 9.5, True)
@@ -166,8 +167,12 @@ def main():
         font(cells[0].paragraphs[0].add_run(when), 8.5, False, GREY)
         font(cells[1].paragraphs[0].add_run(title), 10, True)
         rich(cells[2].paragraphs[0], pos, 9)
+        if co not in seen:
+            font(cells[3].paragraphs[0].add_run(P.SALARY.get(co, "")), 9.5, True)
+        seen.add(co)
     for row in t.rows:
-        row.cells[0].width, row.cells[1].width, row.cells[2].width = Mm(38), Mm(52), Mm(80)
+        (row.cells[0].width, row.cells[1].width,
+         row.cells[2].width, row.cells[3].width) = Mm(36), Mm(46), Mm(66), Mm(22)
 
     # 경력 상세
     h2(doc, "경력 상세")

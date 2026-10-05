@@ -218,6 +218,8 @@ td.when{width:26%;font-size:8.5pt;color:#4A5159;padding-right:8pt}
 td.when b{display:block;font-size:9.5pt;color:#14171C}
 td.what b{font-size:10.5pt}
 td.what div{font-size:9pt;color:#4A5159;margin-top:1pt}
+td.pay{width:14%;text-align:right;font-size:9.5pt;font-weight:700;white-space:nowrap}
+td.pay.hd{font-size:8pt;font-weight:400;color:#6B727B;padding:0 0 2pt}
 td.k{width:19%;font-size:9pt;font-weight:700;padding-right:8pt}
 td.v{font-size:9pt;color:#3C434B}
 
@@ -366,6 +368,10 @@ DETAIL = [
      ("p-kuf2.html", "상세")),
 ]
 
+# 회사별 최종 연봉 — 이력서에만 적는다. 웹 포트폴리오에는 싣지 않는다.
+SALARY = {"넷마블네오": "6,931만원", "너바나나": "5,700만원",
+          "님블뉴런": "4,850만원", "블루사이드": "4,100만원"}
+
 # 업계 외 — 이력서에서는 묶어서 세 줄로 (사이트의 키워드 나열과 다르다)
 OFFINDUSTRY = ("오디오드라마 집필 · 연출 · 제작 (현재)<br>"
                "시나리오 보조작가 — 어린이 드라마 · 만화 · 애니메이션 대본 · 글콘티<br>"
@@ -393,11 +399,16 @@ def resume():
                     for n, lab in C.HOME["stats"])
     b.append('<div class="tiles">%s</div>' % tiles)
 
-    b.append('<h2>경력</h2><table>')
+    b.append('<h2>경력</h2><table><tr><td class="when"></td><td class="what"></td>'
+             '<td class="pay hd">최종 연봉</td></tr>')
+    seen = set()
     for when, co, title, pos in C.HOME["career"]:
+        # 연봉은 회사 기준 — 같은 회사가 두 줄이면 위(최근) 줄에만 적는다
+        pay = SALARY.get(co, "") if co not in seen else ""
+        seen.add(co)
         b.append('<tr><td class="when"><b>%s</b>%s</td>'
-                 '<td class="what"><b>%s</b><div>%s</div></td></tr>'
-                 % (e(co), e(when), e(title), pos))
+                 '<td class="what"><b>%s</b><div>%s</div></td><td class="pay">%s</td></tr>'
+                 % (e(co), e(when), e(title), pos, e(pay)))
     b.append('</table>')
 
     b.append('<h2>경력 상세</h2>')
