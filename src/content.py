@@ -757,10 +757,10 @@ PERSONAL = dict(
     # 최신순. 각 항목은 page 로 자기 문서를 하나씩 가진다.
     own=[
         dict(slug="darkseoul", page="pw-darkseoul.html",
-             title="다크서울 — 소울라이크 스테이지 레벨 기획서", year="2026",
-             meta="레벨디자인 · 기획서 · UE5.8 목업 · 1인 개발", mono="DS", cover="darkseoul",
+             title="다크서울 — 소울라이크 스테이지 레벨 디자인", year="2026",
+             meta="레벨디자인 · 기획서 · UE5.8 · 1인 개발", mono="DS", cover="darkseoul",
              desc="비에 잠긴 밤의 서울 도심을 무대로, 소울라이크 스테이지 하나를 블록아웃부터 "
-                  "기믹 · 몹 · 지름길 · 보스 진입까지 처음부터 끝까지 설계한 레벨 기획서입니다.",
+                  "기믹 · 몹 · 지름길 · 보스 진입까지 처음부터 끝까지 설계한 레벨 디자인 작업입니다.",
              blocks=[
                  # 원본: github.com/sukwan123/dark-seoul-level-design — 갱신되면 doc/darkseoul/ 로 다시 복사
                  ("frame", "doc/darkseoul/index.html", "다크서울 레벨 기획서",
