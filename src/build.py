@@ -466,10 +466,9 @@ def content_card(c):
   <div class="cbody">
     <div class="m">%s</div>
     <h4>%s</h4>
-    <p>%s</p>
   </div>
 </a>
-""" % (e(c["slug"]), cov, e(c["meta"]), e(c["title"]), e(c["summary"]))
+""" % (e(c["slug"]), cov, e(c["meta"]), e(c["title"]))
 
 
 # ──────────────────────────────────────────────────────── 갤러리
@@ -530,12 +529,13 @@ def phero(eyebrow, title, tag, note, cover=None, num=None, chips=None):
     <p class="eyebrow">%s</p>
     <h1>%s</h1>
     <p class="tag">%s</p>
-    <p class="note">%s</p>
+    %s
     %s
   </div>
   %s
 </div>
-""" % (cls, bg, eyebrow, title, tag, note, chipel, numel)
+""" % (cls, bg, eyebrow, title, tag,
+       ('<p class="note">%s</p>' % note) if note else "", chipel, numel)
 
 
 # ──────────────────────────────────────────────────────── 홈
@@ -672,6 +672,7 @@ def build_kingsroad():
     k = C.KINGSROAD
     fields = [c for c in C.CONTENTS if c["group"] == "field"]
     dungeons = [c for c in C.CONTENTS if c["group"] == "dungeon"]
+    raids = [c for c in C.CONTENTS if c["group"] == "raid"]
 
     out = [head("왕좌의 게임: 킹스로드 · 손석완 레벨디자인",
                 "넷마블네오 왕좌의 게임: 킹스로드에서 담당한 필드 5곳과 던전 7종."),
@@ -701,9 +702,12 @@ def build_kingsroad():
     <div class="cgrid">%s</div>
     <h3 class="h3 rv" style="margin-top:44px">던전</h3>
     <div class="cgrid">%s</div>
+    <h3 class="h3 rv" style="margin-top:44px">레이드</h3>
+    <div class="cgrid">%s</div>
   </div>
 </section>
-""" % ("".join(content_card(c) for c in fields), "".join(content_card(c) for c in dungeons)))
+""" % ("".join(content_card(c) for c in fields), "".join(content_card(c) for c in dungeons),
+       "".join(content_card(c) for c in raids)))
 
     # 레벨 기능 · AI 배너
     s = C.SYSTEMS
@@ -754,13 +758,14 @@ def build_kingsroad():
 
 # ──────────────────────────────────────────────────────── 콘텐츠 상세
 def build_content(c, prev, next_):
-    kind = "필드 지역" if c["group"] == "field" else "던전"
-    out = [head("%s · 킹스로드 레벨디자인" % c["title"], c["summary"]),
+    kind = {"field": "필드 지역", "raid": "레이드"}.get(c["group"], "던전")
+    out = [head("%s · 킹스로드 레벨디자인" % c["title"],
+                "%s — 왕좌의 게임: 킹스로드 %s 레벨디자인" % (c["title"], kind)),
            bar("프로젝트"),
            crumb([("index.html", "홈"), ("kingsroad.html", "왕좌의 게임: 킹스로드"), (None, c["nav"])]),
            phero("%s · %s" % (kind, c["badge"][1]), c["title"],
                  "%s<span class=\"dot\">·</span><b>%s</b>" % (e(c["meta"]), e(c["badge"][1])),
-                 c["desc"], cover=c.get("cover"), num=c["num"])]
+                 "", cover=c.get("cover"), num=c["num"])]   # 설명 문구는 싣지 않는다
 
     out.append('<main>\n<section class="tight"><div class="wrap">')
     out.append(block(("kv", [("담당", c["role"]), ("구분", c["meta"])])))
