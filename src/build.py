@@ -331,6 +331,13 @@ def block(b):
                          '<img src="%s" alt="%s" loading="lazy" decoding="async"></button>'
                          % (e(src), e(alt), e(alt), e(src), e(alt)))
         return '<div class="grid g3 rv">%s</div>\n' % "".join(cells)
+    if kind == "frame":
+        # 다른 웹 문서를 페이지 안에 그대로 띄운다 — 인터랙티브 기획서처럼 캡처로는 안 되는 것
+        _, src, title, note = b
+        return ('<figure class="frame rv"><div class="frame-bar"><b>%s</b>'
+                '<a href="%s" target="_blank" rel="noopener">새 창에서 크게 보기 ↗</a></div>'
+                '<iframe src="%s" title="%s" loading="lazy"></iframe>'
+                '<figcaption>%s</figcaption></figure>\n') % (e(title), e(src), e(src), e(title), e(note))
     if kind == "shotfig":
         _, src, cap, figcap = b
         return ('<figure class="fig rv"><button class="shot" data-src="%s" data-cap="%s" '

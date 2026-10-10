@@ -1,0 +1,1231 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>다크서울 레벨 기획서</title>
+<!-- 생성물: build_plan.py 가 template.html + zones_ko.json + objects_ko.json + SoulsSeoulLevel.cpp 로 만든다. index.html 을 직접 고치지 말 것. -->
+<style>
+:root{
+  --bg:#07090d; --bg2:#0c1017; --panel:#111722; --panel2:#161d2a; --line:#243042; --line2:#2f3d54;
+  --ink:#e6ebf2; --ink2:#aab4c3; --ink3:#77839a;
+  --sodium:#ffb547; --neon:#ff3d6e; --cold:#7cc4ff; --exit:#39e48a; --gold:#e9c46a;
+  --serif:"Noto Serif KR","Nanum Myeongjo","Batang","AppleMyungjo",serif;
+  --sans:"Pretendard","Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
+  --mono:"D2Coding","Consolas","SFMono-Regular",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.65;word-break:keep-all;overflow-wrap:anywhere}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.06;
+  background-image:repeating-linear-gradient(100deg,transparent 0 13px,#9fc4ff 13px 14px,transparent 14px 31px);animation:rain 1.1s linear infinite}
+@keyframes rain{to{background-position:-40px 220px}}
+@media (prefers-reduced-motion:reduce){body::before{animation:none}}
+a{color:var(--cold)}
+.wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 20px}
+@media (max-width:600px){.wrap{padding:0 16px}}
+nav.top{position:sticky;top:0;z-index:50;background:rgba(7,9,13,.86);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav.top .wrap{display:flex;gap:4px;align-items:center;overflow-x:auto;white-space:nowrap;height:52px;scrollbar-width:none}
+nav.top b{font-family:var(--serif);letter-spacing:.18em;margin-right:14px;color:var(--gold);font-size:14px}
+nav.top a{color:var(--ink2);text-decoration:none;font-size:13.5px;padding:6px 10px;border-radius:6px}
+nav.top a:hover{background:var(--panel2);color:var(--ink)}
+header.hero{position:relative;min-height:80vh;display:flex;align-items:flex-end;overflow:hidden;border-bottom:1px solid var(--line)}
+header.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.9) contrast(1.05) brightness(.62)}
+header.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,9,13,.2) 0%,rgba(7,9,13,.35) 45%,var(--bg) 100%)}
+header.hero .wrap{position:relative;z-index:2;padding-bottom:52px;width:100%}
+.kicker{font-size:12.5px;letter-spacing:.32em;color:var(--sodium);text-transform:uppercase}
+h1{font-family:var(--serif);font-weight:700;font-size:clamp(44px,8vw,96px);line-height:1.02;margin:8px 0 6px;letter-spacing:.06em;text-shadow:0 0 28px rgba(255,181,71,.25)}
+h1 small{display:block;font-size:.34em;letter-spacing:.5em;color:var(--ink2);margin-top:10px}
+.card-open{margin-top:22px;border-left:2px solid var(--sodium);padding:4px 0 4px 18px;font-family:var(--serif);font-size:clamp(15px,1.8vw,19px);color:#f3efe6;line-height:1.9}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:22px;font-size:13px;color:var(--ink2)}
+.meta b{color:var(--ink)}
+section{position:relative;z-index:1;padding:60px 0 8px}
+h2{font-family:var(--serif);font-size:30px;margin:0 0 14px;letter-spacing:.02em}
+h2 .no{font-family:var(--mono);font-size:13px;color:var(--sodium);display:block;letter-spacing:.2em}
+h3{font-size:17px;margin:26px 0 10px;color:#f0f3f8}
+ul.b{margin:0;padding-left:18px}
+ul.b li{margin:2px 0}
+ul.b li::marker{color:var(--sodium)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(460px,100%),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr))}
+.box{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.box h4{margin:0 0 8px;font-size:15px;color:var(--gold)}
+.stat{display:flex;flex-direction:column;gap:2px}
+.stat .v{font-family:var(--serif);font-size:28px;color:#fff;line-height:1.15}
+.stat .v small{font-size:14px;color:var(--ink2)}
+.stat .k{font-size:12.5px;color:var(--ink3);letter-spacing:.06em}
+.stat .d{font-size:12.5px;color:var(--ink2)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;padding:3px 10px;border-radius:999px;border:1px solid var(--line2);color:var(--ink2);background:var(--bg2);text-decoration:none}
+a.chip:hover,button.chip:hover{border-color:var(--sodium);color:var(--ink)}
+button.chip{font-family:inherit;cursor:pointer}
+.goal{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);text-decoration:none;color:var(--ink);font-weight:600}
+.goal:hover{border-color:var(--sodium)}
+.goal span{font-family:var(--mono);color:var(--sodium);font-size:12px;font-weight:400}
+.oneline{font-family:var(--serif);font-size:clamp(16px,2vw,20px);color:#f3efe6;margin:0}
+.pal{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pal div{flex:1 1 80px;min-width:80px;border-radius:8px;height:46px;position:relative;border:1px solid var(--line)}
+.pal div span{position:absolute;left:8px;bottom:5px;font-size:11.5px;color:#fff;text-shadow:0 1px 3px #000}
+.principle{border-left:3px solid var(--sodium)}
+.principle p{margin:0;color:var(--ink2)}
+.principle h4 .n{font-family:var(--mono);color:var(--ink3);margin-right:6px}
+.note{font-size:12.5px;color:var(--ink3)}
+/* plan */
+.planwrap{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:14px}
+@media (max-width:980px){.planwrap{grid-template-columns:1fr}}
+.planbox{position:relative;background:#05070a;border:1px solid var(--line);border-radius:12px;overflow:hidden;aspect-ratio:1010/950;touch-action:none}
+.planbox svg{width:100%;height:100%;display:block;cursor:grab;user-select:none}
+.planbox svg.drag{cursor:grabbing}
+.zoombtn{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:6px;z-index:3}
+.zoombtn button{width:36px;height:36px;border-radius:8px;border:1px solid var(--line2);background:rgba(17,23,34,.9);color:var(--ink);font-size:16px;cursor:pointer}
+.side{display:flex;flex-direction:column;gap:12px}
+.side .box{padding:12px 14px}
+.side h4{margin:0 0 8px;font-size:12.5px;color:var(--ink3);letter-spacing:.08em}
+.tog label{display:flex;align-items:center;gap:8px;font-size:13.5px;padding:2px 0;cursor:pointer}
+.tog input{accent-color:var(--sodium)}
+ul.leg{list-style:none;margin:0;padding:0;font-size:12.5px}
+ul.leg li{display:flex;align-items:center;gap:7px;padding:2px 0;color:var(--ink2);cursor:pointer;flex-wrap:wrap}
+ul.leg li.off{opacity:.35}
+.sw{display:inline-block;width:22px;height:5px;border-radius:3px;flex:none}
+.dot{display:inline-block;width:11px;height:11px;border-radius:50%;flex:none}
+.dia{display:inline-block;width:9px;height:9px;transform:rotate(45deg);flex:none}
+/* svg */
+svg.plan .road{fill:#0d1016}svg.plan .walk{fill:#141820}
+svg.plan .sink{fill:url(#hatch);stroke:#5a2630;stroke-width:1;stroke-dasharray:4 3}
+svg.plan .island{fill:#1f2733;stroke:#56657d}svg.plan .zebra{fill:#3a4252}
+svg.plan .bld{fill:#192029;stroke:#2c3747}svg.plan .bld.dim,svg.plan .villa.dim{fill:#12171e;stroke:#212a36}
+svg.plan .villa{fill:#1d2530;stroke:#33425a}svg.plan .academy{fill:#1b2536;stroke:#4a6a9a}
+svg.plan .store{fill:#1e1a14;stroke:#5d4a2a}svg.plan .tower{fill:#231d12;stroke:var(--gold)}svg.plan .annex{fill:#211d17;stroke:#6b5a3a}
+svg.plan .core{fill:#1c1c1c;stroke:#444}
+svg.plan .garden{fill:#18221b;stroke:#3f5a3f}svg.plan .ring{fill:none;stroke:#e9c46a;stroke-dasharray:3 4;opacity:.7}
+svg.plan .fountain{fill:#0c1a22;stroke:#7cc4ff}svg.plan .rotunda{fill:#2a2216;stroke:var(--gold)}
+svg.plan .mall{fill:rgba(91,140,255,.05);stroke:#5b8cff;stroke-dasharray:8 6;stroke-width:1.2}
+svg.plan .bridge{fill:#202a35;stroke:#4c5b70}svg.plan .slab{fill:#1c2027;stroke:#3a414c}
+svg.plan .beam{stroke:#a0522d;stroke-width:4.5;opacity:.8}
+svg.plan .jib{stroke:#ffcc33;stroke-width:3;stroke-dasharray:10 5}
+svg.plan .jibr{fill:none;stroke:#ffcc33;stroke-width:.8;stroke-dasharray:2 6;opacity:.35}
+svg.plan .yardwall{fill:#26303d;stroke:#4c5b70}
+svg.plan .blbl{fill:#6f7c90;font-size:11px;font-family:var(--sans)}svg.plan .blbl.mid{text-anchor:middle;font-size:12px;fill:#56627a;letter-spacing:.08em}
+svg.plan .zone rect{fill:rgba(255,181,71,.02);stroke:rgba(255,181,71,.35);stroke-width:1.2;stroke-dasharray:5 4;cursor:pointer;transition:fill .15s}
+svg.plan .zone:hover rect,svg.plan .zone:focus rect{fill:rgba(255,181,71,.12);stroke:var(--sodium)}
+svg.plan .zone{outline:none}
+svg.plan .zlbl{fill:var(--sodium);font-size:13px;font-weight:700;paint-order:stroke;stroke:#05070a;stroke-width:4px;cursor:pointer;font-family:var(--sans)}
+svg.plan .rt{fill:none;stroke-width:3.4;stroke-linejoin:round;stroke-linecap:round;opacity:.95}
+svg.plan .rt.sc{stroke-dasharray:3 5;stroke-width:2.4;opacity:.75}
+svg.plan .rt.ride{stroke-dasharray:12 6;stroke-width:2.6}
+svg.plan .rt.dim{opacity:.08}
+svg.plan .wp circle{fill:#05070a;stroke:#fff;stroke-width:1}
+svg.plan .wp text{fill:#9aa4b2;font-size:9px;font-family:var(--mono);paint-order:stroke;stroke:#05070a;stroke-width:3px}
+svg.plan .poi{cursor:pointer;outline:none}
+svg.plan .poi circle,svg.plan .poi rect{stroke:#05070a;stroke-width:1.6}
+svg.plan .poi text{font-size:10px;text-anchor:middle;fill:#05070a;font-weight:700;pointer-events:none}
+svg.plan .poi .lead{stroke:#9aa4b2;stroke-width:.8;stroke-dasharray:2 2;opacity:.8}
+svg.plan .poi:hover circle,svg.plan .poi:hover rect,svg.plan .poi:focus circle,svg.plan .poi:focus rect,svg.plan .poi.sel circle,svg.plan .poi.sel rect{stroke:#fff;stroke-width:2.4;filter:drop-shadow(0 0 5px #fff)}
+svg.plan #lyr-gimmick circle{fill:#7cc4ff}
+svg.plan .g-shortcut circle{fill:#39e48a}svg.plan .g-trap circle,svg.plan .g-killzone circle{fill:#ff5470}
+svg.plan .g-key circle,svg.plan .g-generator circle{fill:#ffd166}svg.plan .g-crane circle{fill:#ffcc33}
+svg.plan .g-landmark circle{fill:var(--gold)}svg.plan .g-light circle{fill:#ffe9b0}svg.plan .g-secret circle{fill:#c792ea}
+svg.plan .g-shop circle{fill:#56627a}svg.plan .g-shop-mob circle{fill:#a8475a}svg.plan .g-shop-chest circle{fill:#8a7440}svg.plan .g-shop-npc circle{fill:#7a6aa0}
+svg.plan .fire circle{fill:#ff7a1a;filter:drop-shadow(0 0 6px #ff7a1a)}
+svg.plan .loot circle{fill:#e9c46a}svg.plan .loot.weapon circle{fill:#fff}
+svg.plan .npc circle{fill:#9ad1ff}svg.plan .msg circle{fill:#c0b49a}
+svg.plan .compass path{fill:var(--ink2)}svg.plan .compass text{fill:var(--ink2);font-size:13px;text-anchor:middle}
+svg.plan .scale line{stroke:var(--ink2);stroke-width:2}svg.plan .scale text{fill:var(--ink2);font-size:11px}
+svg.plan.hide-route #lyr-route,svg.plan.hide-gimmick #lyr-gimmick,svg.plan.hide-mob #lyr-mob,svg.plan.hide-fire #lyr-fire,svg.plan.hide-loot #lyr-loot,svg.plan.hide-npc #lyr-npc,svg.plan.hide-zones #lyr-zones,svg.plan.hide-wp .wp{display:none}
+/* mini plans in modals */
+svg.mini{width:100%;height:auto;display:block;background:#05070a;border:1px solid var(--line);border-radius:10px}
+svg.mini .blbl,svg.mini .zlbl,svg.mini .wp,svg.mini .compass,svg.mini .scale{display:none}
+svg.mini .zone rect{fill:none;stroke:rgba(255,181,71,.25);pointer-events:none}
+svg.mini .zone.cur rect{stroke:var(--sodium);stroke-width:1.5;stroke-dasharray:none}
+svg.mini .rt{vector-effect:non-scaling-stroke;stroke-width:3px}
+svg.mini .beam,svg.mini .jib{vector-effect:non-scaling-stroke;stroke-width:3px}
+svg.mini .lead{display:none}
+svg.mini .mark circle{fill:#05070a;stroke:var(--sodium)}
+svg.mini .mark text{fill:var(--sodium);font-weight:700;text-anchor:middle;font-family:var(--sans)}
+svg.mini .mark .ml{fill:#e6ebf2;font-weight:600;text-anchor:start;paint-order:stroke;stroke:#05070a}
+svg.mini .here{fill:none;stroke:#fff;stroke-dasharray:3 3}
+.tip{position:fixed;z-index:120;max-width:280px;background:rgba(14,19,28,.97);border:1px solid var(--line2);border-radius:10px;padding:8px 11px;font-size:13px;box-shadow:0 10px 30px rgba(0,0,0,.5);pointer-events:none;opacity:0;transition:opacity .12s}
+.tip.on{opacity:1}
+.tip .t{font-size:11.5px;color:var(--sodium)}
+.tip .n{font-weight:700;color:#fff}
+/* zone cards */
+.zcard{cursor:pointer;transition:border-color .15s,transform .15s;padding:0;overflow:hidden}
+.zcard:hover,.zcard:focus-visible{border-color:var(--sodium);transform:translateY(-2px);outline:none}
+.zcard .im{aspect-ratio:16/9;background:#0b0f15 center/cover no-repeat;position:relative}
+.zcard .im .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:12px;letter-spacing:.1em}
+.zcard .bd{padding:10px 14px 14px}
+.zcard .no{font-family:var(--mono);font-size:12px;color:var(--sodium)}
+.zcard h4{margin:2px 0 6px;color:#fff;font-size:15.5px}
+/* modal */
+.modal{position:fixed;inset:0;z-index:90;display:none;background:rgba(3,5,8,.84);backdrop-filter:blur(4px);overflow-y:auto;padding:32px 14px}
+.modal.on{display:block}
+.mbox{max-width:min(1000px,100%);margin:0 auto;background:var(--bg2);border:1px solid var(--line2);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.mhead{position:relative;padding:20px 24px 16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#141b27,var(--bg2))}
+.mhead .no{font-family:var(--mono);color:var(--sodium);font-size:12.5px;letter-spacing:.14em}
+.mhead h3{font-family:var(--serif);font-size:24px;margin:4px 70px 4px 0}
+.mhead .where{font-size:13.5px;color:var(--ink2)}
+.mclose{position:absolute;right:14px;top:14px;width:40px;height:40px;border-radius:10px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);font-size:18px;cursor:pointer}
+.mtools{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.mtools button{height:32px;padding:0 12px;border-radius:8px;border:1px solid var(--line2);background:var(--panel);color:var(--ink2);cursor:pointer;font-size:12.5px}
+.mbody{padding:18px 24px 24px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px}
+@media (max-width:820px){.modal{padding:12px 8px}.mbody{grid-template-columns:1fr;padding:14px 14px 20px}.mhead{padding:16px 14px 14px}.mhead h3{font-size:20px}}
+.mbody h5{margin:14px 0 5px;font-size:12px;letter-spacing:.14em;color:var(--sodium)}
+.mbody h5:first-child{margin-top:0}
+.mfull{grid-column:1/-1}
+.mbody>*{min-width:0}
+.chip{max-width:100%}
+.objchips{display:flex;flex-wrap:wrap;gap:6px}
+.shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(220px,100%),1fr));gap:10px}
+figure{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+figure .fi{aspect-ratio:16/9;background:#0a0d12;position:relative;cursor:zoom-in}
+figure img{width:100%;height:100%;object-fit:cover;display:block}
+figure .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;cursor:default;color:var(--ink3);font-size:12px;letter-spacing:.12em;
+  background:repeating-linear-gradient(135deg,#0b0f15 0 10px,#0d121a 10px 20px)}
+figcaption{padding:6px 10px 8px;font-size:12.5px;color:var(--ink2)}
+.lb{position:fixed;inset:0;z-index:130;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
+.lb.on{display:flex}
+.lb img{max-width:100%;max-height:90vh;border-radius:8px}
+.chart{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 12px 4px}
+.chart svg{width:100%;height:auto;display:block}
+#pacing .pgrid{stroke:#1d2533;stroke-width:1}
+#pacing .pax{fill:#6f7c90;font-size:11px;text-anchor:middle;font-family:var(--mono)}
+#pacing .parea{fill:rgba(255,61,110,.12)}#pacing .pline{fill:none;stroke:var(--neon);stroke-width:2.2}
+#pacing .pdot circle{fill:#05070a;stroke:var(--neon);stroke-width:1.6}
+#pacing .plab{fill:#e6ebf2;font-size:11px;paint-order:stroke;stroke:#111722;stroke-width:3px}
+#pacing .pfire{stroke:#ff7a1a;stroke-dasharray:3 4}#pacing .pfl{fill:#ffb070;font-size:11px}
+footer{padding:50px 0 70px;color:var(--ink3);font-size:12.5px}
+@media print{nav.top,.zoombtn,.side .tog,body::before{display:none}}
+svg.plan .first{fill:none;stroke:#ffffff;stroke-width:7;stroke-linejoin:round;stroke-linecap:round;opacity:.16}
+svg.plan.hide-first #lyr-first{display:none}
+svg.plan .poi path{stroke:#05070a;stroke-width:1.6}
+svg.plan .poi:hover path,svg.plan .poi:focus path,svg.plan .poi.sel path{stroke:#fff;stroke-width:2.4;filter:drop-shadow(0 0 5px #fff)}
+.tri{display:inline-block;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:10px solid #e8eef5;flex:none}
+.sq{display:inline-block;width:9px;height:9px;flex:none}
+/* elevation */
+svg.elev{width:100%;height:auto;display:block}
+svg.elev .eg{stroke:#1d2533;stroke-width:1}
+svg.elev .ea{fill:#6f7c90;font-size:11px;text-anchor:end;font-family:var(--mono)}
+svg.elev .eband{fill:rgba(255,255,255,.015);stroke:rgba(255,181,71,.18);stroke-dasharray:3 4}
+svg.elev .eband.alt{fill:rgba(255,255,255,.035)}
+svg.elev .ez{fill:var(--sodium);font-size:11.5px;font-weight:700;text-anchor:middle;cursor:pointer;font-family:var(--sans);paint-order:stroke;stroke:#111722;stroke-width:3px}
+svg.elev .eground{fill:rgba(124,196,255,.06)}
+svg.elev .eroute{stroke-width:3.2;stroke-linecap:round}
+svg.elev .eroute.ride{stroke-dasharray:8 5}
+svg.elev .poi{cursor:pointer;outline:none}
+svg.elev .poi circle{fill:#7cc4ff;stroke:#05070a;stroke-width:1.4}
+svg.elev .poi path,svg.elev .poi rect{stroke:#05070a;stroke-width:1.4}
+svg.elev .poi text{font-size:9.5px;text-anchor:middle;fill:#05070a;font-weight:700;pointer-events:none}
+svg.elev .poi:hover circle,svg.elev .poi:hover path,svg.elev .poi:hover rect,svg.elev .poi:focus circle{stroke:#fff;stroke-width:2.2}
+svg.elev .g-shortcut circle{fill:#39e48a}svg.elev .g-trap circle,svg.elev .g-killzone circle{fill:#ff5470}
+svg.elev .g-key circle,svg.elev .g-generator circle{fill:#ffd166}svg.elev .g-crane circle{fill:#ffcc33}
+svg.elev .g-landmark circle{fill:var(--gold)}svg.elev .g-light circle{fill:#ffe9b0}svg.elev .g-secret circle{fill:#c792ea}
+svg.elev .fire circle{fill:#ff7a1a}
+/* modal: connector lines between example images and camera markers */
+.mbox{position:relative}
+svg.links{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:2}
+svg.links path{fill:none;stroke:rgba(255,181,71,.38);stroke-width:1.2;stroke-dasharray:3 4}
+svg.links path.hi{stroke:var(--sodium);stroke-width:2;stroke-dasharray:none}
+svg.mini .cam path{fill:var(--sodium);stroke:#05070a}
+svg.mini .cam text{fill:#05070a;font-weight:700;text-anchor:middle;font-family:var(--mono)}
+svg.mini .cam.hi path{fill:#fff}
+figure .num{position:absolute;left:6px;top:6px;z-index:1;background:var(--sodium);color:#05070a;font:700 11px var(--mono);border-radius:999px;padding:1px 7px}
+.rolebig{display:inline-block;font-weight:700;color:#05070a;background:var(--sodium);border-radius:6px;padding:2px 10px;font-size:13px}
+/* 3D */
+.v3wrap{position:relative;background:#05070a;border:1px solid var(--line);border-radius:12px;overflow:hidden;width:100%;height:clamp(320px,56vw,700px)}
+.v3wrap canvas{display:block;width:100%;height:100%}
+.v3msg{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--ink2);font-size:14px;text-align:center;padding:20px}
+.v3msg button{height:40px;padding:0 18px;border-radius:10px;border:1px solid var(--sodium);background:rgba(255,181,71,.1);color:var(--ink);font-size:14px;cursor:pointer}
+.v3bar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:10px 0 0;font-size:13px;color:var(--ink2)}
+.v3bar input[type=range]{accent-color:var(--sodium);width:min(200px,60vw)}
+.v3bar label{display:flex;gap:6px;align-items:center;cursor:pointer}
+.v3bar button{height:30px;padding:0 10px;border-radius:8px;border:1px solid var(--line2);background:var(--panel);color:var(--ink2);cursor:pointer;font-size:12.5px}
+
+/* modal sizing: to content, capped at the viewport (scrolls inside) */
+.modal{align-items:center;justify-content:center;overflow:hidden;padding:24px 14px}
+.modal.on{display:flex}
+.mbox{max-height:calc(100vh - 48px);overflow-y:auto;overscroll-behavior:contain;margin:0}
+.mbox.zone{width:min(1000px,100%)}
+.mbox.obj{width:fit-content;min-width:min(380px,100%);max-width:min(540px,100%)}
+.mbox.obj .mhead h3{margin-right:56px}
+.mbox.obj .shots{display:flex;flex-wrap:wrap;gap:10px}
+.mbox.obj figure{width:min(480px,100%)}
+@media (max-width:820px){.modal{padding:10px 8px}.mbox{max-height:calc(100vh - 20px)}}
+</style>
+</head>
+<body>
+<nav class="top" aria-label="목차"><div class="wrap">
+  <b>DARK SEOUL</b>
+  <a href="#overview">개요</a><a href="#principles">설계 원칙</a><a href="#plan-sec">평면도</a><a href="#elev-sec">측면도</a><a href="#v3-sec">3D</a><a href="#zones">구역</a><a href="#pacing-sec">긴장도</a>
+</div></nav>
+
+<header class="hero">
+  <img src="assets/shots/hero_start_a.jpg" data-fb="assets/captures/hero_start_view.jpg" alt="시작 지점에서 본 대로와 백화점, 육교" onerror="if(this.dataset.fb){this.src=this.dataset.fb;this.dataset.fb=''}else{this.remove()}">
+  <div class="wrap">
+    <div class="kicker">Level Design Document · Soulslike Stage Mockup</div>
+    <h1>다크서울<small>DARK SEOUL</small></h1>
+    <div class="card-open">레벨 디자이너 손석완의 포트폴리오<br>소울라이크 스테이지 하나를 처음부터 끝까지 설계한 목업<br>무대는 비에 잠긴 서울 도심<br>전투와 조작감보다는 길과 공간이 어떻게 짜였는지를 봐 주세요.</div>
+    <div class="meta"><span>작성 <b>손석완</b></span><span>엔진 <b>UE 5.8 · C++ 런타임 빌더</b></span><span>맵 <b>Lvl_Seoul_Mockup</b></span><span>기준일 <b>2026-10-11</b></span></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section id="overview">
+  <h2><span class="no">01 · OVERVIEW</span>개요</h2>
+  <div class="grid g2">
+    <div class="box"><h4>목적</h4><ul class="b">
+      <li>레벨 디자이너 포트폴리오</li>
+      <li>소울라이크 스테이지 1개 — 블록아웃부터 기믹·몹·지름길·보스 진입까지</li>
+      <li>좌표·수치는 레벨 빌더 코드에서 추출</li></ul></div>
+    <div class="box"><h4>컨셉</h4>
+      <p class="oneline">비에 잠긴 밤의 서울을 가로질러, 호텔 공중 정원의 「분수의 신부」에게.</p>
+      <div class="chips" style="margin-top:12px"><span class="chip">끝없는 비</span><span class="chip">나트륨 가로등</span><span class="chip">차가운 형광</span><span class="chip">네온 간판</span><span class="chip">젖은 아스팔트</span><span class="chip">금빛 호텔</span><span class="chip">시든 꽃</span></div>
+      <div class="pal"><div style="background:#ffb547"><span>나트륨</span></div><div style="background:#7cc4ff"><span>형광</span></div><div style="background:#ff3d6e"><span>네온</span></div><div style="background:#e9c46a"><span>호텔 금</span></div><div style="background:#0d1016"><span>젖은 밤</span></div></div>
+    </div>
+  </div>
+  <h3>기본사항표</h3>
+  <div class="grid g4">
+    <div class="box stat"><span class="k">첫 완주 동선</span><span class="v">≈ 1091<small> m</small></span></div>
+    <div class="box stat"><span class="k">플레이 공간</span><span class="v">200 × 186 m</span></div>
+    <div class="box stat"><span class="k">화톳불 · 지름길</span><span class="v">3 · 3</span></div>
+    <div class="box stat"><span class="k">몹</span><span class="v">37<small> + 보스</small></span></div>
+    <div class="box stat"><span class="k">기믹</span><span class="v">8<small> 종</small></span></div>
+    <div class="box stat"><span class="k">예상 첫 플레이</span><span class="v">25~40<small> 분</small></span></div>
+  </div>
+</section>
+
+<section id="principles">
+  <h2><span class="no">02 · PRINCIPLES</span>핵심 설계 원칙</h2>
+  <div class="grid g2">
+    <div class="box principle" id="pr-1"><h4><span class="n">1</span>동선은 스스로 읽힌다</h4><p>갈 길에만 빛, 목적지는 처음부터 보이게.</p></div>
+    <div class="box principle" id="pr-2"><h4><span class="n">2</span>실제 건물을 게임적으로 재구성</h4><p>건물의 원래 쓰임을 그대로 동선과 전투로.</p></div>
+    <div class="box principle" id="pr-3"><h4><span class="n">3</span>기믹의 당위성</h4><p>장치는 있을 법한 곳에만, 필요하면 그 자리에 사연을.</p></div>
+    <div class="box principle" id="pr-4"><h4><span class="n">4</span>매복은 놀래키지만 억까는 하지 않는다</h4><p>있을 법한 곳에서, 먼저 힌트, 대응할 거리.</p></div>
+    <div class="box principle" id="pr-5"><h4><span class="n">5</span>수직 이동의 재미</h4><p>계속 오르내리며 위에서 공간을 내려다본다.</p></div>
+    <div class="box principle" id="pr-6"><h4><span class="n">6</span>화톳불은 적게, 지름길로 잇는다</h4><p>화톳불 셋, 지름길이 시작점으로 모인다.</p></div>
+    <div class="box principle" id="pr-7"><h4><span class="n">7</span>텐션의 수축과 이완</h4><p>좁음과 트임, 전투와 쉼이 번갈아 온다.</p></div>
+    <div class="box principle" id="pr-8"><h4><span class="n">8</span>숨겨진 요소</h4><p>곁길 끝에 상자·NPC·무기.</p></div>
+    <div class="box principle" id="pr-9"><h4><span class="n">9</span>공간의 크기와 균형</h4><p>빈 곳은 줄이고, 싸울 곳은 넓게.</p></div>
+  </div>
+</section>
+
+<section id="plan-sec">
+  <h2><span class="no">03 · FLOOR PLAN</span>평면도</h2>
+  <ul class="b note" style="margin:-4px 0 14px">
+    <li>위가 북쪽 · 1칸 10 m · 선 색 = 높이</li>
+    <li>표식을 누르면 설명, 점선 사각형을 누르면 구역 · 휠 확대, 끌어서 이동</li>
+  </ul>
+  <div class="planwrap">
+    <div class="planbox" id="planbox">
+      <div class="zoombtn"><button type="button" id="zin" aria-label="확대">+</button><button type="button" id="zout" aria-label="축소">−</button><button type="button" id="zreset" aria-label="원래 크기">⟲</button></div>
+      <svg id="plan" class="plan" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1010 950" role="img" aria-label="다크서울 평면도">
+<defs><marker id="arw" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker><pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="#3a1d22" stroke-width="5"/></pattern><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M50 0 L0 0 0 50" fill="none" stroke="#141a22" stroke-width="1"/></pattern></defs>
+<rect x="0" y="0" width="1010" height="950" fill="url(#grid)"/>
+<g id="lyr-base">
+<rect class="road" x="385.0" y="40.0" width="150.0" height="900.0"/>
+<rect class="walk" x="375.0" y="40.0" width="10.0" height="900.0"/>
+<rect class="sink" x="385.0" y="342.5" width="150.0" height="255.0"/>
+<rect class="sink" x="537.5" y="322.5" width="217.5" height="77.5"/>
+<rect class="island" x="447.5" y="355.0" width="25.0" height="225.0"/>
+<rect class="zebra" x="387.5" y="521.0" width="2.5" height="18.0"/>
+<rect class="zebra" x="392.5" y="521.0" width="2.5" height="18.0"/>
+<rect class="zebra" x="397.5" y="521.0" width="2.5" height="18.0"/>
+<rect class="zebra" x="402.5" y="521.0" width="2.5" height="18.0"/>
+<rect class="zebra" x="407.5" y="521.0" width="2.5" height="18.0"/>
+<rect class="zebra" x="412.5" y="521.0" width="2.5" height="18.0"/>
+<rect class="zebra" x="417.5" y="521.0" width="2.5" height="18.0"/>
+<rect class="zebra" x="422.5" y="521.0" width="2.5" height="18.0"/>
+<rect class="zebra" x="427.5" y="521.0" width="2.5" height="18.0"/>
+<rect class="zebra" x="432.5" y="521.0" width="2.5" height="18.0"/>
+<rect class="zebra" x="437.5" y="521.0" width="2.5" height="18.0"/>
+<rect class="zebra" x="442.5" y="521.0" width="2.5" height="18.0"/>
+<rect class="bld" x="10.0" y="345.0" width="240.0" height="520.0"/>
+<rect class="bld" x="280.0" y="470.0" width="95.0" height="395.0"/>
+<rect class="bld dim" x="250.0" y="40.0" width="125.0" height="317.5"/>
+<rect class="bld dim" x="10.0" y="40.0" width="240.0" height="305.0"/>
+<rect class="bld dim" x="10.0" y="865.0" width="365.0" height="75.0"/>
+<rect class="villa" x="572.5" y="417.5" width="75.0" height="87.5"/>
+<rect class="villa dim" x="572.5" y="530.0" width="87.5" height="75.0"/>
+<rect class="villa" x="678.8" y="505.0" width="62.5" height="100.0"/>
+<rect class="villa dim" x="591.2" y="630.0" width="75.0" height="87.5"/>
+<rect class="villa dim" x="685.0" y="630.0" width="65.0" height="75.0"/>
+<rect class="villa dim" x="572.5" y="505.0" width="72.5" height="23.0"/>
+<rect class="villa dim" x="662.5" y="507.0" width="14.0" height="98.0"/>
+<rect class="villa dim" x="745.0" y="405.0" width="15.0" height="95.0"/>
+<rect class="bld dim" x="560.0" y="720.0" width="425.0" height="50.0"/>
+<rect class="academy" x="660.0" y="405.0" width="68.8" height="100.0"/>
+<rect class="store" x="535.0" y="70.0" width="310.0" height="237.5"/>
+<rect class="tower" x="550.0" y="10.0" width="210.0" height="60.0"/>
+<rect class="annex" x="845.0" y="120.0" width="55.0" height="187.5"/>
+<rect class="core" x="860.0" y="450.0" width="40.0" height="50.0"/>
+<rect class="core" x="795.0" y="445.0" width="30.0" height="27.5"/>
+<rect class="garden" x="537.5" y="72.5" width="305.0" height="232.5"/>
+<circle class="rotunda" cx="545.0" cy="297.5" r="21.5"/>
+<circle class="fountain" cx="690.0" cy="188.8" r="16.5"/>
+<rect class="mall" x="60.0" y="390.0" width="280.0" height="240.0"/>
+<rect class="bridge" x="330.0" y="360.0" width="242.5" height="30.0"/>
+<rect class="slab" x="785.0" y="355.0" width="55.0" height="237.5"/>
+<line class="beam" x1="840.0" y1="475.0" x2="972.5" y2="475.0"/>
+<line class="beam" x1="840.0" y1="532.5" x2="972.5" y2="532.5"/>
+<line class="beam" x1="840.0" y1="417.5" x2="845.0" y2="417.5"/>
+<line class="beam" x1="856.0" y1="417.5" x2="972.5" y2="417.5"/>
+<line class="beam" x1="840.0" y1="360.0" x2="875.0" y2="360.0"/>
+<line class="beam" x1="887.0" y1="360.0" x2="972.5" y2="360.0"/>
+<line class="beam" x1="840.0" y1="587.5" x2="910.0" y2="587.5"/>
+<line class="beam" x1="930.0" y1="587.5" x2="972.5" y2="587.5"/>
+<line class="beam" x1="840.0" y1="380.0" x2="845.0" y2="380.0"/>
+<line class="beam" x1="860.0" y1="380.0" x2="910.0" y2="380.0"/>
+<line class="beam" x1="865.0" y1="355.0" x2="865.0" y2="592.5"/>
+<line class="beam" x1="902.5" y1="355.0" x2="902.5" y2="592.5"/>
+<line class="beam" x1="967.5" y1="355.0" x2="967.5" y2="592.5"/>
+<line class="beam" x1="940.0" y1="355.0" x2="940.0" y2="552.5"/>
+<line class="beam" x1="940.0" y1="572.5" x2="940.0" y2="592.5"/>
+<line class="jib" x1="922.5" y1="380.0" x2="713.4" y2="126.7"/>
+<circle class="jibr" cx="922.5" cy="380.0" r="328.5"/>
+<rect class="yardwall" x="792.5" y="640.0" width="165.0" height="12.5"/>
+<text class="blbl" x="14.0" y="358.0">B동 노후 종합상가 (지상~+27)</text>
+<text class="blbl" x="284.0" y="483.0">A동 상가 (지붕 = 3층 데크 +12)</text>
+<text class="blbl" x="254.0" y="53.0">C동 (낮고 반파 — 랜드마크를 가리지 않게)</text>
+<text class="blbl" x="14.0" y="878.0">D동</text>
+<text class="blbl" x="576.5" y="430.5">V1 아케이드 (+9 보행데크)</text>
+<text class="blbl" x="576.5" y="543.0">V3 (+12, 출입 불가)</text>
+<text class="blbl" x="682.8" y="518.0">V4 (+12 옥상)</text>
+<text class="blbl" x="595.2" y="643.0">V5</text>
+<text class="blbl" x="689.0" y="643.0">V6</text>
+<text class="blbl" x="564.0" y="733.0">남쪽 상가 줄 (반파)</text>
+<text class="blbl" x="664.0" y="418.0">V2 「정상수학」 학원 (6층, 옥상 +18)</text>
+<text class="blbl" x="554.0" y="23.0">호텔 타워 THE MERIDIAN (100 m)</text>
+<text class="blbl" x="849.0" y="133.0">메리디안 별관 (지붕 +22)</text>
+<text class="blbl" x="864.0" y="463.0">엘리베이터 코어</text>
+<text class="blbl" x="799.0" y="458.0">현장사무소</text>
+<text class="blbl mid" x="460.0" y="815.0">8차선 대로 · 중앙버스전용차로</text>
+<text class="blbl mid" x="690.0" y="287.5">백화점 THE MERIDIAN 포디움 · 지붕 = 공중 정원 +18</text>
+<text class="blbl mid" x="200.0" y="625.0">지하상가 −8 (점선)</text>
+<text class="blbl mid" x="905.0" y="605.0">공사장 9층 철골 +26 (아래 26 m 낙하)</text>
+<text class="blbl mid" x="460.0" y="347.5">싱크홀</text>
+<text class="blbl mid" x="645.0" y="340.0">싱크홀 2</text>
+</g>
+<g id="lyr-zones">
+<g class="zone" data-zone="z13" tabindex="0" role="button" aria-label="별관 옥상 · 공중 분수정원">
+<rect x="535.0" y="70.0" width="310.0" height="237.5"/>
+<rect x="845.0" y="120.0" width="55.0" height="187.5"/>
+<text class="zlbl" x="537.5" y="65.0">13 별관 옥상 · 분수정원</text>
+</g>
+<g class="zone" data-zone="z05" tabindex="0" role="button" aria-label="지하상가 (천장 붕괴 · 옷가게 · 중간보스)">
+<rect x="60.0" y="390.0" width="280.0" height="240.0"/>
+<text class="zlbl" x="62.5" y="382.5">05 엘리베이터 · 지하상가</text>
+</g>
+<g class="zone" data-zone="z11" tabindex="0" role="button" aria-label="공사장 9층 철골">
+<rect x="785.0" y="355.0" width="187.5" height="237.5"/>
+<text class="zlbl" x="786.0" y="351.0">11 9층 철골</text>
+</g>
+<g class="zone" data-zone="z01" tabindex="0" role="button" aria-label="시작 — 중앙버스정류장 · 횡단보도 싱크홀">
+<rect x="385.0" y="395.0" width="150.0" height="202.5"/>
+<rect x="385.0" y="520.0" width="62.5" height="20.0"/>
+<text class="zlbl" x="475.0" y="612.5">01 시작 · 싱크홀</text>
+</g>
+<g class="zone" data-zone="z10" tabindex="0" role="button" aria-label="공사장 마당 (발전기)">
+<rect x="760.0" y="520.0" width="25.0" height="55.0"/>
+<rect x="760.0" y="596.0" width="225.0" height="124.0"/>
+<text class="zlbl" x="765.0" y="715.0">10 공사장 마당</text>
+</g>
+<g class="zone" data-zone="z03" tabindex="0" role="button" aria-label="계단탑 · 3층 보행데크">
+<rect x="284.0" y="814.0" width="28.4" height="21.0"/>
+<rect x="280.0" y="620.0" width="65.0" height="194.0"/>
+<rect x="280.0" y="540.0" width="95.0" height="80.0"/>
+<rect x="345.0" y="690.0" width="17.5" height="25.0"/>
+<text class="zlbl" x="347.5" y="857.5">03 계단탑 · 보행데크</text>
+</g>
+<g class="zone" data-zone="z06" tabindex="0" role="button" aria-label="지하철 출구 · 광장 · 육교">
+<rect x="270.0" y="357.5" width="105.0" height="109.0"/>
+<rect x="280.0" y="360.0" width="292.5" height="30.0"/>
+<text class="zlbl" x="272.5" y="352.5">06 지하철 출구 · 광장 · 육교</text>
+</g>
+<g class="zone" data-zone="z00" tabindex="0" role="button" aria-label="배경 — 백화점 앞 싱크홀 거리">
+<rect x="537.5" y="322.5" width="217.5" height="77.5"/>
+<text class="zlbl" x="540.0" y="317.5">00 백화점 앞 싱크홀 거리</text>
+</g>
+<g class="zone" data-zone="z02" tabindex="0" role="button" aria-label="1층 통로 · 공구 골목">
+<rect x="280.0" y="522.5" width="95.0" height="15.0"/>
+<rect x="250.0" y="516.0" width="30.0" height="298.0"/>
+<rect x="280.0" y="605.0" width="40.0" height="60.0"/>
+<rect x="225.0" y="712.5" width="25.0" height="40.0"/>
+<rect x="210.0" y="722.5" width="39.0" height="72.5"/>
+<text class="zlbl" x="20.0" y="755.0">02 1층 통로 · 공구 골목</text>
+</g>
+<g class="zone" data-zone="z04" tabindex="0" role="button" aria-label="구름다리 · 웨딩 스튜디오 「백일몽」">
+<rect x="250.0" y="575.0" width="30.0" height="30.0"/>
+<rect x="160.0" y="570.0" width="90.0" height="40.0"/>
+<rect x="60.0" y="540.0" width="100.0" height="110.0"/>
+<text class="zlbl" x="62.5" y="662.5">04 구름다리 · 웨딩 스튜디오</text>
+</g>
+<g class="zone" data-zone="z07" tabindex="0" role="button" aria-label="V1 아케이드 옥상">
+<rect x="572.5" y="417.5" width="75.0" height="87.5"/>
+<rect x="647.0" y="444.5" width="13.5" height="11.0"/>
+<rect x="557.0" y="390.0" width="16.0" height="35.5"/>
+<text class="zlbl" x="573.0" y="412.5">07 V1 아케이드 옥상</text>
+</g>
+<g class="zone" data-zone="z08" tabindex="0" role="button" aria-label="「정상수학」 학원">
+<rect x="660.0" y="405.0" width="68.8" height="100.0"/>
+<text class="zlbl" x="661.0" y="387.5">08 정상수학 학원</text>
+</g>
+<g class="zone" data-zone="z09" tabindex="0" role="button" aria-label="V4 옥상 · 옥탑방">
+<rect x="678.8" y="505.0" width="62.5" height="100.0"/>
+<rect x="740.8" y="555.0" width="19.2" height="10.0"/>
+<text class="zlbl" x="680.0" y="622.5">09 V4 옥상 · 옥탑방</text>
+</g>
+<g class="zone" data-zone="z12" tabindex="0" role="button" aria-label="타워크레인">
+<rect x="902.5" y="360.0" width="40.0" height="40.0"/>
+<text class="zlbl" x="902.5" y="355.0">12 타워크레인</text>
+</g>
+</g>
+<g id="lyr-first"><polyline class="first" points="459.9,574.4 454.0,574.4 454.0,475.0 460.0,475.0 454.0,475.0 454.0,530.0 400.0,530.0 330.0,530.0 265.0,530.0 265.0,611.0 274.0,615.5 290.0,615.5 313.5,617.0 313.5,633.0 286.5,633.0 286.5,655.0 285.5,655.0 265.0,655.0 265.0,718.0 242.5,718.0 231.0,720.0 231.0,746.0 242.5,747.0 265.0,747.0 265.0,819.0 287.0,819.0 287.5,819.0 309.1,819.0 309.1,830.0 287.5,830.0 287.5,819.0 309.1,819.0 309.1,830.0 287.5,830.0 287.5,819.0 309.1,819.0 309.1,830.0 287.5,830.0 287.5,807.5 312.5,770.0 312.5,690.0 312.5,630.0 312.5,582.5 312.5,582.5 290.0,590.0 225.0,590.0 155.0,590.0 140.0,590.0 97.5,590.0 93.0,597.0 97.5,590.0 81.5,590.0 97.5,590.0 97.5,575.0 97.5,510.5 114.0,510.5 130.0,510.5 145.0,497.5 165.0,497.5 210.0,497.5 245.0,455.0 300.0,455.0 367.5,455.0 377.5,435.0 335.0,415.0 270.0,375.0 325.0,375.0 352.5,377.5 410.0,375.0 460.0,381.2 460.0,381.2 500.0,375.0 550.0,375.0 565.0,386.0 565.0,409.0 565.0,421.2 590.0,421.2 635.0,450.0 653.5,450.0 656.5,450.0 665.0,450.0 678.5,438.0 678.5,440.0 678.5,418.8 697.4,418.8 697.4,427.2 678.5,427.2 678.5,418.8 697.4,418.8 697.4,427.2 678.5,427.2 678.5,426.5 678.2,440.0 702.5,440.0 702.5,497.5 712.5,497.5 712.5,509.0 712.5,535.0 732.5,560.0 760.0,560.0 770.5,560.0 770.5,568.5 770.5,582.0 775.0,610.0 860.0,610.0 975.8,611.0 860.0,610.0 775.0,610.0 770.5,582.0 770.5,579.0 770.5,560.0 772.5,560.0 765.0,529.5 772.5,507.5 797.5,507.5 832.5,532.5 843.0,532.5 902.5,532.5 902.5,475.0 902.5,417.5 865.0,417.5 865.0,360.0 843.0,360.0 832.5,365.0 832.5,477.5 817.5,477.5 817.5,467.5 819.0,455.0 817.5,467.5 817.5,477.5 832.5,477.5 832.5,365.0 843.0,360.0 865.0,360.0 865.0,380.0 909.0,380.0 922.5,380.0 915.0,363.5 908.2,362.6 897.7,349.9 811.9,246.0 726.1,142.1 715.3,129.0 866.5,179.8 866.5,179.8 866.5,179.8 852.5,188.8 830.0,188.8 715.0,196.2"/></g>
+<g id="lyr-route">
+<polyline class="rt" data-l="1" style="color:#9aa4b2;stroke:#9aa4b2" points="459.9,574.4 454.0,574.4 454.0,475.0 460.0,475.0 454.0,475.0 454.0,530.0 400.0,530.0 330.0,530.0 265.0,530.0 265.0,611.0 274.0,615.5 290.0,615.5 313.5,617.0 313.5,633.0 286.5,633.0 286.5,655.0 285.5,655.0 265.0,655.0 265.0,718.0 242.5,718.0 231.0,720.0 231.0,746.0 242.5,747.0 265.0,747.0 265.0,819.0 287.0,819.0 287.5,819.0 309.1,819.0 309.1,830.0" marker-end="url(#arw)"/>
+<polyline class="rt" data-l="2" style="color:#3fd0c9;stroke:#3fd0c9" points="309.1,830.0 287.5,830.0 287.5,819.0 309.1,819.0 309.1,830.0 287.5,830.0 287.5,819.0 309.1,819.0 309.1,830.0" marker-end="url(#arw)"/>
+<polyline class="rt" data-l="3" style="color:#8fe36b;stroke:#8fe36b" points="309.1,830.0 287.5,830.0 287.5,807.5 312.5,770.0 312.5,690.0 312.5,630.0 312.5,582.5" marker-end="url(#arw)"/>
+<polyline class="rt sc" data-l="3" style="color:#8fe36b;stroke:#8fe36b" points="312.5,582.5 360.0,565.0 367.5,548.5 371.2,548.5 371.2,548.5 371.2,548.5 380.0,545.0" marker-end="url(#arw)"/>
+<polyline class="rt sc" data-l="1" style="color:#9aa4b2;stroke:#9aa4b2" points="380.0,545.0 380.0,530.0 454.0,530.0 454.0,555.0 454.0,530.0 380.0,530.0 379.4,548.5" marker-end="url(#arw)"/>
+<polyline class="rt sc" data-l="3" style="color:#8fe36b;stroke:#8fe36b" points="379.4,548.5 360.0,565.0" marker-end="url(#arw)"/>
+<polyline class="rt" data-l="3" style="color:#8fe36b;stroke:#8fe36b" points="360.0,565.0 312.5,582.5 290.0,590.0 225.0,590.0 155.0,590.0 140.0,590.0 97.5,590.0 93.0,597.0 97.5,590.0 81.5,590.0 97.5,590.0" marker-end="url(#arw)"/>
+<polyline class="rt" data-l="0" style="color:#5b8cff;stroke:#5b8cff" points="97.5,590.0 97.5,575.0 97.5,510.5 114.0,510.5 130.0,510.5 145.0,497.5 165.0,497.5 210.0,497.5 245.0,455.0 300.0,455.0" marker-end="url(#arw)"/>
+<polyline class="rt" data-l="1" style="color:#9aa4b2;stroke:#9aa4b2" points="300.0,455.0 367.5,455.0 377.5,435.0 335.0,415.0 270.0,375.0" marker-end="url(#arw)"/>
+<polyline class="rt" data-l="2" style="color:#3fd0c9;stroke:#3fd0c9" points="270.0,375.0 325.0,375.0 352.5,377.5 410.0,375.0 460.0,381.2 460.0,381.2" marker-end="url(#arw)"/>
+<polyline class="rt sc" data-l="2" style="color:#3fd0c9;stroke:#3fd0c9" points="460.0,381.2 466.5,397.5" marker-end="url(#arw)"/>
+<polyline class="rt sc" data-l="1" style="color:#9aa4b2;stroke:#9aa4b2" points="466.5,397.5 466.5,485.0 466.5,397.5 460.0,389.5" marker-end="url(#arw)"/>
+<polyline class="rt" data-l="2" style="color:#3fd0c9;stroke:#3fd0c9" points="460.0,389.5 500.0,375.0 550.0,375.0 565.0,386.0 565.0,409.0 565.0,421.2 590.0,421.2 635.0,450.0 653.5,450.0 656.5,450.0 665.0,450.0 678.5,438.0 678.5,440.0 678.5,418.8 697.4,418.8 697.4,427.2" marker-end="url(#arw)"/>
+<polyline class="rt" data-l="3" style="color:#8fe36b;stroke:#8fe36b" points="697.4,427.2 678.5,427.2 678.5,418.8 697.4,418.8 697.4,427.2 678.5,427.2 678.5,426.5 678.2,440.0 702.5,440.0 702.5,497.5 712.5,497.5 712.5,509.0 712.5,535.0 732.5,560.0 760.0,560.0 770.5,560.0 770.5,568.5 770.5,582.0" marker-end="url(#arw)"/>
+<polyline class="rt" data-l="1" style="color:#9aa4b2;stroke:#9aa4b2" points="770.5,582.0 775.0,610.0 860.0,610.0 975.8,611.0 860.0,610.0 775.0,610.0 770.5,582.0 770.5,579.0" marker-end="url(#arw)"/>
+<polyline class="rt" data-l="3" style="color:#8fe36b;stroke:#8fe36b" points="770.5,579.0 770.5,560.0 772.5,560.0 765.0,529.5 772.5,507.5" marker-end="url(#arw)"/>
+<polyline class="rt" data-l="5" style="color:#ff8c42;stroke:#ff8c42" points="772.5,507.5 797.5,507.5 832.5,532.5 843.0,532.5 902.5,532.5 902.5,475.0 902.5,417.5 865.0,417.5 865.0,360.0 843.0,360.0 832.5,365.0 832.5,477.5 817.5,477.5 817.5,467.5 819.0,455.0 817.5,467.5 817.5,477.5 832.5,477.5 832.5,365.0 843.0,360.0 865.0,360.0 865.0,380.0 909.0,380.0 922.5,380.0" marker-end="url(#arw)"/>
+<polyline class="rt" data-l="6" style="color:#ff4d6d;stroke:#ff4d6d" points="922.5,380.0 915.0,363.5 908.2,362.6 897.7,349.9 811.9,246.0 726.1,142.1 715.3,129.0" marker-end="url(#arw)"/>
+<polyline class="rt ride" data-l="6" style="color:#ff4d6d;stroke:#ff4d6d" points="715.3,129.0 866.5,179.8 866.5,179.8" marker-end="url(#arw)"/>
+<polyline class="rt" data-l="4" style="color:#ffd166;stroke:#ffd166" points="866.5,179.8 866.5,179.8 852.5,188.8 830.0,188.8 715.0,196.2" marker-end="url(#arw)"/>
+<g class="wp" data-wp="3"><circle cx="460.0" cy="475.0" r="3"/><text x="464.0" y="472.0">s00</text></g>
+<g class="wp" data-wp="6"><circle cx="400.0" cy="530.0" r="3"/><text x="404.0" y="527.0">s01</text></g>
+<g class="wp" data-wp="7"><circle cx="330.0" cy="530.0" r="3"/><text x="334.0" y="527.0">s02</text></g>
+<g class="wp" data-wp="9"><circle cx="265.0" cy="611.0" r="3"/><text x="269.0" y="608.0">s03</text></g>
+<g class="wp" data-wp="10"><circle cx="274.0" cy="615.5" r="3"/><text x="278.0" y="612.5">s03a</text></g>
+<g class="wp" data-wp="14"><circle cx="286.5" cy="633.0" r="3"/><text x="290.5" y="630.0">s03b</text></g>
+<g class="wp" data-wp="19"><circle cx="242.5" cy="718.0" r="3"/><text x="246.5" y="715.0">s03c</text></g>
+<g class="wp" data-wp="38"><circle cx="287.5" cy="807.5" r="3"/><text x="291.5" y="804.5">s04</text></g>
+<g class="wp" data-wp="40"><circle cx="312.5" cy="690.0" r="3"/><text x="316.5" y="687.0">s05</text></g>
+<g class="wp" data-wp="42"><circle cx="312.5" cy="582.5" r="3"/><text x="316.5" y="579.5">s08</text></g>
+<g class="wp" data-wp="44"><circle cx="367.5" cy="548.5" r="3"/><text x="371.5" y="545.5">s06</text></g>
+<g class="wp" data-wp="45"><circle cx="371.2" cy="548.5" r="3"/><text x="375.2" y="545.5">s06a</text></g>
+<g class="wp" data-wp="46"><circle cx="371.2" cy="548.5" r="3"/><text x="375.2" y="545.5">s06b</text></g>
+<g class="wp" data-wp="51"><circle cx="454.0" cy="555.0" r="3"/><text x="458.0" y="552.0">s07</text></g>
+<g class="wp" data-wp="58"><circle cx="225.0" cy="590.0" r="3"/><text x="229.0" y="587.0">s09</text></g>
+<g class="wp" data-wp="60"><circle cx="140.0" cy="590.0" r="3"/><text x="144.0" y="587.0">s10</text></g>
+<g class="wp" data-wp="64"><circle cx="81.5" cy="590.0" r="3"/><text x="85.5" y="587.0">s11</text></g>
+<g class="wp" data-wp="65"><circle cx="97.5" cy="590.0" r="3"/><text x="101.5" y="587.0">s12</text></g>
+<g class="wp" data-wp="67"><circle cx="97.5" cy="510.5" r="3"/><text x="101.5" y="507.5">s14</text></g>
+<g class="wp" data-wp="68"><circle cx="114.0" cy="510.5" r="3"/><text x="118.0" y="507.5">s14a</text></g>
+<g class="wp" data-wp="70"><circle cx="145.0" cy="497.5" r="3"/><text x="149.0" y="494.5">s14b</text></g>
+<g class="wp" data-wp="72"><circle cx="210.0" cy="497.5" r="3"/><text x="214.0" y="494.5">s15</text></g>
+<g class="wp" data-wp="75"><circle cx="367.5" cy="455.0" r="3"/><text x="371.5" y="452.0">s16</text></g>
+<g class="wp" data-wp="77"><circle cx="335.0" cy="415.0" r="3"/><text x="339.0" y="412.0">s16a</text></g>
+<g class="wp" data-wp="80"><circle cx="352.5" cy="377.5" r="3"/><text x="356.5" y="374.5">s17</text></g>
+<g class="wp" data-wp="82"><circle cx="460.0" cy="381.2" r="3"/><text x="464.0" y="378.2">s18</text></g>
+<g class="wp" data-wp="85"><circle cx="466.5" cy="485.0" r="3"/><text x="470.5" y="482.0">s19</text></g>
+<g class="wp" data-wp="89"><circle cx="550.0" cy="375.0" r="3"/><text x="554.0" y="372.0">s20</text></g>
+<g class="wp" data-wp="93"><circle cx="590.0" cy="421.2" r="3"/><text x="594.0" y="418.2">s21</text></g>
+<g class="wp" data-wp="95"><circle cx="653.5" cy="450.0" r="3"/><text x="657.5" y="447.0">s22</text></g>
+<g class="wp" data-wp="109"><circle cx="678.2" cy="440.0" r="3"/><text x="682.2" y="437.0">s23</text></g>
+<g class="wp" data-wp="113"><circle cx="712.5" cy="509.0" r="3"/><text x="716.5" y="506.0">s24</text></g>
+<g class="wp" data-wp="114"><circle cx="712.5" cy="535.0" r="3"/><text x="716.5" y="532.0">s25</text></g>
+<g class="wp" data-wp="116"><circle cx="760.0" cy="560.0" r="3"/><text x="764.0" y="557.0">s26a</text></g>
+<g class="wp" data-wp="119"><circle cx="770.5" cy="582.0" r="3"/><text x="774.5" y="579.0">s26b</text></g>
+<g class="wp" data-wp="122"><circle cx="975.8" cy="611.0" r="3"/><text x="979.8" y="608.0">s26c</text></g>
+<g class="wp" data-wp="128"><circle cx="772.5" cy="560.0" r="3"/><text x="776.5" y="557.0">s26</text></g>
+<g class="wp" data-wp="130"><circle cx="772.5" cy="507.5" r="3"/><text x="776.5" y="504.5">s27</text></g>
+<g class="wp" data-wp="131"><circle cx="797.5" cy="507.5" r="3"/><text x="801.5" y="504.5">s28</text></g>
+<g class="wp" data-wp="134"><circle cx="902.5" cy="532.5" r="3"/><text x="906.5" y="529.5">s34</text></g>
+<g class="wp" data-wp="143"><circle cx="817.5" cy="467.5" r="3"/><text x="821.5" y="464.5">s33</text></g>
+<g class="wp" data-wp="144"><circle cx="819.0" cy="455.0" r="3"/><text x="823.0" y="452.0">s33a</text></g>
+<g class="wp" data-wp="152"><circle cx="909.0" cy="380.0" r="3"/><text x="913.0" y="377.0">s35</text></g>
+<g class="wp" data-wp="154"><circle cx="915.0" cy="363.5" r="3"/><text x="919.0" y="360.5">s36</text></g>
+<g class="wp" data-wp="158"><circle cx="726.1" cy="142.1" r="3"/><text x="730.1" y="139.1">s37</text></g>
+<g class="wp" data-wp="159"><circle cx="715.3" cy="129.0" r="3"/><text x="719.3" y="126.0">s38</text></g>
+<g class="wp" data-wp="162"><circle cx="866.5" cy="179.8" r="3"/><text x="870.5" y="176.8">s39</text></g>
+<g class="wp" data-wp="164"><circle cx="830.0" cy="188.8" r="3"/><text x="834.0" y="185.8">s40</text></g>
+<g class="wp" data-wp="165"><circle cx="715.0" cy="196.2" r="3"/><text x="719.0" y="193.2">s41</text></g>
+</g>
+<g id="lyr-gimmick"><g class="poi g-killzone" data-obj="sink1" data-cx="405.0" data-cy="575.0" tabindex="0" role="button" aria-label="횡단보도 싱크홀" style=""><circle cx="405.0" cy="575.0" r="9.0"/><text x="405.0" y="578.8">☠</text></g><g class="poi g-shutter" data-obj="toolshop_shutter" data-cx="280.0" data-cy="615.5" tabindex="0" role="button" aria-label="공구 상가 셔터" style=""><circle cx="280.0" cy="615.5" r="9.0"/><text x="280.0" y="619.3">▤</text></g><g class="poi g-break" data-obj="toolshop_backdoor" data-cx="280.0" data-cy="655.0" tabindex="0" role="button" aria-label="판자 뒷문" style=""><circle cx="280.0" cy="655.0" r="9.0"/><text x="280.0" y="658.8">✕</text></g><g class="poi g-light" data-obj="backhall_light" data-cx="250.0" data-cy="718.0" tabindex="0" role="button" aria-label="뒷복도 입구 빛" style=""><circle cx="250.0" cy="718.0" r="9.0"/><text x="250.0" y="721.8">✺</text></g><g class="poi g-secret" data-obj="loft_door" data-cx="224.5" data-cy="726.0" tabindex="0" role="button" aria-label="비밀 1 · 다락 문" style=""><circle cx="224.5" cy="726.0" r="9.0"/><text x="224.5" y="729.8">?</text></g><g class="poi g-break" data-obj="loft_window" data-cx="249.6" data-cy="779.9" tabindex="0" role="button" aria-label="다락 판자창" style=""><line class="lead" x1="249.5" y1="777.5" x2="249.6" y2="779.9"/><circle cx="249.6" cy="779.9" r="9.0"/><text x="249.6" y="783.7">✕</text></g><g class="poi g-stair" data-obj="stairA_door" data-cx="280.0" data-cy="819.0" tabindex="0" role="button" aria-label="계단탑" style=""><circle cx="280.0" cy="819.0" r="9.0"/><text x="280.0" y="822.8">≡</text></g><g class="poi g-shutter" data-obj="kitchen_shutter" data-cx="343.7" data-cy="702.5" tabindex="0" role="button" aria-label="주방 셔터" style=""><circle cx="343.7" cy="702.5" r="9.0"/><text x="343.7" y="706.3">▤</text></g><g class="poi g-shortcut" data-obj="sc1" data-cx="373.9" data-cy="548.5" tabindex="0" role="button" aria-label="SC1 꽃집 창 지름길" style=""><circle cx="373.9" cy="548.5" r="9.0"/><text x="373.9" y="552.3">⇆</text></g><g class="poi g-door" data-obj="skybridge" data-cx="265.0" data-cy="590.0" tabindex="0" role="button" aria-label="구름다리" style=""><circle cx="265.0" cy="590.0" r="9.0"/><text x="265.0" y="593.8">▯</text></g><g class="poi g-landmark" data-obj="flower_arch" data-cx="94.4" data-cy="591.7" tabindex="0" role="button" aria-label="시든 꽃 아치" style=""><line class="lead" x1="89.8" y1="590.0" x2="94.4" y2="591.7"/><circle cx="94.4" cy="591.7" r="9.0"/><text x="94.4" y="595.5">★</text></g><g class="poi g-lift" data-obj="glass_lift" data-cx="75.9" data-cy="597.5" tabindex="0" role="button" aria-label="유리 엘리베이터" style=""><line class="lead" x1="81.5" y1="590.0" x2="75.9" y2="597.5"/><circle cx="75.9" cy="597.5" r="9.0"/><text x="75.9" y="601.3">⇕</text></g><g class="poi g-shutter" data-obj="clothes_shutter" data-cx="120.0" data-cy="510.5" tabindex="0" role="button" aria-label="옷가게 셔터" style=""><circle cx="120.0" cy="510.5" r="9.0"/><text x="120.0" y="514.3">▤</text></g><g class="poi g-block" data-obj="mall_collapse" data-cx="165.0" data-cy="435.0" tabindex="0" role="button" aria-label="무너진 본 통로" style=""><circle cx="165.0" cy="435.0" r="9.0"/><text x="165.0" y="438.8">▨</text></g><g class="poi g-stair" data-obj="subway_stair" data-cx="340.0" data-cy="455.0" tabindex="0" role="button" aria-label="지하철 출구 계단" style=""><circle cx="340.0" cy="455.0" r="9.0"/><text x="340.0" y="458.8">≡</text></g><g class="poi g-stair" data-obj="bridge_stair" data-cx="305.5" data-cy="374.4" tabindex="0" role="button" aria-label="육교 서쪽 계단" style=""><circle cx="305.5" cy="374.4" r="9.0"/><text x="305.5" y="378.2">≡</text></g><g class="poi g-shortcut" data-obj="sc3" data-cx="460.0" data-cy="386.2" tabindex="0" role="button" aria-label="SC3 걷어차는 사다리" style=""><circle cx="460.0" cy="386.2" r="9.0"/><text x="460.0" y="390.0">⇆</text></g><g class="poi g-shutter" data-obj="v1_shutter" data-cx="590.0" data-cy="466.7" tabindex="0" role="button" aria-label="V1 데크 가게 셔터" style=""><line class="lead" x1="590.0" y1="468.8" x2="590.0" y2="466.7"/><circle cx="590.0" cy="466.7" r="9.0"/><text x="590.0" y="470.5">▤</text></g><g class="poi g-door" data-obj="academy_door" data-cx="661.3" data-cy="444.0" tabindex="0" role="button" aria-label="학원 출입문" style=""><line class="lead" x1="660.5" y1="450.0" x2="661.3" y2="444.0"/><circle cx="661.3" cy="444.0" r="9.0"/><text x="661.3" y="447.7">▯</text></g><g class="poi g-door" data-obj="fire_doors" data-cx="677.9" data-cy="432.9" tabindex="0" role="button" aria-label="계단실 방화문" style=""><circle cx="677.9" cy="432.9" r="9.0"/><text x="677.9" y="436.6">▯</text></g><g class="poi g-break" data-obj="study_window" data-cx="658.8" data-cy="463.1" tabindex="0" role="button" aria-label="독서실 창" style=""><line class="lead" x1="660.5" y1="457.5" x2="658.8" y2="463.1"/><circle cx="658.8" cy="463.1" r="9.0"/><text x="658.8" y="466.8">✕</text></g><g class="poi g-drop" data-obj="balcony_drop" data-cx="710.5" data-cy="513.5" tabindex="0" role="button" aria-label="부서진 발코니 (3 m 낙하)" style=""><line class="lead" x1="712.5" y1="509.0" x2="710.5" y2="513.5"/><circle cx="710.5" cy="513.5" r="9.0"/><text x="710.5" y="517.3">↓</text></g><g class="poi g-ladder" data-obj="inspect_ladder" data-cx="728.6" data-cy="506.5" tabindex="0" role="button" aria-label="물탱크 점검 사다리" style=""><circle cx="728.6" cy="506.5" r="9.0"/><text x="728.6" y="510.3">☰</text></g><g class="poi g-door" data-obj="rooftop_door" data-cx="711.7" data-cy="593.0" tabindex="0" role="button" aria-label="옥탑방 미닫이 문" style=""><line class="lead" x1="717.5" y1="591.2" x2="711.7" y2="593.0"/><circle cx="711.7" cy="593.0" r="9.0"/><text x="711.7" y="596.8">▯</text></g><g class="poi g-landmark" data-obj="church_cross" data-cx="736.0" data-cy="588.2" tabindex="0" role="button" aria-label="옥탑 교회 십자가" style=""><line class="lead" x1="727.5" y1="591.2" x2="736.0" y2="588.2"/><circle cx="736.0" cy="588.2" r="9.0"/><text x="736.0" y="592.0">★</text></g><g class="poi g-hoist" data-obj="hoist" data-cx="772.5" data-cy="507.5" tabindex="0" role="button" aria-label="공사장 호이스트" style=""><circle cx="772.5" cy="507.5" r="9.0"/><text x="772.5" y="511.3">⇕</text></g><g class="poi g-ladder" data-obj="scaffold_ladder" data-cx="770.5" data-cy="575.0" tabindex="0" role="button" aria-label="비계 사다리" style=""><circle cx="770.5" cy="575.0" r="9.0"/><text x="770.5" y="578.8">☰</text></g><g class="poi g-generator" data-obj="generator" data-cx="981.8" data-cy="611.0" tabindex="0" role="button" aria-label="발전기" style=""><circle cx="981.8" cy="611.0" r="9.0"/><text x="981.8" y="614.8">⚡</text></g><g class="poi g-shortcut" data-obj="site_gate" data-cx="760.0" data-cy="615.0" tabindex="0" role="button" aria-label="현장 서쪽 철문" style=""><circle cx="760.0" cy="615.0" r="9.0"/><text x="760.0" y="618.8">⇆</text></g><g class="poi g-secret" data-obj="hidden_lane" data-cx="875.0" data-cy="675.0" tabindex="0" role="button" aria-label="은신 통로" style=""><circle cx="875.0" cy="675.0" r="9.0"/><text x="875.0" y="678.8">?</text></g><g class="poi g-block" data-obj="formwork_wall" data-cx="812.5" data-cy="490.0" tabindex="0" role="button" aria-label="거푸집 벽" style=""><circle cx="812.5" cy="490.0" r="9.0"/><text x="812.5" y="493.8">▨</text></g><g class="poi g-key" data-obj="key" data-cx="821.8" data-cy="450.5" tabindex="0" role="button" aria-label="마스트 리프트 열쇠" style=""><circle cx="821.8" cy="450.5" r="9.0"/><text x="821.8" y="454.3">⚿</text></g><g class="poi g-lift" data-obj="mast_lift" data-cx="922.8" data-cy="380.6" tabindex="0" role="button" aria-label="마스트 리프트" style=""><circle cx="922.8" cy="380.6" r="9.0"/><text x="922.8" y="384.4">⇕</text></g><g class="poi g-crane" data-obj="crane_console" data-cx="914.7" data-cy="362.9" tabindex="0" role="button" aria-label="크레인 운전석 콘솔" style=""><circle cx="914.7" cy="362.9" r="9.0"/><text x="914.7" y="366.7">⚓</text></g><g class="poi g-crane" data-obj="hook" data-cx="713.4" data-cy="126.7" tabindex="0" role="button" aria-label="갈고리" style=""><circle cx="713.4" cy="126.7" r="9.0"/><text x="713.4" y="130.4">⚓</text></g><g class="poi g-drop" data-obj="annex_drop" data-cx="841.8" data-cy="188.8" tabindex="0" role="button" aria-label="별관 → 정원 (4 m)" style=""><line class="lead" x1="845.0" y1="188.8" x2="841.8" y2="188.8"/><circle cx="841.8" cy="188.8" r="9.0"/><text x="841.8" y="192.5">↓</text></g><g class="poi g-landmark" data-obj="fountain" data-cx="690.0" data-cy="188.8" tabindex="0" role="button" aria-label="분수" style=""><circle cx="690.0" cy="188.8" r="9.0"/><text x="690.0" y="192.5">★</text></g><g class="poi g-landmark" data-obj="rotunda" data-cx="545.0" data-cy="297.5" tabindex="0" role="button" aria-label="백화점 로툰다" style=""><circle cx="545.0" cy="297.5" r="9.0"/><text x="545.0" y="301.3">★</text></g><g class="poi g-killzone" data-obj="sink2" data-cx="640.0" data-cy="360.0" tabindex="0" role="button" aria-label="싱크홀 2" style=""><circle cx="640.0" cy="360.0" r="9.0"/><text x="640.0" y="363.8">☠</text></g><g class="poi g-trap" data-obj="trap1" data-cx="850.5" data-cy="417.5" tabindex="0" role="button" aria-label="썩은 철골 1" style=""><circle cx="850.5" cy="417.5" r="9.0"/><text x="850.5" y="421.3">⚠</text></g><g class="poi g-trap" data-obj="trap2" data-cx="881.0" data-cy="360.0" tabindex="0" role="button" aria-label="썩은 철골 2" style=""><circle cx="881.0" cy="360.0" r="9.0"/><text x="881.0" y="363.8">⚠</text></g><g class="poi g-trap" data-obj="trap3" data-cx="920.0" data-cy="587.5" tabindex="0" role="button" aria-label="썩은 철골 3" style=""><circle cx="920.0" cy="587.5" r="9.0"/><text x="920.0" y="591.3">⚠</text></g><g class="poi g-trap" data-obj="trap4" data-cx="940.0" data-cy="562.5" tabindex="0" role="button" aria-label="썩은 철골 4" style=""><circle cx="940.0" cy="562.5" r="9.0"/><text x="940.0" y="566.3">⚠</text></g><g class="poi g-trap" data-obj="trap5" data-cx="852.5" data-cy="380.0" tabindex="0" role="button" aria-label="썩은 철골 5" style=""><circle cx="852.5" cy="380.0" r="9.0"/><text x="852.5" y="383.8">⚠</text></g><g class="poi g-shop g-shop-chest" data-obj="shop0" data-cx="237.5" data-cy="549.5" tabindex="0" role="button" aria-label="셔터 가게 · 상자" style=""><circle cx="237.5" cy="549.5" r="6.5"/><text x="237.5" y="552.2">▤</text></g><g class="poi g-shop g-shop-chest" data-obj="shop1" data-cx="237.5" data-cy="572.5" tabindex="0" role="button" aria-label="셔터 가게 · 상자" style=""><circle cx="237.5" cy="572.5" r="6.5"/><text x="237.5" y="575.2">▤</text></g><g class="poi g-shop g-shop-empty" data-obj="shop2" data-cx="237.5" data-cy="595.5" tabindex="0" role="button" aria-label="셔터 가게 · 빈 가게" style=""><circle cx="237.5" cy="595.5" r="6.5"/><text x="237.5" y="598.2">▤</text></g><g class="poi g-shop g-shop-mob" data-obj="shop3" data-cx="237.5" data-cy="618.5" tabindex="0" role="button" aria-label="셔터 가게 · 몹" style=""><circle cx="237.5" cy="618.5" r="6.5"/><text x="237.5" y="621.2">▤</text></g><g class="poi g-shop g-shop-mob" data-obj="shop4" data-cx="237.5" data-cy="641.5" tabindex="0" role="button" aria-label="셔터 가게 · 몹" style=""><circle cx="237.5" cy="641.5" r="6.5"/><text x="237.5" y="644.2">▤</text></g><g class="poi g-shop g-shop-chest" data-obj="shop5" data-cx="237.5" data-cy="664.5" tabindex="0" role="button" aria-label="셔터 가게 · 상자" style=""><circle cx="237.5" cy="664.5" r="6.5"/><text x="237.5" y="667.2">▤</text></g><g class="poi g-shop g-shop-npc" data-obj="shop6" data-cx="237.5" data-cy="687.5" tabindex="0" role="button" aria-label="셔터 가게 · 주인 유령" style=""><circle cx="237.5" cy="687.5" r="6.5"/><text x="237.5" y="690.2">▤</text></g><g class="poi g-shop g-shop-empty" data-obj="shop7" data-cx="233.6" data-cy="775.1" tabindex="0" role="button" aria-label="셔터 가게 · 빈 가게" style=""><line class="lead" x1="237.5" y1="779.5" x2="233.6" y2="775.1"/><circle cx="233.6" cy="775.1" r="6.5"/><text x="233.6" y="777.8">▤</text></g><g class="poi g-shop g-shop-mob" data-obj="shop8" data-cx="237.5" data-cy="802.5" tabindex="0" role="button" aria-label="셔터 가게 · 몹" style=""><circle cx="237.5" cy="802.5" r="6.5"/><text x="237.5" y="805.2">▤</text></g><g class="poi g-shop g-shop-npc" data-obj="shop9" data-cx="237.5" data-cy="825.5" tabindex="0" role="button" aria-label="셔터 가게 · 주인 유령" style=""><circle cx="237.5" cy="825.5" r="6.5"/><text x="237.5" y="828.2">▤</text></g><g class="poi g-shop g-shop-empty" data-obj="shop10" data-cx="292.5" data-cy="572.0" tabindex="0" role="button" aria-label="셔터 가게 · 빈 가게" style=""><circle cx="292.5" cy="572.0" r="6.5"/><text x="292.5" y="574.7">▤</text></g><g class="poi g-shop g-shop-npc" data-obj="shop11" data-cx="291.7" data-cy="686.9" tabindex="0" role="button" aria-label="셔터 가게 · 주인 유령" style=""><circle cx="291.7" cy="686.9" r="6.5"/><text x="291.7" y="689.6">▤</text></g><g class="poi g-shop g-shop-mob" data-obj="shop12" data-cx="292.5" data-cy="708.0" tabindex="0" role="button" aria-label="셔터 가게 · 몹" style=""><circle cx="292.5" cy="708.0" r="6.5"/><text x="292.5" y="710.7">▤</text></g><g class="poi g-shop g-shop-chest" data-obj="shop13" data-cx="292.5" data-cy="730.7" tabindex="0" role="button" aria-label="셔터 가게 · 상자" style=""><circle cx="292.5" cy="730.7" r="6.5"/><text x="292.5" y="733.4">▤</text></g><g class="poi g-shop g-shop-mob" data-obj="shop14" data-cx="292.5" data-cy="753.3" tabindex="0" role="button" aria-label="셔터 가게 · 몹" style=""><circle cx="292.5" cy="753.3" r="6.5"/><text x="292.5" y="756.1">▤</text></g><g class="poi g-shop g-shop-empty" data-obj="shop15" data-cx="292.5" data-cy="776.0" tabindex="0" role="button" aria-label="셔터 가게 · 빈 가게" style=""><circle cx="292.5" cy="776.0" r="6.5"/><text x="292.5" y="778.7">▤</text></g><g class="poi g-shop g-shop-mob" data-obj="shop16" data-cx="292.5" data-cy="798.7" tabindex="0" role="button" aria-label="셔터 가게 · 몹" style=""><circle cx="292.5" cy="798.7" r="6.5"/><text x="292.5" y="801.4">▤</text></g></g>
+<g id="lyr-mob"><g class="poi mob m-P" data-obj="mob0" data-cx="325.3" data-cy="530.0" tabindex="0" role="button" aria-label="셔터 내린 상인" style="fill:#e8eef5"><line class="lead" x1="330.0" y1="530.0" x2="325.3" y2="530.0"/><path d="M325.3 522.6 L332.0 534.9 L318.7 534.9 Z"/></g><g class="poi mob m-S" data-obj="mob1" data-cx="300.0" data-cy="633.0" tabindex="0" role="button" aria-label="셔터 내린 상인" style="fill:#b9c3cf"><path d="M300.0 625.6 L306.6 637.9 L293.4 637.9 Z"/></g><g class="poi mob m-P" data-obj="mob2" data-cx="270.0" data-cy="690.0" tabindex="0" role="button" aria-label="하교하지 못한 학생" style="fill:#e8eef5"><path d="M270.0 682.6 L276.6 694.9 L263.4 694.9 Z"/></g><g class="poi mob m-S" data-obj="mob3" data-cx="266.9" data-cy="778.0" tabindex="0" role="button" aria-label="셔터 내린 상인" style="fill:#b9c3cf"><line class="lead" x1="260.0" y1="775.0" x2="266.9" y2="778.0"/><path d="M266.9 770.6 L273.5 782.9 L260.2 782.9 Z"/></g><g class="poi mob m-P" data-obj="mob4" data-cx="298.3" data-cy="673.4" tabindex="0" role="button" aria-label="퇴근 못한 회사원" style="fill:#e8eef5"><path d="M298.3 666.1 L304.9 678.3 L291.6 678.3 Z"/></g><g class="poi mob m-E" data-obj="mob5" data-cx="312.5" data-cy="750.0" tabindex="0" role="button" aria-label="포장마차 주인" style="fill:#ff9f1c"><path d="M312.5 742.1 L319.6 755.2 L305.4 755.2 Z"/></g><g class="poi mob m-A" data-obj="mob6" data-cx="351.5" data-cy="665.0" tabindex="0" role="button" aria-label="창문 매복 (셔터 내린 상인)" style="fill:#ff5470"><rect x="345.9" y="659.4" width="11.2" height="11.2" transform="rotate(45 351.5 665.0)"/></g><g class="poi mob m-S" data-obj="mob7" data-cx="140.0" data-cy="557.5" tabindex="0" role="button" aria-label="철골 인부" style="fill:#b9c3cf"><path d="M140.0 550.1 L146.7 562.4 L133.3 562.4 Z"/></g><g class="poi mob m-A" data-obj="mob8" data-cx="112.4" data-cy="599.3" tabindex="0" role="button" aria-label="깨어나는 마네킹" style="fill:#ff5470"><line class="lead" x1="112.5" y1="601.5" x2="112.4" y2="599.3"/><rect x="106.8" y="593.7" width="11.2" height="11.2" transform="rotate(45 112.4 599.3)"/></g><g class="poi mob m-A" data-obj="mob9" data-cx="100.4" data-cy="574.8" tabindex="0" role="button" aria-label="깨어나는 마네킹" style="fill:#ff5470"><line class="lead" x1="102.5" y1="578.5" x2="100.4" y2="574.8"/><rect x="94.8" y="569.2" width="11.2" height="11.2" transform="rotate(45 100.4 574.8)"/></g><g class="poi mob m-D" data-obj="mob10" data-cx="126.0" data-cy="602.0" tabindex="0" role="button" aria-label="마네킹 소품" style="fill:#6b7380"><line class="lead" x1="122.5" y1="601.5" x2="126.0" y2="602.0"/><rect x="122.5" y="598.5" width="7.0" height="7.0"/></g><g class="poi mob m-D" data-obj="mob11" data-cx="124.6" data-cy="578.2" tabindex="0" role="button" aria-label="마네킹 소품" style="fill:#6b7380"><line class="lead" x1="122.5" y1="578.5" x2="124.6" y2="578.2"/><rect x="121.1" y="574.7" width="7.0" height="7.0"/></g><g class="poi mob m-D" data-obj="mob12" data-cx="113.3" data-cy="580.0" tabindex="0" role="button" aria-label="마네킹 소품" style="fill:#6b7380"><rect x="109.8" y="576.5" width="7.0" height="7.0"/></g><g class="poi mob m-D" data-obj="mob13" data-cx="100.2" data-cy="606.0" tabindex="0" role="button" aria-label="마네킹 소품" style="fill:#6b7380"><line class="lead" x1="102.5" y1="601.5" x2="100.2" y2="606.0"/><rect x="96.7" y="602.5" width="7.0" height="7.0"/></g><g class="poi mob m-A" data-obj="mob14" data-cx="80.5" data-cy="580.5" tabindex="0" role="button" aria-label="엘리베이터 승객 (우산 든 조문객)" style="fill:#ff5470"><line class="lead" x1="81.5" y1="590.0" x2="80.5" y2="580.5"/><rect x="74.9" y="574.9" width="11.2" height="11.2" transform="rotate(45 80.5 580.5)"/></g><g class="poi mob m-P" data-obj="mob15" data-cx="97.5" data-cy="555.0" tabindex="0" role="button" aria-label="퇴근 못한 회사원" style="fill:#e8eef5"><path d="M97.5 547.6 L104.2 559.9 L90.8 559.9 Z"/></g><g class="poi mob m-A" data-obj="mob16" data-cx="120.7" data-cy="443.0" tabindex="0" role="button" aria-label="천장 붕괴 매복 (회사원)" style="fill:#ff5470"><rect x="115.0" y="437.4" width="11.2" height="11.2" transform="rotate(45 120.7 443.0)"/></g><g class="poi mob m-M" data-obj="mob17" data-cx="245.0" data-cy="394.5" tabindex="0" role="button" aria-label="지하상가 경비원" style="fill:#ff2d55"><rect x="238.6" y="388.1" width="12.8" height="12.8" transform="rotate(45 245.0 394.5)"/></g><g class="poi mob m-P" data-obj="mob18" data-cx="315.0" data-cy="410.0" tabindex="0" role="button" aria-label="우산 든 조문객" style="fill:#e8eef5"><path d="M315.0 402.6 L321.6 414.9 L308.4 414.9 Z"/></g><g class="poi mob m-S" data-obj="mob19" data-cx="294.5" data-cy="388.1" tabindex="0" role="button" aria-label="퇴근 못한 회사원" style="fill:#b9c3cf"><path d="M294.5 380.7 L301.2 393.0 L287.9 393.0 Z"/></g><g class="poi mob m-P" data-obj="mob20" data-cx="485.0" data-cy="375.0" tabindex="0" role="button" aria-label="우산 든 조문객" style="fill:#e8eef5"><path d="M485.0 367.6 L491.6 379.9 L478.4 379.9 Z"/></g><g class="poi mob m-S" data-obj="mob21" data-cx="615.0" data-cy="460.0" tabindex="0" role="button" aria-label="하교하지 못한 학생" style="fill:#b9c3cf"><path d="M615.0 452.6 L621.6 464.9 L608.4 464.9 Z"/></g><g class="poi mob m-P" data-obj="mob22" data-cx="550.0" data-cy="570.0" tabindex="0" role="button" aria-label="우산 든 조문객" style="fill:#e8eef5"><path d="M550.0 562.6 L556.6 574.9 L543.4 574.9 Z"/></g><g class="poi mob m-T" data-obj="mob23" data-cx="688.6" data-cy="467.2" tabindex="0" role="button" aria-label="앉은 학생 (강의실)" style="fill:#b9c3cf"><line class="lead" x1="681.8" y1="469.8" x2="688.6" y2="467.2"/><path d="M688.6 459.8 L695.2 472.1 L681.9 472.1 Z"/></g><g class="poi mob m-T" data-obj="mob24" data-cx="693.4" data-cy="497.7" tabindex="0" role="button" aria-label="앉은 학생 (강의실)" style="fill:#b9c3cf"><path d="M693.4 490.4 L700.0 502.6 L686.7 502.6 Z"/></g><g class="poi mob m-T" data-obj="mob25" data-cx="706.2" data-cy="478.9" tabindex="0" role="button" aria-label="앉은 학생 (강의실)" style="fill:#b9c3cf"><path d="M706.2 471.6 L712.8 483.8 L699.5 483.8 Z"/></g><g class="poi mob m-T" data-obj="mob26" data-cx="674.0" data-cy="471.7" tabindex="0" role="button" aria-label="앉은 학생 (독서실)" style="fill:#b9c3cf"><line class="lead" x1="680.0" y1="469.5" x2="674.0" y2="471.7"/><path d="M674.0 464.4 L680.7 476.6 L667.4 476.6 Z"/></g><g class="poi mob m-T" data-obj="mob27" data-cx="691.1" data-cy="482.4" tabindex="0" role="button" aria-label="앉은 학생 (독서실)" style="fill:#b9c3cf"><path d="M691.1 475.1 L697.8 487.3 L684.5 487.3 Z"/></g><g class="poi mob m-P" data-obj="mob28" data-cx="820.0" data-cy="612.5" tabindex="0" role="button" aria-label="철골 인부" style="fill:#e8eef5"><path d="M820.0 605.1 L826.6 617.4 L813.4 617.4 Z"/></g><g class="poi mob m-P" data-obj="mob29" data-cx="895.0" data-cy="607.5" tabindex="0" role="button" aria-label="철골 인부" style="fill:#e8eef5"><path d="M895.0 600.1 L901.6 612.4 L888.4 612.4 Z"/></g><g class="poi mob m-S" data-obj="mob30" data-cx="956.8" data-cy="623.5" tabindex="0" role="button" aria-label="발전기 지킴이 (철골 인부)" style="fill:#b9c3cf"><path d="M956.8 616.1 L963.4 628.4 L950.1 628.4 Z"/></g><g class="poi mob m-P" data-obj="mob31" data-cx="882.5" data-cy="532.5" tabindex="0" role="button" aria-label="철골 순찰 인부" style="fill:#e8eef5"><path d="M882.5 525.1 L889.1 537.4 L875.9 537.4 Z"/></g><g class="poi mob m-P" data-obj="mob32" data-cx="927.5" data-cy="475.0" tabindex="0" role="button" aria-label="철골 순찰 인부" style="fill:#e8eef5"><path d="M927.5 467.6 L934.1 479.9 L920.9 479.9 Z"/></g><g class="poi mob m-P" data-obj="mob33" data-cx="940.6" data-cy="360.0" tabindex="0" role="button" aria-label="철골 순찰 인부" style="fill:#e8eef5"><path d="M940.6 352.6 L947.3 364.9 L934.0 364.9 Z"/></g><g class="poi mob m-A" data-obj="mob34" data-cx="801.3" data-cy="447.3" tabindex="0" role="button" aria-label="숨은 인부" style="fill:#ff5470"><line class="lead" x1="799.5" y1="448.5" x2="801.3" y2="447.3"/><rect x="795.7" y="441.6" width="11.2" height="11.2" transform="rotate(45 801.3 447.3)"/></g><g class="poi mob m-B" data-obj="mob35" data-cx="735.0" data-cy="188.8" tabindex="0" role="button" aria-label="분수의 신부" style="fill:#ffffff"><rect x="728.6" y="182.4" width="12.8" height="12.8" transform="rotate(45 735.0 188.8)"/></g></g>
+<g id="lyr-fire"><g class="poi fire" data-obj="SE_F1" data-cx="459.8" data-cy="553.0" tabindex="0" role="button" aria-label="중앙버스정류장" style=""><circle cx="459.8" cy="553.0" r="11.0"/></g><g class="poi fire" data-obj="SE_F4" data-cx="706.6" data-cy="420.4" tabindex="0" role="button" aria-label="정상수학 옥상" style=""><line class="lead" x1="703.0" y1="420.0" x2="706.6" y2="420.4"/><circle cx="706.6" cy="420.4" r="11.0"/></g><g class="poi fire" data-obj="SE_F5" data-cx="880.0" data-cy="205.0" tabindex="0" role="button" aria-label="메리디안 별관 옥상" style=""><circle cx="880.0" cy="205.0" r="11.0"/></g></g>
+<g id="lyr-loot"><g class="poi loot" data-obj="loot_clothes" data-cx="137.5" data-cy="502.5" tabindex="0" role="button" aria-label="옷가게 금고 (포션 +1)" style=""><circle cx="137.5" cy="502.5" r="7.0"/><text x="137.5" y="505.4">◆</text></g><g class="poi loot" data-obj="loot_pawn" data-cx="238.5" data-cy="761.0" tabindex="0" role="button" aria-label="전당포 금고 (포션 칸 +1)" style=""><line class="lead" x1="237.5" y1="764.0" x2="238.5" y2="761.0"/><circle cx="238.5" cy="761.0" r="7.0"/><text x="238.5" y="764.0">◆</text></g><g class="poi loot" data-obj="loot_locker" data-cx="674.5" data-cy="487.3" tabindex="0" role="button" aria-label="옥상 자습생의 사물함" style=""><circle cx="674.5" cy="487.3" r="7.0"/><text x="674.5" y="490.2">◆</text></g><g class="poi loot" data-obj="loot_rooftop" data-cx="726.3" data-cy="602.5" tabindex="0" role="button" aria-label="옥탑방 상자" style=""><line class="lead" x1="727.5" y1="595.0" x2="726.3" y2="602.5"/><circle cx="726.3" cy="602.5" r="7.0"/><text x="726.3" y="605.4">◆</text></g><g class="poi loot" data-obj="loot_machine" data-cx="692.4" data-cy="513.2" tabindex="0" role="button" aria-label="기계실 지붕에 떨어진 가방 (포션 +1)" style=""><circle cx="692.4" cy="513.2" r="7.0"/><text x="692.4" y="516.1">◆</text></g><g class="poi loot" data-obj="loot_toolbox" data-cx="940.0" data-cy="587.5" tabindex="0" role="button" aria-label="철골 끝의 공구함 (포션 +1, 화염병 2)" style=""><circle cx="940.0" cy="587.5" r="7.0"/><text x="940.0" y="590.4">◆</text></g><g class="poi loot" data-obj="loot_site" data-cx="800.1" data-cy="466.0" tabindex="0" role="button" aria-label="재개발 현장사무소 금고 (포션 칸 +1)" style=""><circle cx="800.1" cy="466.0" r="7.0"/><text x="800.1" y="469.0">◆</text></g><g class="poi loot" data-obj="loot_cart" data-cx="580.0" data-cy="705.0" tabindex="0" role="button" aria-label="버려진 장바구니 (화염병 2)" style=""><circle cx="580.0" cy="705.0" r="7.0"/><text x="580.0" y="707.9">◆</text></g><g class="poi loot" data-obj="loot_lane" data-cx="870.0" data-cy="705.0" tabindex="0" role="button" aria-label="자재 적치장 뒤 공구 가방" style=""><circle cx="870.0" cy="705.0" r="7.0"/><text x="870.0" y="707.9">◆</text></g><g class="poi loot" data-obj="loot_arcade" data-cx="590.0" data-cy="484.1" tabindex="0" role="button" aria-label="아케이드 셔터 안 상자 (화염병 2)" style=""><line class="lead" x1="590.0" y1="482.0" x2="590.0" y2="484.1"/><circle cx="590.0" cy="484.1" r="7.0"/><text x="590.0" y="487.0">◆</text></g><g class="poi loot weapon" data-obj="w_knife" data-cx="361.2" data-cy="702.0" tabindex="0" role="button" aria-label="식칼 두 자루" style=""><circle cx="361.2" cy="702.0" r="7.0"/><text x="361.2" y="704.9">⚔</text></g><g class="poi loot weapon" data-obj="w_driver" data-cx="721.5" data-cy="578.8" tabindex="0" role="button" aria-label="골프 드라이버" style=""><line class="lead" x1="723.0" y1="585.0" x2="721.5" y2="578.8"/><circle cx="721.5" cy="578.8" r="7.0"/><text x="721.5" y="581.7">⚔</text></g></g>
+<g id="lyr-npc"><g class="poi npc" data-obj="ghost_lamp" data-cx="466.5" data-cy="521.0" tabindex="0" role="button" aria-label="등불지기" style=""><circle cx="466.5" cy="521.0" r="7.0"/><text x="466.5" y="523.9">☽</text></g><g class="poi npc" data-obj="ghost_groom" data-cx="788.1" data-cy="456.2" tabindex="0" role="button" aria-label="오지 않은 신랑" style=""><line class="lead" x1="790.0" y1="455.0" x2="788.1" y2="456.2"/><circle cx="788.1" cy="456.2" r="7.0"/><text x="788.1" y="459.1">☽</text></g><g class="poi npc" data-obj="ghost_pawn" data-cx="226.7" data-cy="788.2" tabindex="0" role="button" aria-label="전당포 노인" style=""><line class="lead" x1="230.0" y1="782.5" x2="226.7" y2="788.2"/><circle cx="226.7" cy="788.2" r="7.0"/><text x="226.7" y="791.1">☽</text></g><g class="poi npc" data-obj="ghost_student" data-cx="687.4" data-cy="418.2" tabindex="0" role="button" aria-label="옥상의 재수생" style=""><line class="lead" x1="690.4" y1="419.4" x2="687.4" y2="418.2"/><circle cx="687.4" cy="418.2" r="7.0"/><text x="687.4" y="421.1">☽</text></g><g class="poi msg" data-obj="msg0" data-cx="339.7" data-cy="530.0" tabindex="0" role="button" aria-label="“골목 끝, 매복 있음”" style=""><line class="lead" x1="335.0" y1="530.0" x2="339.7" y2="530.0"/><circle cx="339.7" cy="530.0" r="6.0"/><text x="339.7" y="532.5">✎</text></g><g class="poi msg" data-obj="msg1" data-cx="380.0" data-cy="572.5" tabindex="0" role="button" aria-label="“셔터는 안쪽에서만”" style=""><circle cx="380.0" cy="572.5" r="6.0"/><text x="380.0" y="575.0">✎</text></g><g class="poi msg" data-obj="msg2" data-cx="85.0" data-cy="565.0" tabindex="0" role="button" aria-label="“구멍 아래에 길이 있다”" style=""><circle cx="85.0" cy="565.0" r="6.0"/><text x="85.0" y="567.5">✎</text></g><g class="poi msg" data-obj="msg3" data-cx="425.0" data-cy="375.0" tabindex="0" role="button" aria-label="“사다리를 차라  화톳불이다”" style=""><circle cx="425.0" cy="375.0" r="6.0"/><text x="425.0" y="377.5">✎</text></g><g class="poi msg" data-obj="msg4" data-cx="713.2" data-cy="497.5" tabindex="0" role="button" aria-label="“용기를 내라  뛰어라”" style=""><line class="lead" x1="712.5" y1="501.5" x2="713.2" y2="497.5"/><circle cx="713.2" cy="497.5" r="6.0"/><text x="713.2" y="500.0">✎</text></g><g class="poi msg" data-obj="msg5" data-cx="825.0" data-cy="417.5" tabindex="0" role="button" aria-label="“떨어지면 끝  천천히”" style=""><circle cx="825.0" cy="417.5" r="6.0"/><text x="825.0" y="420.0">✎</text></g><g class="poi msg" data-obj="msg6" data-cx="97.5" data-cy="525.0" tabindex="0" role="button" aria-label="“무너졌다  가게를 지나라”" style=""><circle cx="97.5" cy="525.0" r="6.0"/><text x="97.5" y="527.5">✎</text></g><g class="poi msg" data-obj="msg7" data-cx="264.3" data-cy="763.9" tabindex="0" role="button" aria-label="“위를 봐라”" style=""><line class="lead" x1="265.0" y1="767.5" x2="264.3" y2="763.9"/><circle cx="264.3" cy="763.9" r="6.0"/><text x="264.3" y="766.4">✎</text></g><g class="poi msg" data-obj="msg8" data-cx="858.2" data-cy="188.8" tabindex="0" role="button" aria-label="“그녀가 기다린다”" style=""><line class="lead" x1="855.0" y1="188.8" x2="858.2" y2="188.8"/><circle cx="858.2" cy="188.8" r="6.0"/><text x="858.2" y="191.3">✎</text></g></g>
+<g class="compass" transform="translate(40,60)"><path d="M0,-26 L8,4 L0,-2 L-8,4 z"/><text x="0" y="22">N</text></g>
+<g class="scale"><line x1="20.0" y1="930.0" x2="270.0" y2="930.0"/><text x="20.0" y="924.0">50 m</text></g>
+</svg>
+    </div>
+    <div class="side">
+      <div class="box tog"><h4>레이어</h4>
+        <label><input type="checkbox" data-l="first" checked> 초행자 동선</label>
+        <label><input type="checkbox" data-l="route" checked> 전체 동선(높이 색)</label>
+        <label><input type="checkbox" data-l="zones" checked> 구역</label>
+        <label><input type="checkbox" data-l="gimmick" checked> 기믹</label>
+        <label><input type="checkbox" data-l="mob" checked> 몹</label>
+        <label><input type="checkbox" data-l="fire" checked> 화톳불</label>
+        <label><input type="checkbox" data-l="loot" checked> 보상·무기</label>
+        <label><input type="checkbox" data-l="npc" checked> 유령·메시지</label>
+        <label><input type="checkbox" data-l="wp"> 경로점 이름</label>
+      </div>
+      <div class="box"><h4>높이 (눌러서 강조)</h4><ul class="leg" id="layerleg"><li><span class="sw" style="background:#5b8cff"></span>지하 −8 m</li><li><span class="sw" style="background:#9aa4b2"></span>지상 0 m</li><li><span class="sw" style="background:#3fd0c9"></span>+7 ~ +9 m (육교·V1·강의실)</li><li><span class="sw" style="background:#8fe36b"></span>+12 ~ +15 m (데크·V4·독서실)</li><li><span class="sw" style="background:#ffd166"></span>+18 ~ +22 m (학원 옥상·정원·별관)</li><li><span class="sw" style="background:#ff8c42"></span>+26 m (9층 철골)</li><li><span class="sw" style="background:#ff4d6d"></span>+64 m (크레인)</li></ul></div>
+      <div class="box"><h4>범례</h4><ul class="leg">
+        <li><span class="sw" style="background:rgba(255,255,255,.35);height:7px"></span>초행자 동선</li>
+        <li><span class="dot" style="background:#ff7a1a"></span>화톳불 <span class="dot" style="background:#e9c46a"></span>보상 <span class="dot" style="background:#fff"></span>무기</li>
+        <li><span class="dot" style="background:#39e48a"></span>지름길 <span class="dot" style="background:#7cc4ff"></span>장치</li>
+        <li><span class="dot" style="background:#ffd166"></span>열쇠·발전기 <span class="dot" style="background:#ff5470"></span>함정·낙사</li>
+        <li><span class="dot" style="background:#c792ea"></span>비밀 <span class="dot" style="background:#e9c46a"></span>랜드마크</li>
+        <li><span class="tri"></span>순찰 <span class="tri" style="border-bottom-color:#b9c3cf"></span>정지 <span class="tri" style="border-bottom-color:#ff9f1c"></span>정예</li>
+        <li><span class="dia" style="background:#ff5470"></span>매복 <span class="dia" style="background:#ff2d55"></span>중간보스 <span class="dia" style="background:#fff"></span>보스</li>
+        <li><span class="sq" style="background:#6b7380"></span>마네킹 소품 <span class="dot" style="background:#56627a"></span>셔터 가게</li>
+        <li><span class="dot" style="background:#9ad1ff"></span>유령 <span class="dot" style="background:#c0b49a"></span>바닥 메시지</li>
+        <li><span class="sw" style="background:repeating-linear-gradient(90deg,#5b8cff 0 6px,transparent 6px 10px)"></span>지하상가(−8)</li>
+        <li><span class="sw" style="background:#a0522d"></span>9층 철골 <span class="sw" style="background:repeating-linear-gradient(90deg,#ffcc33 0 8px,transparent 8px 12px)"></span>크레인 지브</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<section id="elev-sec">
+  <h2><span class="no">04 · SIDE VIEW</span>측면도 — 초행자 동선을 펼쳐서</h2>
+  <ul class="b note" style="margin:-4px 0 12px"><li>가로 = 처음 걷는 순서대로 편 거리 · 세로 = 높이 · 위 = 구역</li><li>큰 표식 = 수직 이동(계단·엘리베이터·호이스트·리프트·갈고리·낙하) · 누르면 설명</li></ul>
+  <div class="chart"><svg id="elev" class="elev" viewBox="0 0 1100 430" role="img" aria-label="측면도">
+<line class="eg" x1="58" y1="393.0" x2="1084" y2="393.0"/><text class="ea" x="52" y="397.0">−8 m</text>
+<line class="eg" x1="58" y1="357.1" x2="1084" y2="357.1"/><text class="ea" x="52" y="361.1">0 m</text>
+<line class="eg" x1="58" y1="325.7" x2="1084" y2="325.7"/><text class="ea" x="52" y="329.7">+7 m</text>
+<line class="eg" x1="58" y1="303.3" x2="1084" y2="303.3"/><text class="ea" x="52" y="307.3">+12 m</text>
+<line class="eg" x1="58" y1="276.4" x2="1084" y2="276.4"/><text class="ea" x="52" y="280.4">+18 m</text>
+<line class="eg" x1="58" y1="240.5" x2="1084" y2="240.5"/><text class="ea" x="52" y="244.5">+26 m</text>
+<line class="eg" x1="58" y1="69.9" x2="1084" y2="69.9"/><text class="ea" x="52" y="73.9">+64 m</text>
+<rect class="eband" x="58.0" y="48" width="42.2" height="354"/>
+<text class="ez" x="79.1" y="42" data-zone="z01"><title>시작 — 중앙버스정류장 · 횡단보도 싱크홀</title>01</text>
+<rect class="eband alt" x="113.3" y="48" width="95.4" height="354"/>
+<text class="ez" x="161.0" y="28" data-zone="z02"><title>1층 통로 · 공구 골목</title>02</text>
+<rect class="eband" x="212.9" y="48" width="89.1" height="354"/>
+<text class="ez" x="257.4" y="42" data-zone="z03"><title>계단탑 · 3층 보행데크</title>03 계단탑 · 보행데크</text>
+<rect class="eband alt" x="314.1" y="48" width="29.9" height="354"/>
+<text class="ez" x="329.1" y="28" data-zone="z04"><title>구름다리 · 웨딩 스튜디오 「백일몽」</title>04</text>
+<rect class="eband" x="362.9" y="48" width="76.1" height="354"/>
+<text class="ez" x="401.0" y="42" data-zone="z05"><title>지하상가 (천장 붕괴 · 옷가게 · 중간보스)</title>05</text>
+<rect class="eband alt" x="447.8" y="48" width="72.1" height="354"/>
+<text class="ez" x="483.8" y="28" data-zone="z06"><title>지하철 출구 · 광장 · 육교</title>06</text>
+<rect class="eband" x="524.5" y="48" width="20.9" height="354"/>
+<text class="ez" x="535.0" y="42" data-zone="z07"><title>V1 아케이드 옥상</title>07</text>
+<rect class="eband alt" x="547.1" y="48" width="47.4" height="354"/>
+<text class="ez" x="570.8" y="28" data-zone="z08"><title>「정상수학」 학원</title>08</text>
+<rect class="eband" x="596.6" y="48" width="31.7" height="354"/>
+<text class="ez" x="612.5" y="42" data-zone="z09"><title>V4 옥상 · 옥탑방</title>09</text>
+<rect class="eband alt" x="633.6" y="48" width="103.1" height="354"/>
+<text class="ez" x="685.2" y="28" data-zone="z10"><title>공사장 마당 (발전기)</title>10 공사장 마당</text>
+<rect class="eband" x="750.6" y="48" width="132.6" height="354"/>
+<text class="ez" x="817.0" y="42" data-zone="z11"><title>공사장 9층 철골</title>11 9층 철골</text>
+<rect class="eband alt" x="891.5" y="48" width="39.4" height="354"/>
+<text class="ez" x="911.2" y="28" data-zone="z12"><title>타워크레인</title>12</text>
+<rect class="eband" x="959.1" y="48" width="124.9" height="354"/>
+<text class="ez" x="1021.6" y="42" data-zone="z13"><title>별관 옥상 · 공중 분수정원</title>13 별관 옥상 · 분수정원</text>
+<path class="eground" d="M58.0,357.1 L58.0,356.2 L59.1,356.2 L77.7,356.2 L78.8,356.2 L79.9,356.2 L90.2,356.2 L100.2,357.1 L113.3,357.1 L125.4,357.1 L140.6,357.1 L142.4,357.1 L145.4,357.1 L149.8,357.1 L152.8,357.1 L157.9,357.1 L162.0,357.1 L162.1,357.1 L166.0,357.1 L177.7,357.1 L181.9,357.1 L184.1,357.1 L189.0,357.1 L191.1,357.1 L195.3,357.1 L208.8,357.1 L212.9,357.1 L213.0,357.1 L217.4,348.2 L219.5,348.2 L223.9,339.2 L226.0,339.2 L230.4,330.2 L232.5,330.2 L236.9,321.2 L239.0,321.2 L243.4,312.3 L245.5,312.3 L249.9,303.3 L254.1,303.3 L262.5,303.3 L277.5,303.3 L288.7,303.3 L297.5,303.3 L297.5,303.3 L302.0,303.3 L314.1,303.3 L327.2,303.3 L330.0,303.3 L337.9,303.3 L339.5,303.3 L341.0,303.3 L344.0,303.3 L362.9,393.0 L365.7,393.0 L377.7,393.0 L380.8,393.0 L383.8,393.0 L387.5,393.0 L391.2,393.0 L399.6,393.0 L409.9,393.0 L420.2,393.0 L434.8,357.1 L439.0,357.1 L447.8,357.1 L462.0,357.1 L474.2,325.7 L479.3,325.7 L490.1,325.7 L499.5,325.7 L499.5,325.7 L507.1,325.7 L516.4,325.7 L519.9,325.7 L524.5,316.7 L526.8,316.7 L531.5,316.7 L541.5,316.7 L544.9,316.7 L545.5,316.7 L547.1,316.7 L550.4,316.7 L550.8,316.7 L554.8,316.7 L558.6,310.0 L560.1,310.0 L563.9,303.3 L565.5,303.3 L569.3,296.6 L570.9,296.6 L574.7,289.8 L574.8,289.8 L577.3,289.8 L581.9,289.8 L592.6,289.8 L594.5,289.8 L596.6,289.8 L602.2,303.3 L608.2,303.3 L613.3,303.3 L615.3,303.3 L616.9,303.3 L628.4,357.1 L633.6,357.1 L649.5,357.1 L671.1,357.1 L692.7,357.1 L708.6,357.1 L713.9,357.1 L714.4,357.1 L726.2,303.3 L726.6,303.3 L732.4,303.3 L736.8,303.3 L750.6,240.5 L758.7,240.5 L760.6,240.5 L771.7,240.5 L782.5,240.5 L793.2,240.5 L800.2,240.5 L810.9,240.5 L815.0,240.5 L817.2,240.5 L838.2,240.5 L841.0,240.5 L842.9,240.5 L845.2,240.5 L847.6,240.5 L849.5,240.5 L852.3,240.5 L873.3,240.5 L875.4,240.5 L879.5,240.5 L883.3,240.5 L891.5,240.5 L894.0,240.5 L929.6,69.9 L930.9,69.9 L934.0,69.9 L959.1,69.9 L984.3,69.9 L987.5,69.9 L1017.4,83.4 L1053.8,258.4 L1053.8,258.4 L1056.9,258.4 L1062.5,276.4 L1084.0,276.4 L1084.0,357.1 Z"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="58.0" y1="356.2" x2="59.1" y2="356.2"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="59.1" y1="356.2" x2="77.7" y2="356.2"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="77.7" y1="356.2" x2="78.8" y2="356.2"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="78.8" y1="356.2" x2="79.9" y2="356.2"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="79.9" y1="356.2" x2="90.2" y2="356.2"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="90.2" y1="356.2" x2="100.2" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="100.2" y1="357.1" x2="113.3" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="113.3" y1="357.1" x2="125.4" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="125.4" y1="357.1" x2="140.6" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="140.6" y1="357.1" x2="142.4" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="142.4" y1="357.1" x2="145.4" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="145.4" y1="357.1" x2="149.8" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="149.8" y1="357.1" x2="152.8" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="152.8" y1="357.1" x2="157.9" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="157.9" y1="357.1" x2="162.0" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="162.0" y1="357.1" x2="162.1" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="162.1" y1="357.1" x2="166.0" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="166.0" y1="357.1" x2="177.7" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="177.7" y1="357.1" x2="181.9" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="181.9" y1="357.1" x2="184.1" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="184.1" y1="357.1" x2="189.0" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="189.0" y1="357.1" x2="191.1" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="191.1" y1="357.1" x2="195.3" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="195.3" y1="357.1" x2="208.8" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="208.8" y1="357.1" x2="212.9" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="212.9" y1="357.1" x2="213.0" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="213.0" y1="357.1" x2="217.4" y2="348.2"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="217.4" y1="348.2" x2="219.5" y2="348.2"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="219.5" y1="348.2" x2="223.9" y2="339.2"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="223.9" y1="339.2" x2="226.0" y2="339.2"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="226.0" y1="339.2" x2="230.4" y2="330.2"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="230.4" y1="330.2" x2="232.5" y2="330.2"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="232.5" y1="330.2" x2="236.9" y2="321.2"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="236.9" y1="321.2" x2="239.0" y2="321.2"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="239.0" y1="321.2" x2="243.4" y2="312.3"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="243.4" y1="312.3" x2="245.5" y2="312.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="245.5" y1="312.3" x2="249.9" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="249.9" y1="303.3" x2="254.1" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="254.1" y1="303.3" x2="262.5" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="262.5" y1="303.3" x2="277.5" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="277.5" y1="303.3" x2="288.7" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="288.7" y1="303.3" x2="297.5" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="297.5" y1="303.3" x2="297.5" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="297.5" y1="303.3" x2="302.0" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="302.0" y1="303.3" x2="314.1" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="314.1" y1="303.3" x2="327.2" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="327.2" y1="303.3" x2="330.0" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="330.0" y1="303.3" x2="337.9" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="337.9" y1="303.3" x2="339.5" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="339.5" y1="303.3" x2="341.0" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="341.0" y1="303.3" x2="344.0" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="344.0" y1="303.3" x2="362.9" y2="393.0"/>
+<line class="eroute" style="stroke:#5b8cff" x1="362.9" y1="393.0" x2="365.7" y2="393.0"/>
+<line class="eroute" style="stroke:#5b8cff" x1="365.7" y1="393.0" x2="377.7" y2="393.0"/>
+<line class="eroute" style="stroke:#5b8cff" x1="377.7" y1="393.0" x2="380.8" y2="393.0"/>
+<line class="eroute" style="stroke:#5b8cff" x1="380.8" y1="393.0" x2="383.8" y2="393.0"/>
+<line class="eroute" style="stroke:#5b8cff" x1="383.8" y1="393.0" x2="387.5" y2="393.0"/>
+<line class="eroute" style="stroke:#5b8cff" x1="387.5" y1="393.0" x2="391.2" y2="393.0"/>
+<line class="eroute" style="stroke:#5b8cff" x1="391.2" y1="393.0" x2="399.6" y2="393.0"/>
+<line class="eroute" style="stroke:#5b8cff" x1="399.6" y1="393.0" x2="409.9" y2="393.0"/>
+<line class="eroute" style="stroke:#5b8cff" x1="409.9" y1="393.0" x2="420.2" y2="393.0"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="420.2" y1="393.0" x2="434.8" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="434.8" y1="357.1" x2="439.0" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="439.0" y1="357.1" x2="447.8" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="447.8" y1="357.1" x2="462.0" y2="357.1"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="462.0" y1="357.1" x2="474.2" y2="325.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="474.2" y1="325.7" x2="479.3" y2="325.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="479.3" y1="325.7" x2="490.1" y2="325.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="490.1" y1="325.7" x2="499.5" y2="325.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="499.5" y1="325.7" x2="499.5" y2="325.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="499.5" y1="325.7" x2="507.1" y2="325.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="507.1" y1="325.7" x2="516.4" y2="325.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="516.4" y1="325.7" x2="519.9" y2="325.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="519.9" y1="325.7" x2="524.5" y2="316.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="524.5" y1="316.7" x2="526.8" y2="316.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="526.8" y1="316.7" x2="531.5" y2="316.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="531.5" y1="316.7" x2="541.5" y2="316.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="541.5" y1="316.7" x2="544.9" y2="316.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="544.9" y1="316.7" x2="545.5" y2="316.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="545.5" y1="316.7" x2="547.1" y2="316.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="547.1" y1="316.7" x2="550.4" y2="316.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="550.4" y1="316.7" x2="550.8" y2="316.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="550.8" y1="316.7" x2="554.8" y2="316.7"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="554.8" y1="316.7" x2="558.6" y2="310.0"/>
+<line class="eroute" style="stroke:#3fd0c9" x1="558.6" y1="310.0" x2="560.1" y2="310.0"/>
+<line class="eroute" style="stroke:#8fe36b" x1="560.1" y1="310.0" x2="563.9" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="563.9" y1="303.3" x2="565.5" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="565.5" y1="303.3" x2="569.3" y2="296.6"/>
+<line class="eroute" style="stroke:#8fe36b" x1="569.3" y1="296.6" x2="570.9" y2="296.6"/>
+<line class="eroute" style="stroke:#8fe36b" x1="570.9" y1="296.6" x2="574.7" y2="289.8"/>
+<line class="eroute" style="stroke:#8fe36b" x1="574.7" y1="289.8" x2="574.8" y2="289.8"/>
+<line class="eroute" style="stroke:#8fe36b" x1="574.8" y1="289.8" x2="577.3" y2="289.8"/>
+<line class="eroute" style="stroke:#8fe36b" x1="577.3" y1="289.8" x2="581.9" y2="289.8"/>
+<line class="eroute" style="stroke:#8fe36b" x1="581.9" y1="289.8" x2="592.6" y2="289.8"/>
+<line class="eroute" style="stroke:#8fe36b" x1="592.6" y1="289.8" x2="594.5" y2="289.8"/>
+<line class="eroute" style="stroke:#8fe36b" x1="594.5" y1="289.8" x2="596.6" y2="289.8"/>
+<line class="eroute" style="stroke:#8fe36b" x1="596.6" y1="289.8" x2="602.2" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="602.2" y1="303.3" x2="608.2" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="608.2" y1="303.3" x2="613.3" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="613.3" y1="303.3" x2="615.3" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="615.3" y1="303.3" x2="616.9" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="616.9" y1="303.3" x2="628.4" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="628.4" y1="357.1" x2="633.6" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="633.6" y1="357.1" x2="649.5" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="649.5" y1="357.1" x2="671.1" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="671.1" y1="357.1" x2="692.7" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="692.7" y1="357.1" x2="708.6" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="708.6" y1="357.1" x2="713.9" y2="357.1"/>
+<line class="eroute" style="stroke:#9aa4b2" x1="713.9" y1="357.1" x2="714.4" y2="357.1"/>
+<line class="eroute" style="stroke:#8fe36b" x1="714.4" y1="357.1" x2="726.2" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="726.2" y1="303.3" x2="726.6" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="726.6" y1="303.3" x2="732.4" y2="303.3"/>
+<line class="eroute" style="stroke:#8fe36b" x1="732.4" y1="303.3" x2="736.8" y2="303.3"/>
+<line class="eroute" style="stroke:#ff8c42" x1="736.8" y1="303.3" x2="750.6" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="750.6" y1="240.5" x2="758.7" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="758.7" y1="240.5" x2="760.6" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="760.6" y1="240.5" x2="771.7" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="771.7" y1="240.5" x2="782.5" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="782.5" y1="240.5" x2="793.2" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="793.2" y1="240.5" x2="800.2" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="800.2" y1="240.5" x2="810.9" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="810.9" y1="240.5" x2="815.0" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="815.0" y1="240.5" x2="817.2" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="817.2" y1="240.5" x2="838.2" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="838.2" y1="240.5" x2="841.0" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="841.0" y1="240.5" x2="842.9" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="842.9" y1="240.5" x2="845.2" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="845.2" y1="240.5" x2="847.6" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="847.6" y1="240.5" x2="849.5" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="849.5" y1="240.5" x2="852.3" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="852.3" y1="240.5" x2="873.3" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="873.3" y1="240.5" x2="875.4" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="875.4" y1="240.5" x2="879.5" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="879.5" y1="240.5" x2="883.3" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="883.3" y1="240.5" x2="891.5" y2="240.5"/>
+<line class="eroute" style="stroke:#ff8c42" x1="891.5" y1="240.5" x2="894.0" y2="240.5"/>
+<line class="eroute" style="stroke:#ff4d6d" x1="894.0" y1="240.5" x2="929.6" y2="69.9"/>
+<line class="eroute" style="stroke:#ff4d6d" x1="929.6" y1="69.9" x2="930.9" y2="69.9"/>
+<line class="eroute" style="stroke:#ff4d6d" x1="930.9" y1="69.9" x2="934.0" y2="69.9"/>
+<line class="eroute" style="stroke:#ff4d6d" x1="934.0" y1="69.9" x2="959.1" y2="69.9"/>
+<line class="eroute" style="stroke:#ff4d6d" x1="959.1" y1="69.9" x2="984.3" y2="69.9"/>
+<line class="eroute" style="stroke:#ff4d6d" x1="984.3" y1="69.9" x2="987.5" y2="69.9"/>
+<line class="eroute ride" style="stroke:#ff4d6d" x1="987.5" y1="69.9" x2="1017.4" y2="83.4"/>
+<line class="eroute ride" style="stroke:#ff4d6d" x1="1017.4" y1="83.4" x2="1053.8" y2="258.4"/>
+<line class="eroute" style="stroke:#ffd166" x1="1053.8" y1="258.4" x2="1053.8" y2="258.4"/>
+<line class="eroute" style="stroke:#ffd166" x1="1053.8" y1="258.4" x2="1056.9" y2="258.4"/>
+<line class="eroute" style="stroke:#ffd166" x1="1056.9" y1="258.4" x2="1062.5" y2="276.4"/>
+<line class="eroute" style="stroke:#ffd166" x1="1062.5" y1="276.4" x2="1084.0" y2="276.4"/>
+<g class="poi fire" data-obj="SE_F1" tabindex="0" role="button" aria-label="중앙버스정류장"><circle cx="58.0" cy="356.2" r="6.0"/></g>
+<g class="poi g-shutter" data-obj="toolshop_shutter" tabindex="0" role="button" aria-label="공구 상가 셔터"><circle cx="142.4" cy="357.1" r="6.0"/><text x="142.4" y="359.6">▤</text></g>
+<g class="poi g-break" data-obj="toolshop_backdoor" tabindex="0" role="button" aria-label="판자 뒷문"><circle cx="162.1" cy="357.1" r="6.0"/><text x="162.1" y="359.6">✕</text></g>
+<g class="poi g-light" data-obj="backhall_light" tabindex="0" role="button" aria-label="뒷복도 입구 빛"><circle cx="181.9" cy="357.1" r="6.0"/><text x="181.9" y="359.6">✺</text></g>
+<g class="poi g-secret" data-obj="loft_door" tabindex="0" role="button" aria-label="비밀 1 · 다락 문"><circle cx="184.1" cy="342.1" r="6.0"/><text x="184.1" y="344.6">?</text></g>
+<g class="poi g-break" data-obj="loft_window" tabindex="0" role="button" aria-label="다락 판자창"><circle cx="191.1" cy="326.9" r="6.0"/><text x="191.1" y="329.4">✕</text></g>
+<g class="poi g-stair" data-obj="stairA_door" tabindex="0" role="button" aria-label="계단탑"><circle cx="212.9" cy="357.1" r="7.5"/><text x="212.9" y="360.3">≡</text></g>
+<g class="poi mob m-E" data-obj="mob5" tabindex="0" role="button" aria-label="포장마차 주인"><path d="M262.5 297.3 L267.9 307.5 L257.1 307.5 Z" style="fill:#ff9f1c"/></g>
+<g class="poi g-shutter" data-obj="kitchen_shutter" tabindex="0" role="button" aria-label="주방 셔터"><circle cx="277.5" cy="303.3" r="6.0"/><text x="277.5" y="305.8">▤</text></g>
+<g class="poi g-door" data-obj="skybridge" tabindex="0" role="button" aria-label="구름다리"><circle cx="302.0" cy="303.3" r="6.0"/><text x="302.0" y="305.8">▯</text></g>
+<g class="poi mob m-A" data-obj="mob8" tabindex="0" role="button" aria-label="깨어나는 마네킹"><rect x="333.4" y="298.8" width="9.0" height="9.0" transform="rotate(45 337.9 303.3)" style="fill:#ff5470"/></g>
+<g class="poi mob m-A" data-obj="mob9" tabindex="0" role="button" aria-label="깨어나는 마네킹"><rect x="333.4" y="283.8" width="9.0" height="9.0" transform="rotate(45 337.9 288.3)" style="fill:#ff5470"/></g>
+<g class="poi g-landmark" data-obj="flower_arch" tabindex="0" role="button" aria-label="시든 꽃 아치"><circle cx="339.5" cy="273.3" r="6.0"/><text x="339.5" y="275.8">★</text></g>
+<g class="poi g-lift" data-obj="glass_lift" tabindex="0" role="button" aria-label="유리 엘리베이터"><circle cx="344.0" cy="258.3" r="7.5"/><text x="344.0" y="261.4">⇕</text></g>
+<g class="poi mob m-A" data-obj="mob14" tabindex="0" role="button" aria-label="엘리베이터 승객 (우산 든 조문객)"><rect x="358.4" y="387.5" width="9.0" height="9.0" transform="rotate(45 362.9 392.0)" style="fill:#ff5470"/></g>
+<g class="poi g-shutter" data-obj="clothes_shutter" tabindex="0" role="button" aria-label="옷가게 셔터"><circle cx="380.8" cy="393.0" r="6.0"/><text x="380.8" y="395.5">▤</text></g>
+<g class="poi g-stair" data-obj="subway_stair" tabindex="0" role="button" aria-label="지하철 출구 계단"><circle cx="434.8" cy="375.1" r="7.5"/><text x="434.8" y="378.2">≡</text></g>
+<g class="poi g-stair" data-obj="bridge_stair" tabindex="0" role="button" aria-label="육교 서쪽 계단"><circle cx="474.2" cy="341.4" r="7.5"/><text x="474.2" y="344.6">≡</text></g>
+<g class="poi g-shortcut" data-obj="sc3" tabindex="0" role="button" aria-label="SC3 걷어차는 사다리"><circle cx="499.5" cy="356.2" r="7.5"/><text x="499.5" y="359.4">⇆</text></g>
+<g class="poi g-door" data-obj="academy_door" tabindex="0" role="button" aria-label="학원 출입문"><circle cx="545.5" cy="316.7" r="6.0"/><text x="545.5" y="319.3">▯</text></g>
+<g class="poi mob m-T" data-obj="mob23" tabindex="0" role="button" aria-label="앉은 학생 (강의실)"><path d="M547.1 295.7 L552.5 305.9 L541.7 305.9 Z" style="fill:#b9c3cf"/></g>
+<g class="poi g-door" data-obj="fire_doors" tabindex="0" role="button" aria-label="계단실 방화문"><circle cx="550.4" cy="286.7" r="6.0"/><text x="550.4" y="289.3">▯</text></g>
+<g class="poi fire" data-obj="SE_F4" tabindex="0" role="button" aria-label="정상수학 옥상"><circle cx="569.3" cy="275.0" r="6.0"/></g>
+<g class="poi g-break" data-obj="study_window" tabindex="0" role="button" aria-label="독서실 창"><circle cx="577.3" cy="288.0" r="6.0"/><text x="577.3" y="290.5">✕</text></g>
+<g class="poi mob m-T" data-obj="mob26" tabindex="0" role="button" aria-label="앉은 학생 (독서실)"><path d="M577.3 268.8 L582.7 279.0 L571.9 279.0 Z" style="fill:#b9c3cf"/></g>
+<g class="poi mob m-T" data-obj="mob24" tabindex="0" role="button" aria-label="앉은 학생 (강의실)"><path d="M592.6 310.7 L598.0 320.9 L587.2 320.9 Z" style="fill:#b9c3cf"/></g>
+<g class="poi mob m-T" data-obj="mob25" tabindex="0" role="button" aria-label="앉은 학생 (강의실)"><path d="M592.6 295.7 L598.0 305.9 L587.2 305.9 Z" style="fill:#b9c3cf"/></g>
+<g class="poi mob m-T" data-obj="mob27" tabindex="0" role="button" aria-label="앉은 학생 (독서실)"><path d="M592.6 268.8 L598.0 279.0 L587.2 279.0 Z" style="fill:#b9c3cf"/></g>
+<g class="poi g-drop" data-obj="balcony_drop" tabindex="0" role="button" aria-label="부서진 발코니 (3 m 낙하)"><circle cx="596.6" cy="259.8" r="7.5"/><text x="596.6" y="263.0">↓</text></g>
+<g class="poi g-ladder" data-obj="inspect_ladder" tabindex="0" role="button" aria-label="물탱크 점검 사다리"><circle cx="596.6" cy="288.3" r="7.5"/><text x="596.6" y="291.4">☰</text></g>
+<g class="poi g-door" data-obj="rooftop_door" tabindex="0" role="button" aria-label="옥탑방 미닫이 문"><circle cx="608.2" cy="303.3" r="6.0"/><text x="608.2" y="305.8">▯</text></g>
+<g class="poi g-landmark" data-obj="church_cross" tabindex="0" role="button" aria-label="옥탑 교회 십자가"><circle cx="608.2" cy="276.2" r="6.0"/><text x="608.2" y="278.7">★</text></g>
+<g class="poi g-shortcut" data-obj="site_gate" tabindex="0" role="button" aria-label="현장 서쪽 철문"><circle cx="633.6" cy="357.1" r="7.5"/><text x="633.6" y="360.3">⇆</text></g>
+<g class="poi g-generator" data-obj="generator" tabindex="0" role="button" aria-label="발전기"><circle cx="671.1" cy="357.1" r="6.0"/><text x="671.1" y="359.6">⚡</text></g>
+<g class="poi mob m-S" data-obj="mob30" tabindex="0" role="button" aria-label="발전기 지킴이 (철골 인부)"><path d="M671.1 336.1 L676.5 346.3 L665.7 346.3 Z" style="fill:#b9c3cf"/></g>
+<g class="poi g-ladder" data-obj="scaffold_ladder" tabindex="0" role="button" aria-label="비계 사다리"><circle cx="714.4" cy="357.1" r="7.5"/><text x="714.4" y="360.3">☰</text></g>
+<g class="poi mob m-P" data-obj="mob31" tabindex="0" role="button" aria-label="철골 순찰 인부"><path d="M771.7 234.5 L777.1 244.7 L766.3 244.7 Z" style="fill:#e8eef5"/></g>
+<g class="poi mob m-P" data-obj="mob32" tabindex="0" role="button" aria-label="철골 순찰 인부"><path d="M782.5 219.5 L787.9 229.7 L777.1 229.7 Z" style="fill:#e8eef5"/></g>
+<g class="poi g-trap" data-obj="trap1" tabindex="0" role="button" aria-label="썩은 철골 1"><circle cx="800.2" cy="240.5" r="6.0"/><text x="800.2" y="243.0">⚠</text></g>
+<g class="poi g-trap" data-obj="trap2" tabindex="0" role="button" aria-label="썩은 철골 2"><circle cx="810.9" cy="225.5" r="6.0"/><text x="810.9" y="228.0">⚠</text></g>
+<g class="poi g-block" data-obj="formwork_wall" tabindex="0" role="button" aria-label="거푸집 벽"><circle cx="841.0" cy="240.5" r="6.0"/><text x="841.0" y="243.0">▨</text></g>
+<g class="poi g-key" data-obj="key" tabindex="0" role="button" aria-label="마스트 리프트 열쇠"><circle cx="845.2" cy="222.4" r="6.0"/><text x="845.2" y="224.9">⚿</text></g>
+<g class="poi mob m-A" data-obj="mob34" tabindex="0" role="button" aria-label="숨은 인부"><rect x="840.7" y="206.0" width="9.0" height="9.0" transform="rotate(45 845.2 210.5)" style="fill:#ff5470"/></g>
+<g class="poi g-trap" data-obj="trap5" tabindex="0" role="button" aria-label="썩은 철골 5"><circle cx="883.3" cy="240.5" r="6.0"/><text x="883.3" y="243.0">⚠</text></g>
+<g class="poi g-lift" data-obj="mast_lift" tabindex="0" role="button" aria-label="마스트 리프트"><circle cx="894.0" cy="225.5" r="7.5"/><text x="894.0" y="228.6">⇕</text></g>
+<g class="poi mob m-P" data-obj="mob33" tabindex="0" role="button" aria-label="철골 순찰 인부"><path d="M894.0 204.5 L899.4 214.7 L888.6 214.7 Z" style="fill:#e8eef5"/></g>
+<g class="poi g-crane" data-obj="crane_console" tabindex="0" role="button" aria-label="크레인 운전석 콘솔"><circle cx="929.6" cy="69.9" r="7.5"/><text x="929.6" y="73.1">⚓</text></g>
+<g class="poi g-crane" data-obj="hook" tabindex="0" role="button" aria-label="갈고리"><circle cx="987.5" cy="69.9" r="7.5"/><text x="987.5" y="73.1">⚓</text></g>
+<g class="poi fire" data-obj="SE_F5" tabindex="0" role="button" aria-label="메리디안 별관 옥상"><circle cx="1053.8" cy="258.4" r="6.0"/></g>
+<g class="poi g-drop" data-obj="annex_drop" tabindex="0" role="button" aria-label="별관 → 정원 (4 m)"><circle cx="1056.9" cy="243.4" r="7.5"/><text x="1056.9" y="246.6">↓</text></g>
+<g class="poi g-landmark" data-obj="fountain" tabindex="0" role="button" aria-label="분수"><circle cx="1084.0" cy="276.4" r="6.0"/><text x="1084.0" y="278.9">★</text></g>
+<g class="poi mob m-B" data-obj="mob35" tabindex="0" role="button" aria-label="분수의 신부"><rect x="1079.5" y="256.9" width="9.0" height="9.0" transform="rotate(45 1084.0 261.4)" style="fill:#ffffff"/></g>
+<text class="ea" x="1084" y="424" style="text-anchor:end">첫 완주 동선을 펼친 거리 → 1099 m</text>
+</svg></div>
+</section>
+
+<section id="v3-sec">
+  <h2><span class="no">05 · 3D</span>3D 평면도</h2>
+  <div class="v3wrap" id="v3wrap"><div class="v3msg" id="v3msg"><div>목업 맵의 형상을 3D 로 봅니다</div><button type="button" id="v3load">3D 보기</button></div></div>
+  <div class="v3bar" id="v3bar" hidden>
+    <span>단면 높이</span><input type="range" id="v3cut" min="-10" max="70" step="1" value="70"><b id="v3cutv">전체</b>
+    <button type="button" data-cut="-2">지하만</button><button type="button" data-cut="10">지면~+9</button><button type="button" data-cut="16">~+15</button><button type="button" data-cut="24">~+22</button><button type="button" data-cut="30">~9층</button><button type="button" data-cut="70">전체</button>
+    <label><input type="checkbox" id="v3route" checked> 초행자 동선</label><label><input type="checkbox" id="v3icons" checked> 객체</label>
+    <button type="button" id="v3top">위에서</button><button type="button" id="v3persp">비스듬히</button>
+  </div>
+</section>
+
+<section id="zones">
+  <h2><span class="no">06 · ZONES</span>구역</h2>
+  <div class="grid g4" id="zcards"></div>
+</section>
+
+<section id="pacing-sec">
+  <h2><span class="no">07 · TENSION</span>긴장도 곡선</h2>
+  <ul class="b note" style="margin:-4px 0 12px"><li>가로 = 첫 완주 동선 거리 · 세로 = 설계 의도 긴장도(0~10) · 점선 = 화톳불</li></ul>
+  <div class="chart"><svg id="pacing" viewBox="0 0 1100 310" role="img" aria-label="긴장도 곡선">
+<line class="pgrid" x1="46" y1="270.0" x2="1084" y2="270.0"/><text class="pax" x="38" y="274.0">0</text>
+<line class="pgrid" x1="46" y1="222.8" x2="1084" y2="222.8"/><text class="pax" x="38" y="226.8">2</text>
+<line class="pgrid" x1="46" y1="175.6" x2="1084" y2="175.6"/><text class="pax" x="38" y="179.6">4</text>
+<line class="pgrid" x1="46" y1="128.4" x2="1084" y2="128.4"/><text class="pax" x="38" y="132.4">6</text>
+<line class="pgrid" x1="46" y1="81.2" x2="1084" y2="81.2"/><text class="pax" x="38" y="85.2">8</text>
+<line class="pgrid" x1="46" y1="34.0" x2="1084" y2="34.0"/><text class="pax" x="38" y="38.0">10</text>
+<text class="pax" x="46.0" y="288">0 m</text>
+<text class="pax" x="141.1" y="288">100 m</text>
+<text class="pax" x="236.2" y="288">200 m</text>
+<text class="pax" x="331.4" y="288">300 m</text>
+<text class="pax" x="426.5" y="288">400 m</text>
+<text class="pax" x="521.6" y="288">500 m</text>
+<text class="pax" x="616.7" y="288">600 m</text>
+<text class="pax" x="711.9" y="288">700 m</text>
+<text class="pax" x="807.0" y="288">800 m</text>
+<text class="pax" x="902.1" y="288">900 m</text>
+<text class="pax" x="997.2" y="288">1000 m</text>
+<line class="pfire" x1="67.2" y1="34" x2="67.2" y2="270.0"/><text class="pfl" x="71.2" y="44" text-anchor="start">화톳불 · 중앙버스정류장</text>
+<line class="pfire" x1="593.0" y1="34" x2="593.0" y2="270.0"/><text class="pfl" x="597.0" y="44" text-anchor="start">화톳불 · 정상수학 옥상(곁길)</text>
+<line class="pfire" x1="1053.2" y1="34" x2="1053.2" y2="270.0"/><text class="pfl" x="1049.2" y="44" text-anchor="end">화톳불 · 메리디안 별관 옥상</text>
+<path class="parea" d="M67.2,246.4 L89.1,222.8 L102.4,175.6 L130.1,199.2 L132.1,175.6 L147.8,152.0 L172.3,152.0 L245.9,199.2 L269.7,104.8 L290.1,199.2 L307.0,199.2 L323.2,104.8 L337.5,81.2 L356.8,152.0 L371.9,128.4 L375.0,152.0 L381.8,128.4 L394.2,57.6 L430.1,199.2 L443.3,152.0 L475.4,175.6 L496.0,222.8 L505.5,175.6 L520.9,152.0 L534.6,175.6 L567.6,128.4 L587.3,152.0 L593.0,199.2 L604.3,199.2 L619.6,152.0 L663.2,104.8 L719.7,199.2 L730.1,199.2 L744.2,152.0 L765.7,81.2 L838.3,128.4 L840.7,81.2 L887.8,128.4 L926.7,175.6 L982.4,104.8 L985.6,128.4 L1053.2,222.8 L1062.1,81.2 L1084.0,34.0 L1084.0,270.0 L67.2,270.0 z"/><path class="pline" d="M67.2,246.4 L89.1,222.8 L102.4,175.6 L130.1,199.2 L132.1,175.6 L147.8,152.0 L172.3,152.0 L245.9,199.2 L269.7,104.8 L290.1,199.2 L307.0,199.2 L323.2,104.8 L337.5,81.2 L356.8,152.0 L371.9,128.4 L375.0,152.0 L381.8,128.4 L394.2,57.6 L430.1,199.2 L443.3,152.0 L475.4,175.6 L496.0,222.8 L505.5,175.6 L520.9,152.0 L534.6,175.6 L567.6,128.4 L587.3,152.0 L593.0,199.2 L604.3,199.2 L619.6,152.0 L663.2,104.8 L719.7,199.2 L730.1,199.2 L744.2,152.0 L765.7,81.2 L838.3,128.4 L840.7,81.2 L887.8,128.4 L926.7,175.6 L982.4,104.8 L985.6,128.4 L1053.2,222.8 L1062.1,81.2 L1084.0,34.0"/>
+<g class="pdot" data-wp="s00_f1_busstop"><circle cx="67.2" cy="246.4" r="4"/><title>s00_f1_busstop — 긴장 1</title></g>
+<g class="pdot" data-wp="s01_crosswalk"><circle cx="89.1" cy="222.8" r="4"/><title>s01_crosswalk — 긴장 2</title></g>
+<g class="pdot" data-wp="s02_passage"><circle cx="102.4" cy="175.6" r="4"/><title>s02_passage — 긴장 4 · 첫 몹</title></g>
+<text class="plab" x="102.4" y="166.6" style="text-anchor:middle">첫 몹</text>
+<g class="pdot" data-wp="s03_tool_alley"><circle cx="130.1" cy="199.2" r="4"/><title>s03_tool_alley — 긴장 3</title></g>
+<g class="pdot" data-wp="s03a_shop_shutter"><circle cx="132.1" cy="175.6" r="4"/><title>s03a_shop_shutter — 긴장 4</title></g>
+<g class="pdot" data-wp="s03b_shop"><circle cx="147.8" cy="152.0" r="4"/><title>s03b_shop — 긴장 5</title></g>
+<g class="pdot" data-wp="s03c_back_hall"><circle cx="172.3" cy="152.0" r="4"/><title>s03c_back_hall — 긴장 5</title></g>
+<g class="pdot" data-wp="s04_deck_top"><circle cx="245.9" cy="199.2" r="4"/><title>s04_deck_top — 긴장 3</title></g>
+<g class="pdot" data-wp="s05_deck"><circle cx="269.7" cy="104.8" r="4"/><title>s05_deck — 긴장 7 · 창문 매복·정예</title></g>
+<text class="plab" x="269.7" y="82.8" style="text-anchor:middle">창문 매복·정예</text>
+<g class="pdot" data-wp="s08_f2_snackbar"><circle cx="290.1" cy="199.2" r="4"/><title>s08_f2_snackbar — 긴장 3</title></g>
+<g class="pdot" data-wp="s09_skybridge"><circle cx="307.0" cy="199.2" r="4"/><title>s09_skybridge — 긴장 3</title></g>
+<g class="pdot" data-wp="s10_dock"><circle cx="323.2" cy="104.8" r="4"/><title>s10_dock — 긴장 7 · 마네킹</title></g>
+<text class="plab" x="323.2" y="95.8" style="text-anchor:middle">마네킹</text>
+<g class="pdot" data-wp="s11_elevator_top"><circle cx="337.5" cy="81.2" r="4"/><title>s11_elevator_top — 긴장 8 · 엘리베이터 승객</title></g>
+<text class="plab" x="337.5" y="59.2" style="text-anchor:middle">엘리베이터 승객</text>
+<g class="pdot" data-wp="s12_elevator_bottom"><circle cx="356.8" cy="152.0" r="4"/><title>s12_elevator_bottom — 긴장 5</title></g>
+<g class="pdot" data-wp="s14_mall"><circle cx="371.9" cy="128.4" r="4"/><title>s14_mall — 긴장 6</title></g>
+<g class="pdot" data-wp="s14a_shop_shutter"><circle cx="375.0" cy="152.0" r="4"/><title>s14a_shop_shutter — 긴장 5</title></g>
+<g class="pdot" data-wp="s14b_clothes_shop"><circle cx="381.8" cy="128.4" r="4"/><title>s14b_clothes_shop — 긴장 6</title></g>
+<g class="pdot" data-wp="s15_mall_atrium"><circle cx="394.2" cy="57.6" r="4"/><title>s15_mall_atrium — 긴장 9 · 중간보스</title></g>
+<text class="plab" x="394.2" y="48.6" style="text-anchor:middle">중간보스</text>
+<g class="pdot" data-wp="s16_subway_exit"><circle cx="430.1" cy="199.2" r="4"/><title>s16_subway_exit — 긴장 3</title></g>
+<g class="pdot" data-wp="s16a_plaza"><circle cx="443.3" cy="152.0" r="4"/><title>s16a_plaza — 긴장 5</title></g>
+<g class="pdot" data-wp="s17_f3_bridge"><circle cx="475.4" cy="175.6" r="4"/><title>s17_f3_bridge — 긴장 4</title></g>
+<g class="pdot" data-wp="s18_sc3_kick"><circle cx="496.0" cy="222.8" r="4"/><title>s18_sc3_kick — 긴장 2 · SC3 → F1</title></g>
+<text class="plab" x="496.0" y="200.8" style="text-anchor:middle">SC3 → F1</text>
+<g class="pdot" data-wp="s20_bridge_east"><circle cx="505.5" cy="175.6" r="4"/><title>s20_bridge_east — 긴장 4</title></g>
+<g class="pdot" data-wp="s21_v1_roof"><circle cx="520.9" cy="152.0" r="4"/><title>s21_v1_roof — 긴장 5 · 트인 지붕</title></g>
+<text class="plab" x="520.9" y="143.0" style="text-anchor:middle">트인 지붕</text>
+<g class="pdot" data-wp="s22_skybridge_v2"><circle cx="534.6" cy="175.6" r="4"/><title>s22_skybridge_v2 — 긴장 4</title></g>
+<g class="pdot" data-wp="s23_v2_upper"><circle cx="567.6" cy="128.4" r="4"/><title>s23_v2_upper — 긴장 6 · 앉은 학생</title></g>
+<text class="plab" x="567.6" y="106.4" style="text-anchor:middle">앉은 학생</text>
+<g class="pdot" data-wp="s24_balcony"><circle cx="587.3" cy="152.0" r="4"/><title>s24_balcony — 긴장 5</title></g>
+<g class="pdot" data-wp="s25_v4_landed"><circle cx="593.0" cy="199.2" r="4"/><title>s25_v4_landed — 긴장 3</title></g>
+<g class="pdot" data-wp="s26a_gangway_dead_hoist"><circle cx="604.3" cy="199.2" r="4"/><title>s26a_gangway_dead_hoist — 긴장 3</title></g>
+<g class="pdot" data-wp="s26b_site_yard"><circle cx="619.6" cy="152.0" r="4"/><title>s26b_site_yard — 긴장 5</title></g>
+<g class="pdot" data-wp="s26c_generator"><circle cx="663.2" cy="104.8" r="4"/><title>s26c_generator — 긴장 7 · 발전기</title></g>
+<text class="plab" x="663.2" y="95.8" style="text-anchor:middle">발전기</text>
+<g class="pdot" data-wp="s26_hoist_landing"><circle cx="719.7" cy="199.2" r="4"/><title>s26_hoist_landing — 긴장 3</title></g>
+<g class="pdot" data-wp="s27_hoist"><circle cx="730.1" cy="199.2" r="4"/><title>s27_hoist — 긴장 3</title></g>
+<g class="pdot" data-wp="s28_9f"><circle cx="744.2" cy="152.0" r="4"/><title>s28_9f — 긴장 5</title></g>
+<g class="pdot" data-wp="s34_beams"><circle cx="765.7" cy="81.2" r="4"/><title>s34_beams — 긴장 8 · 철골</title></g>
+<text class="plab" x="765.7" y="59.2" style="text-anchor:middle">철골</text>
+<g class="pdot" data-wp="s33_f4_container"><circle cx="838.3" cy="128.4" r="4"/><title>s33_f4_container — 긴장 6</title></g>
+<g class="pdot" data-wp="s33a_lift_key"><circle cx="840.7" cy="81.2" r="4"/><title>s33a_lift_key — 긴장 8 · 열쇠 매복</title></g>
+<text class="plab" x="840.7" y="72.2" style="text-anchor:middle">열쇠 매복</text>
+<g class="pdot" data-wp="s35_mast_lift"><circle cx="887.8" cy="128.4" r="4"/><title>s35_mast_lift — 긴장 6</title></g>
+<g class="pdot" data-wp="s36_crane_console"><circle cx="926.7" cy="175.6" r="4"/><title>s36_crane_console — 긴장 4</title></g>
+<g class="pdot" data-wp="s37_jib"><circle cx="982.4" cy="104.8" r="4"/><title>s37_jib — 긴장 7 · 지브 54 m</title></g>
+<text class="plab" x="982.4" y="82.8" style="text-anchor:middle">지브 54 m</text>
+<g class="pdot" data-wp="s38_hook"><circle cx="985.6" cy="128.4" r="4"/><title>s38_hook — 긴장 6</title></g>
+<g class="pdot" data-wp="s39_annex_roof_f5"><circle cx="1053.2" cy="222.8" r="4"/><title>s39_annex_roof_f5 — 긴장 2</title></g>
+<g class="pdot" data-wp="s40_drop_into_garden"><circle cx="1062.1" cy="81.2" r="4"/><title>s40_drop_into_garden — 긴장 8</title></g>
+<g class="pdot" data-wp="s41_bride"><circle cx="1084.0" cy="34.0" r="4"/><title>s41_bride — 긴장 10 · 분수의 신부</title></g>
+<text class="plab" x="1084.0" y="25.0" style="text-anchor:end">분수의 신부</text>
+</svg></div>
+</section>
+
+<footer>다크서울 레벨 기획서 · 손석완 · 생성 Docs/LevelDesign/build_plan.py</footer>
+</main>
+
+<div class="tip" id="tip" role="tooltip"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mtitle"><div class="mbox" id="mbox"></div></div>
+<div class="lb" id="lb"><img id="lbimg" alt=""></div>
+
+<script>
+const DATA = {"stats": {"route_m": 1091, "route_pts": 166, "fires": 3, "loot": 10, "shops": 17, "shop_chests": 4, "shop_mobs": 6, "mobs_field": 30, "mobs_all": 37, "gimmick_kinds": 8, "gimmicks": 29, "gimmick_detail": "여는 문·셔터 10 · 부수는 것 4 · 사다리 4 · 승강 장치 3 · 크레인 1 · 열쇠 1 · 발전기 1 · 함정 5", "ambush_dev": 7, "ghosts": 4, "area_m2": "12,507", "bbox": "200 × 186 m", "bbox_m2": "37,200"}, "zones": [{"id": "z01", "no": "01", "short": "시작 · 싱크홀", "name": "시작 — 중앙버스정류장 · 횡단보도 싱크홀", "where": "대로 한가운데 정류장 · 지면", "role": ["첫인상과 목표지점 탐구", "자연스럽게 시작 동선으로 연결"], "intent": ["목적지(호텔)를 첫 화면에 ①", "길은 횡단보도 하나 ②"], "gimmicks": ["주변이 싱크홀(낙사)"], "mobs": ["몹 없음"], "mood": ["비, 정류장 형광, 싱크홀 연기"], "marks": [[1, 0, 1687, "시작 지점"], [2, -900, 800, "횡단보도"], [3, -5, 1260, "화톳불 F1"], [4, -2000, 800, "1층 통로 입구"]], "shots": [["hero_start_a", -1, 1687, 172, -82, 8, 80, "시작 지점 — 백화점과 육교", "hero_start_view.jpg"], ["z01_crosswalk_b", -200, 800, 190, 180, -8, 80, "유일한 출구, 횡단보도", "z01_crosswalk_sink.jpg"], ["z01_sinkhole_c", 600, 2600, 900, -150, -25, 80, "섬을 둘러싼 싱크홀", "z01_island.jpg"]], "gallery": [{"src": "shots/hero_start_a.jpg", "fb": "", "cap": "시작 지점 — 백화점과 육교", "cam": [459.9, 574.4, -82]}, {"src": "shots/z01_crosswalk_b.jpg", "fb": "", "cap": "유일한 출구, 횡단보도", "cam": [450.0, 530.0, 180]}, {"src": "shots/z01_sinkhole_c.jpg", "fb": "", "cap": "섬을 둘러싼 싱크홀", "cam": [490.0, 620.0, -150]}]}, {"id": "z02", "no": "02", "short": "1층 통로 · 공구 골목", "name": "1층 통로 · 공구 골목", "where": "A·B동 사이 골목 · 지면", "role": ["막힌 길 우회", "첫 전투", "첫 비밀"], "intent": ["잔해로 막고 가게 안으로 ②", "빛으로 뒷복도 안내 ③", "다락 곁길 ④"], "gimmicks": ["셔터 · 판자 뒷문", "셔터 가게 17칸", "비밀 다락"], "mobs": ["상인·학생 4", "셔터 가게 안 몹"], "mood": ["간판, 전선, 맨전구"], "marks": [[1, -2600, 800, "1층 통로"], [2, -3400, 2700, "공구 상가 통과"], [3, -4400, 4800, "뒷복도"], [4, -4600, 5700, "전당포 다락"], [5, -3300, 6700, "계단탑"]], "shots": [["z02_passage_a", -1800, 800, 170, 180, -2, 80, "1층 통로", ""], ["z02_alley_b", -3900, 1300, 170, 90, -3, 80, "골목과 첫 잔해", "z02_alley_rubble.jpg"], ["z02_toolshop_c", -3550, 2580, 170, 25, -8, 85, "공구 상가 안", "z02_alley_signs.jpg"], ["z02_backhall_d", -3900, 4300, 170, 137, -4, 80, "빛이 새는 뒷복도", ""]], "extra": ["z02_stair_door.jpg|계단탑 입구"], "gallery": [{"src": "shots/z02_passage_a.jpg", "fb": "", "cap": "1층 통로", "cam": [370.0, 530.0, 180]}, {"src": "shots/z02_alley_b.jpg", "fb": "", "cap": "골목과 첫 잔해", "cam": [265.0, 555.0, 90]}, {"src": "captures/z02_alley_signs.jpg", "fb": "", "cap": "공구 상가 안", "cam": [282.5, 619.0, 25]}, {"src": "shots/z02_backhall_d.jpg", "fb": "", "cap": "빛이 새는 뒷복도", "cam": [265.0, 705.0, 137]}, {"src": "captures/z02_stair_door.jpg", "fb": "", "cap": "계단탑 입구"}]}, {"id": "z03", "no": "03", "short": "계단탑 · 보행데크", "name": "계단탑 · 3층 보행데크", "where": "A동 지붕 데크 · +12 m", "role": ["트인 하늘", "첫 지름길"], "intent": ["좁은 골목 뒤 트인 데크 ①", "지름길로 F1 연결 ④"], "gimmicks": ["SC1 지름길", "주방 셔터 · 식칼", "창문 매복"], "mobs": ["순찰 1 · 정예 1 · 매복 1"], "mood": ["파라솔, 따뜻한 전구, 시든 꽃집"], "marks": [[1, -3200, 6300, "계단탑 → 데크"], [2, -2300, 3500, "창문 매복"], [3, -2300, 4250, "주방(식칼)"], [4, -1722, 1170, "SC1 창"], [5, -2900, 1800, "꽃집"]], "shots": [["z03_deck_cafe_a", -3450, 6300, 1370, -90, -5, 85, "데크 카페테리아", "z03_deck.jpg"], ["z03_deck_window_b", -2950, 4300, 1370, -51, 18, 80, "창 뒤의 형체", "z03_deck_window_mockup.jpg"], ["z03_florist_c", -2400, 2400, 1370, -125, -8, 85, "꽃집 「꽃다발 플라워」", ""], ["z03_sc1_window_d", -2000, 1500, 1370, -50, -5, 80, "SC1 길가 창", ""]], "gallery": [{"src": "shots/z03_deck_cafe_a.jpg", "fb": "", "cap": "데크 카페테리아", "cam": [287.5, 805.0, -90]}, {"src": "shots/z03_deck_window_b.jpg", "fb": "", "cap": "창 뒤의 형체", "cam": [312.5, 705.0, -51]}, {"src": "shots/z03_florist_c.jpg", "fb": "", "cap": "꽃집 「꽃다발 플라워」", "cam": [340.0, 610.0, -125]}, {"src": "shots/z03_sc1_window_d.jpg", "fb": "", "cap": "SC1 길가 창", "cam": [360.0, 565.0, -50]}]}, {"id": "z04", "no": "04", "short": "구름다리 · 웨딩 스튜디오", "name": "구름다리 · 웨딩 스튜디오 「백일몽」", "where": "B동 3층 · +12 m", "role": ["신부 이야기 시작", "지하로 내려가는 입구"], "intent": ["버진로드 끝 엘리베이터 ③", "마네킹 사이를 걷게 ②"], "gimmicks": ["유리 엘리베이터", "마네킹 매복"], "mobs": ["마네킹 2 · 승객 1 · 인부 1"], "mood": ["정적, 시든 꽃 아치"], "marks": [[1, -3900, 2000, "구름다리"], [2, -6950, 2000, "버진로드 · 마네킹"], [3, -7500, 2000, "꽃 아치 · 엘리베이터"]], "shots": [["z04_skybridge_a", -3700, 2000, 1370, 180, -3, 80, "구름다리", ""], ["z04_studio_runner_b", -6250, 2000, 1370, 180, -4, 75, "버진로드와 꽃 아치", ""], ["z04_studio_side_c", -6500, 2650, 1370, -140, -6, 85, "웨딩 스튜디오", ""]], "gallery": [{"src": "shots/z04_skybridge_a.jpg", "fb": "", "cap": "구름다리", "cam": [275.0, 590.0, 180]}, {"src": "shots/z04_studio_runner_b.jpg", "fb": "", "cap": "버진로드와 꽃 아치", "cam": [147.5, 590.0, 180]}, {"src": "shots/z04_studio_side_c.jpg", "fb": "", "cap": "웨딩 스튜디오", "cam": [135.0, 622.5, -140]}]}, {"id": "z05", "no": "05", "short": "엘리베이터 · 지하상가", "name": "지하상가 (천장 붕괴 · 옷가게 · 중간보스)", "where": "지하 −8 m", "role": ["첫 절정", "중간보스"], "intent": ["막힌 통로 → 옷가게로 ③", "나오면 중간보스 ④"], "gimmicks": ["옷가게 셔터", "천장 붕괴 매복"], "mobs": ["순찰 1 · 매복 1 · 중간보스"], "mood": ["어둠, 꺼져 가는 형광, 붉은 등"], "marks": [[1, -7250, 1700, "엘리베이터 아래"], [2, -6787, -940, "천장 붕괴"], [3, -6400, 250, "옷가게 통과"], [4, -4300, -1500, "중간보스 통로"], [5, -2400, -700, "지하철 출구"]], "shots": [["z05_lift_bottom_a", -7250, 1500, -630, 112, -2, 80, "아래층의 유리 엘리베이터", ""], ["z05_ceiling_b", -7200, 300, -630, -72, 6, 80, "무너질 천장", ""], ["z05_clothes_c", -6720, 420, -630, -30, -5, 85, "옷가게 안", ""], ["z05_atrium_d", -5600, 150, -630, -56, -2, 85, "중간보스 셔터", "z05_mall_corridor.jpg"]], "gallery": [{"src": "shots/z05_lift_bottom_a.jpg", "fb": "", "cap": "아래층의 유리 엘리베이터", "cam": [97.5, 565.0, 112]}, {"src": "shots/z05_ceiling_b.jpg", "fb": "", "cap": "무너질 천장", "cam": [100.0, 505.0, -72]}, {"src": "shots/z05_clothes_c.jpg", "fb": "", "cap": "옷가게 안", "cam": [124.0, 511.0, -30]}, {"src": "shots/z05_atrium_d.jpg", "fb": "", "cap": "중간보스 셔터", "cam": [180.0, 497.5, -56]}]}, {"id": "z06", "no": "06", "short": "지하철 출구 · 광장 · 육교", "name": "지하철 출구 · 광장 · 육교", "where": "지면 → 육교 +7 m", "role": ["숨 고르기", "서 → 동 전환", "두 번째 지름길"], "intent": ["지하 뒤 다시 하늘 ①", "사다리로 F1 연결 ④"], "gimmicks": ["SC3 사다리"], "mobs": ["광장 2 · 육교 1"], "mood": ["비, 역 표지, 북쪽의 호텔"], "marks": [[1, -2400, -700, "지하철 출구"], [2, -2900, -1600, "광장"], [3, -3100, -2300, "육교 계단"], [4, 0, -2200, "SC3 사다리"], [5, 1900, -2300, "동쪽 착지"]], "shots": [["z06_subway_exit_a", -2950, -700, -560, 0, 14, 80, "지상으로", "z06_subway_exit.jpg"], ["z06_plaza_b", -1950, -1150, 170, -146, -2, 85, "광장과 육교 계단", ""], ["z06_bridge_c", -1400, -2300, 870, -20, 2, 85, "육교 위, 북쪽의 랜드마크", ""], ["z06_sc3_d", 350, -2300, 870, 150, -35, 80, "SC3 아래 F1", ""]], "gallery": [{"src": "shots/z06_subway_exit_a.jpg", "fb": "", "cap": "지상으로", "cam": [312.5, 455.0, 0]}, {"src": "shots/z06_plaza_b.jpg", "fb": "", "cap": "광장과 육교 계단", "cam": [362.5, 432.5, -146]}, {"src": "shots/z06_bridge_c.jpg", "fb": "", "cap": "육교 위, 북쪽의 랜드마크", "cam": [390.0, 375.0, -20]}, {"src": "shots/z06_sc3_d.jpg", "fb": "", "cap": "SC3 아래 F1", "cam": [477.5, 375.0, 150]}]}, {"id": "z07", "no": "07", "short": "V1 아케이드 옥상", "name": "V1 아케이드 옥상", "where": "아케이드 보행데크 · +9 m", "role": ["옥상 루트 시작", "랜드마크 확인"], "intent": ["다음 건물 간판이 정면 ②", "구름다리로 학원 ③"], "gimmicks": ["데크 가게 셔터 · 상자"], "mobs": ["학생 1"], "mood": ["캐노피 조명, 트인 하늘"], "marks": [[1, 2100, -1500, "착지"], [2, 3000, -900, "데크"], [3, 2600, -424, "가게 셔터"], [4, 3870, -800, "구름다리"]], "shots": [["z07_v1_arrival_a", 2150, -1500, 1070, 20, -2, 85, "데크와 학원", "z07_v1_to_academy.jpg"], ["z07_v1_shop_b", 2600, -950, 1070, 90, -4, 80, "데크 가게 셔터", ""], ["z07_landmark_c", 2600, -1300, 1070, -80, 6, 70, "호텔과 로툰다", "z07_landmarks_from_roof.jpg"]], "gallery": [{"src": "shots/z07_v1_arrival_a.jpg", "fb": "", "cap": "데크와 학원", "cam": [567.5, 415.0, 20]}, {"src": "shots/z07_v1_shop_b.jpg", "fb": "", "cap": "데크 가게 셔터", "cam": [590.0, 442.5, 90]}, {"src": "shots/z07_landmark_c.jpg", "fb": "", "cap": "호텔과 로툰다", "cam": [590.0, 425.0, -80]}]}, {"id": "z08", "no": "08", "short": "정상수학 학원", "name": "「정상수학」 학원", "where": "강의실 +9 · 독서실 +15 · 옥상 +18", "role": ["실내 전투", "곁길 화톳불"], "intent": ["문 열고 들어가는 건물 ①", "등 돌린 학생들 ②④", "옥상은 곁길 ⑤"], "gimmicks": ["출입문 · 방화문", "앉은 몹"], "mobs": ["앉은 학생 5"], "mood": ["형광등, 칠판, 스탠드 불빛"], "marks": [[1, 4010, -800, "출입문"], [2, 4600, -200, "강의실"], [3, 4370, -1300, "계단실"], [4, 4500, -300, "독서실(+15)"], [5, 4860, -1400, "옥상 화톳불"], [6, 5050, 380, "발코니"]], "shots": [["z08_lecture_a", 4100, -350, 1070, 0, -10, 85, "강의실 뒤에서", ""], ["z08_stairwell_b", 4370, -980, 1070, -90, -3, 80, "방화문과 화장실", "z08_stairwell_door.jpg"], ["z08_studyhall_c", 4850, -900, 1670, 125, -12, 85, "독서실", "z08_studyhall.jpg"], ["z08_roof_d", 4650, -250, 2000, -98, 4, 75, "옥상 화톳불과 호텔", ""]], "extra": ["z08_academy_front.jpg|학원 서쪽 면"], "gallery": [{"src": "shots/z08_lecture_a.jpg", "fb": "", "cap": "강의실 뒤에서", "cam": [665.0, 472.5, 0]}, {"src": "shots/z08_stairwell_b.jpg", "fb": "", "cap": "방화문과 화장실", "cam": [678.5, 441.0, -90]}, {"src": "shots/z08_studyhall_c.jpg", "fb": "", "cap": "독서실", "cam": [702.5, 445.0, 125]}, {"src": "shots/z08_roof_d.jpg", "fb": "", "cap": "옥상 화톳불과 호텔", "cam": [692.5, 477.5, -98]}, {"src": "captures/z08_academy_front.jpg", "fb": "", "cap": "학원 서쪽 면"}]}, {"id": "z09", "no": "09", "short": "V4 옥상 · 옥탑방", "name": "V4 옥상 · 옥탑방", "where": "V4 지붕 · +12 m", "role": ["일방 낙하", "곁길 출발점"], "intent": ["뛰어내리면 돌아갈 수 없음 ①", "사다리로 옥상 화톳불 ②"], "gimmicks": ["점검 사다리", "옥탑방 문 · 무기"], "mobs": ["몹 없음"], "mood": ["빨간 십자가 네온"], "marks": [[1, 5050, 900, "착지"], [2, 5345, 340, "점검 사다리"], [3, 5350, 2025, "옥탑방"], [4, 5800, 1400, "비계 통로"]], "shots": [["z09_balcony_drop_a", 5050, 220, 1670, 90, -38, 85, "발코니에서 V4 로", ""], ["z09_v4_roof_b", 4700, 800, 1370, 62, 8, 80, "옥탑방과 십자가", ""], ["z09_rooftop_room_c", 5480, 2150, 1370, -160, -12, 85, "옥탑방 안", ""], ["z09_gangway_d", 5650, 1400, 1370, 0, -2, 80, "비계 통로", ""]], "gallery": [{"src": "shots/z09_v4_roof_b.jpg", "fb": "", "cap": "옥탑방과 십자가", "cam": [695.0, 530.0, 62]}, {"src": "shots/z09_rooftop_room_c.jpg", "fb": "", "cap": "옥탑방 안", "cam": [734.0, 597.5, -160]}, {"src": "shots/z09_gangway_d.jpg", "fb": "", "cap": "비계 통로", "cam": [742.5, 560.0, 0]}]}, {"id": "z10", "no": "10", "short": "공사장 마당", "name": "공사장 마당 (발전기)", "where": "+12 승강장 → 지상 마당", "role": ["해야 하는 일", "은신 선택", "세 번째 지름길"], "intent": ["호이스트에 전원 없음 ①", "길은 둘: 순찰 / 은신 ③④", "철문으로 되돌아감 ⑤"], "gimmicks": ["발전기 · 호이스트", "은신 통로", "현장 철문"], "mobs": ["순찰 2 · 지킴이 1"], "mood": ["투광등, 켜지는 전구 줄"], "marks": [[1, 6250, 1000, "호이스트"], [2, 6210, 1800, "비계 사다리"], [3, 7800, 2450, "열린 길"], [4, 8300, 3800, "은신 통로"], [5, 10390, 2420, "발전기"], [6, 6000, 2500, "현장 철문"]], "shots": [["z10_dead_hoist_a", 6100, 1450, 1370, -82, -4, 80, "꺼진 호이스트", ""], ["z10_yard_b", 6400, 2450, 170, 0, -1, 80, "마당 — 끝에 발전기", ""], ["z10_hidden_lane_c", 6700, 4000, 170, 0, -2, 85, "은신 통로", ""], ["z10_generator_d", 9800, 2700, 170, -25, -4, 80, "발전기와 지킴이", ""]], "gallery": [{"src": "shots/z10_dead_hoist_a.jpg", "fb": "", "cap": "꺼진 호이스트", "cam": [765.0, 562.5, -82]}, {"src": "shots/z10_yard_b.jpg", "fb": "", "cap": "마당 — 끝에 발전기", "cam": [780.0, 612.5, 0]}, {"src": "shots/z10_hidden_lane_c.jpg", "fb": "", "cap": "은신 통로", "cam": [795.0, 690.0, 0]}, {"src": "shots/z10_generator_d.jpg", "fb": "", "cap": "발전기와 지킴이", "cam": [950.0, 625.0, -25]}]}, {"id": "z11", "no": "11", "short": "9층 철골", "name": "공사장 9층 철골", "where": "+26 m · 철골 폭 90 cm", "role": ["조이는 구간", "열쇠"], "intent": ["좁은 철골, 아래는 낭떠러지 ②③", "열쇠는 사무소 책상에 ④", "썩은 철골은 유혹 ⑤"], "gimmicks": ["썩은 철골 5", "열쇠 · 숨은 인부"], "mobs": ["철골 순찰 3 · 매복 1"], "mood": ["나트륨 투광등, 발아래 도시"], "marks": [[1, 6750, 350, "호이스트 도착"], [2, 8850, -500, "철골 우회"], [3, 8100, -2600, "가장자리 보"], [4, 7000, -625, "현장사무소(열쇠)"], [5, 7850, -2200, "썩은 철골"], [6, 9250, -2200, "마스트 리프트"]], "shots": [["z11_9f_arrival_a", 6750, 350, 2770, 0, -6, 85, "도착 — 막힌 길과 철골", "z11_beams.jpg"], ["z11_beams_trap_b", 7520, -1450, 2770, 0, -18, 80, "썩은 철골", "z11_beams_b.jpg"], ["z11_container_key_c2", 7150, -180, 2770, -90, -12, 85, "현장사무소와 열쇠", ""], ["z11_groom_d2", 6650, -550, 2770, -110.5, -6, 70, "신랑이 보는 정원", ""]], "gallery": [{"src": "shots/z11_9f_arrival_a.jpg", "fb": "", "cap": "도착 — 막힌 길과 철골", "cam": [797.5, 507.5, 0]}, {"src": "shots/z11_beams_trap_b.jpg", "fb": "", "cap": "썩은 철골", "cam": [836.0, 417.5, 0]}, {"src": "shots/z11_container_key_c2.jpg", "fb": "", "cap": "현장사무소와 열쇠", "cam": [817.5, 481.0, -90]}, {"src": "shots/z11_groom_d2.jpg", "fb": "", "cap": "신랑이 보는 정원", "cam": [792.5, 462.5, -110.5]}]}, {"id": "z12", "no": "12", "short": "타워크레인", "name": "타워크레인", "where": "마스트 리프트 → +64 m", "role": ["최고점", "보스존 이동"], "intent": ["크레인을 직접 조종 ②", "지브 끝 갈고리로 이동 ④"], "gimmicks": ["마스트 리프트(열쇠)", "크레인 조종", "갈고리"], "mobs": ["몹 없음"], "mood": ["항공 경고등, 발아래 도시"], "marks": [[1, 9250, -2200, "마스트 리프트"], [2, 9100, -2530, "운전석 콘솔"], [3, 7000, -4900, "지브 통로"], [4, 5067, -7267, "갈고리"]], "shots": [["z12_mast_lift_a", 8800, -2200, 2770, 0, 10, 80, "마스트 리프트", ""], ["z12_console_b", 9450, -1950, 6570, -110, -22, 85, "선회 데크 콘솔", ""], ["z12_jib_c", 7040, -4880, 6570, -129.5, -20, 85, "지브 통로", "z12_jib.jpg"], ["z12_hook_view_d", 5150, -7150, 6570, 15, -53, 80, "갈고리에서 내려다봄", ""]], "gallery": [{"src": "shots/z12_mast_lift_a.jpg", "fb": "", "cap": "마스트 리프트", "cam": [900.0, 380.0, 0]}, {"src": "captures/z12_jib.jpg", "fb": "", "cap": "지브 통로", "cam": [812.0, 246.0, -129.5]}, {"src": "shots/z12_hook_view_d.jpg", "fb": "", "cap": "갈고리에서 내려다봄", "cam": [717.5, 132.5, 15]}]}, {"id": "z13", "no": "13", "short": "별관 옥상 · 분수정원", "name": "별관 옥상 · 공중 분수정원", "where": "별관 +22 → 정원 +18", "role": ["종착지", "보스"], "intent": ["마지막 화톳불 먼저 ①", "뛰어내리면 신부 ②", "분수는 정중앙 ③"], "gimmicks": ["4 m 낙하(피해 없음)"], "mobs": ["보스 「분수의 신부」"], "mood": ["가스등, 호텔 불빛, 시든 꽃"], "marks": [[1, 8400, -5700, "화톳불 F5"], [2, 7700, -6025, "뛰어내리는 곳"], [3, 4600, -6025, "분수"], [4, 5500, -6025, "신부"], [5, 4600, -8300, "호텔 문"]], "shots": [["z13_annex_landing_a", 8300, -6100, 2370, 180, -12, 85, "별관에서 본 정원", ""], ["z13_garden_axis_b", 4600, -3950, 1970, -90, 4, 80, "분수와 호텔 축", ""], ["z13_drop_axis_c", 7600, -6025, 1970, 180, -2, 80, "착지 — 정면에 신부", ""], ["z13_garden_wide_d", 4600, -2600, 4000, -90, -35, 80, "평평한 사각형 정원, 가운데 분수", ""]], "gallery": [{"src": "shots/z13_annex_landing_a.jpg", "fb": "", "cap": "별관에서 본 정원", "cam": [875.0, 185.0, 180]}, {"src": "shots/z13_garden_axis_b.jpg", "fb": "", "cap": "분수와 호텔 축", "cam": [690.0, 292.5, -90]}, {"src": "shots/z13_drop_axis_c.jpg", "fb": "", "cap": "착지 — 정면에 신부", "cam": [840.0, 188.8, 180]}, {"src": "shots/z13_garden_wide_d.jpg", "fb": "", "cap": "평평한 사각형 정원, 가운데 분수", "cam": [690.0, 360.0, -90]}]}, {"id": "z00", "no": "00", "short": "백화점 앞 싱크홀 거리", "name": "배경 — 백화점 앞 싱크홀 거리", "where": "지면(무너짐) · 걷지 않음", "role": ["보여 주는 배경", "동선 차단"], "intent": ["거리를 통째로 무너뜨림 ①", "로툰다는 시작에서 정면 ②"], "gimmicks": ["싱크홀(낙사)", "원경 파노라마"], "mobs": ["몹 없음"], "mood": ["불길, 쇼윈도, 금빛 로툰다"], "marks": [[1, 3600, -2600, "싱크홀 2"], [2, 1700, -3850, "로툰다"], [3, 4400, -3650, "백화점 정문"]], "shots": [["z00_store_street_a", 2000, -2300, 870, -31, -15, 85, "무너진 백화점 앞 거리", "z00_store_street.jpg"], ["z00_rotunda_b", -400, -1000, 190, -54, 10, 70, "시작에서 본 로툰다", ""]], "extra": ["z00_store_sign.jpg|백화점 정문", "z01_street_west.jpg|서쪽 상가 줄"], "gallery": [{"src": "shots/z00_store_street_a.jpg", "fb": "", "cap": "무너진 백화점 앞 거리", "cam": [560.0, 375.0, -31]}, {"src": "captures/z00_store_sign.jpg", "fb": "", "cap": "백화점 정문"}, {"src": "captures/z01_street_west.jpg", "fb": "", "cap": "서쪽 상가 줄"}]}], "objects": {"sink1": {"t": "낙사 구역", "name": "횡단보도 싱크홀", "zone": "z01", "z": 0, "x": -1100, "y": 1700, "note": "", "role": "낙사 구역", "intent": ["도로를 싱크홀로 봉쇄", "갑자기 생긴 재난 — 펜스 없음"], "how": [], "gallery": [{"src": "shots/z01_sinkhole_c.jpg", "fb": "", "cap": "섬을 둘러싼 싱크홀"}, {"src": "captures/z01_crosswalk_sink.jpg", "fb": "", "cap": ""}], "d": "sink1", "cx": 405.0, "cy": 575.0, "layer": "gimmick"}, "toolshop_shutter": {"t": "셔터", "name": "공구 상가 셔터", "zone": "z02", "z": 0, "x": -3600, "y": 2510, "note": "", "role": "우회로", "intent": ["셔터를 열고 가게 안으로 길을 틈"], "how": ["셔터를 올린다"], "gallery": [{"src": "shots/z02_alley_b.jpg", "fb": "", "cap": "골목과 첫 잔해"}, {"src": "captures/z02_alley_signs.jpg", "fb": "", "cap": "공구 상가 안"}], "d": "toolshop_shutter", "cx": 280.0, "cy": 615.5, "layer": "gimmick"}, "toolshop_backdoor": {"t": "부수는 것", "name": "판자 뒷문", "zone": "z02", "z": 0, "x": -3600, "y": 3300, "note": "", "role": "우회로 출구", "intent": [], "how": ["판자를 부순다"], "gallery": [], "d": "toolshop_backdoor", "cx": 280.0, "cy": 655.0, "layer": "gimmick"}, "backhall_light": {"t": "유도 조명", "name": "뒷복도 입구 빛", "zone": "z02", "z": 0, "x": -4200, "y": 4560, "note": "", "role": "길 안내", "intent": ["강한 조명·깜빡이는 빛으로 끌어당김"], "how": [], "gallery": [{"src": "shots/z02_backhall_d.jpg", "fb": "", "cap": "빛이 새는 뒷복도"}], "d": "backhall_light", "cx": 250.0, "cy": 718.0, "layer": "gimmick"}, "loft_door": {"t": "비밀", "name": "비밀 1 · 다락 문", "zone": "z02", "z": 0, "x": -4710, "y": 4720, "note": "", "role": "비밀 입구", "intent": ["갈까 말까 고민하게 하는 곁길"], "how": ["문으로 들어가 계단을 오른다"], "gallery": [], "d": "loft_door", "cx": 224.5, "cy": 726.0, "layer": "gimmick"}, "loft_window": {"t": "부수는 것", "name": "다락 판자창", "zone": "z02", "z": 340, "x": -4210, "y": 5750, "note": "", "role": "곁길 출구", "intent": ["부숴야 떨어질 수 있게"], "how": ["판자를 부수고 뛰어내린다"], "gallery": [{"src": "shots/obj_loft_window.jpg", "fb": "", "cap": "다락의 판자창"}], "d": "loft_window", "cx": 249.6, "cy": 779.9, "layer": "gimmick"}, "stairA_door": {"t": "계단", "name": "계단탑", "zone": "z03", "z": 0, "x": -3600, "y": 6580, "note": "", "role": "계단", "intent": [], "how": [], "gallery": [{"src": "captures/z02_stair_door.jpg", "fb": "", "cap": "계단탑 입구"}], "d": "stairA_door", "cx": 280.0, "cy": 819.0, "layer": "gimmick"}, "kitchen_shutter": {"t": "셔터", "name": "주방 셔터", "zone": "z03", "z": 1200, "x": -2304, "y": 4250, "note": "", "role": "숨은 무기", "intent": ["셔터 하나가 주방, 안에 식칼"], "how": ["셔터를 올린다"], "gallery": [{"src": "shots/obj_kitchen_shutter.jpg", "fb": "", "cap": "카페테리아 주방 셔터"}], "d": "kitchen_shutter", "cx": 343.7, "cy": 702.5, "layer": "gimmick"}, "sc1": {"t": "지름길", "name": "SC1 꽃집 창 지름길", "zone": "z03", "z": 1200, "x": -1722, "y": 1170, "note": "", "role": "지름길", "intent": ["셔터 → 창문 → 사다리로 최단 연결"], "how": ["셔터 올리기 → 유리 깨기 → 사다리 걷어차기"], "gallery": [{"src": "shots/z03_sc1_window_d.jpg", "fb": "", "cap": "SC1 길가 창"}], "d": "sc1", "cx": 373.9, "cy": 548.5, "layer": "gimmick"}, "skybridge": {"t": "문", "name": "구름다리", "zone": "z04", "z": 1200, "x": -3900, "y": 2000, "note": "", "role": "통로", "intent": [], "how": [], "gallery": [{"src": "shots/z04_skybridge_a.jpg", "fb": "", "cap": "구름다리"}], "d": "skybridge", "cx": 265.0, "cy": 590.0, "layer": "gimmick"}, "flower_arch": {"t": "랜드마크", "name": "시든 꽃 아치", "zone": "z04", "z": 1200, "x": -7405, "y": 2000, "note": "", "role": "랜드마크", "intent": ["휑한 홀에 컨셉 — 웨딩 스튜디오"], "how": [], "gallery": [{"src": "shots/z04_studio_runner_b.jpg", "fb": "", "cap": "버진로드와 꽃 아치"}, {"src": "shots/z04_studio_side_c.jpg", "fb": "", "cap": "웨딩 스튜디오"}], "d": "flower_arch", "cx": 94.4, "cy": 591.7, "layer": "gimmick"}, "glass_lift": {"t": "승강 장치", "name": "유리 엘리베이터", "zone": "z04", "z": 1200, "x": -7570, "y": 2000, "note": "", "role": "승강 장치", "intent": ["지하철역 장애인용 같은 엘리베이터", "아래층 대기, 호출하면 승객"], "how": ["호출 버튼 → 탑승"], "gallery": [{"src": "shots/obj_glass_lift.jpg", "fb": "", "cap": "스튜디오 쪽 유리 승강로"}, {"src": "shots/z05_lift_bottom_a.jpg", "fb": "", "cap": "아래층의 유리 엘리베이터"}], "d": "glass_lift", "cx": 75.9, "cy": 597.5, "layer": "gimmick"}, "clothes_shutter": {"t": "셔터", "name": "옷가게 셔터", "zone": "z05", "z": -800, "x": -6800, "y": 410, "note": "", "role": "유일한 길", "intent": ["가게를 지나면 중보와 마주침"], "how": ["셔터를 올린다"], "gallery": [{"src": "shots/obj_clothes_shutter.jpg", "fb": "", "cap": "옷가게 셔터"}, {"src": "shots/z05_clothes_c.jpg", "fb": "", "cap": "옷가게 안"}], "d": "clothes_shutter", "cx": 120.0, "cy": 510.5, "layer": "gimmick"}, "mall_collapse": {"t": "막힌 길", "name": "무너진 본 통로", "zone": "z05", "z": -800, "x": -5900, "y": -1100, "note": "", "role": "막힌 길", "intent": ["중보로 가는 길을 잔해로 막음"], "how": [], "gallery": [], "d": "mall_collapse", "cx": 165.0, "cy": 435.0, "layer": "gimmick"}, "subway_stair": {"t": "계단", "name": "지하철 출구 계단", "zone": "z06", "z": -400, "x": -2400, "y": -700, "note": "", "role": "계단", "intent": [], "how": [], "gallery": [{"src": "shots/z06_subway_exit_a.jpg", "fb": "", "cap": "지상으로"}, {"src": "captures/z06_subway_exit.jpg", "fb": "", "cap": ""}], "d": "subway_stair", "cx": 340.0, "cy": 455.0, "layer": "gimmick"}, "bridge_stair": {"t": "계단", "name": "육교 서쪽 계단", "zone": "z06", "z": 350, "x": -3100, "y": -2300, "note": "", "role": "계단", "intent": ["육교 계단은 광장 쪽으로"], "how": [], "gallery": [{"src": "shots/z06_plaza_b.jpg", "fb": "", "cap": "광장과 육교 계단"}], "d": "bridge_stair", "cx": 305.5, "cy": 374.4, "layer": "gimmick"}, "sc3": {"t": "지름길", "name": "SC3 걷어차는 사다리", "zone": "z06", "z": 20, "x": 0, "y": -2075, "note": "", "role": "지름길", "intent": ["스타트로 직행"], "how": ["사다리를 걷어찬다"], "gallery": [{"src": "shots/z06_sc3_d.jpg", "fb": "", "cap": "SC3 아래 F1"}], "d": "sc3", "cx": 460.0, "cy": 386.2, "layer": "gimmick"}, "v1_shutter": {"t": "셔터", "name": "V1 데크 가게 셔터", "zone": "z07", "z": 900, "x": 2600, "y": -424, "note": "", "role": "보상", "intent": ["열 수 있는 셔터, 안에 상자"], "how": ["셔터를 올린다"], "gallery": [{"src": "shots/z07_v1_shop_b.jpg", "fb": "", "cap": "데크 가게 셔터"}], "d": "v1_shutter", "cx": 590.0, "cy": 466.7, "layer": "gimmick"}, "academy_door": {"t": "문", "name": "학원 출입문", "zone": "z08", "z": 900, "x": 4010, "y": -800, "note": "", "role": "문", "intent": ["문을 열고 들어가는 건물"], "how": ["문을 연다"], "gallery": [{"src": "shots/obj_academy_door.jpg", "fb": "", "cap": "구름다리 끝 학원 문"}, {"src": "captures/z08_academy_front.jpg", "fb": "", "cap": "학원 서쪽 면"}], "d": "academy_door", "cx": 661.3, "cy": 444.0, "layer": "gimmick"}, "fire_doors": {"t": "문", "name": "계단실 방화문", "zone": "z08", "z": 900, "x": 4370, "y": -1160, "note": "", "role": "문", "intent": ["닫힌 문을 열고 드는 계단실", "양옆은 화장실"], "how": ["방화문을 연다"], "gallery": [{"src": "shots/z08_stairwell_b.jpg", "fb": "", "cap": "방화문과 화장실"}, {"src": "captures/z08_stairwell_door.jpg", "fb": "", "cap": ""}], "d": "fire_doors", "cx": 677.9, "cy": 432.9, "layer": "gimmick"}, "study_window": {"t": "부수는 것", "name": "독서실 창", "zone": "z08", "z": 1540, "x": 4010, "y": -650, "note": "", "role": "곁길", "intent": ["창을 깨고 나가는 곁길"], "how": ["창을 깬다"], "gallery": [{"src": "shots/obj_study_window.jpg", "fb": "", "cap": "독서실 서쪽 창"}], "d": "study_window", "cx": 658.8, "cy": 463.1, "layer": "gimmick"}, "balcony_drop": {"t": "일방 낙하", "name": "부서진 발코니 (3 m 낙하)", "zone": "z09", "z": 1500, "x": 5050, "y": 380, "note": "", "role": "일방 낙하", "intent": ["더 낮은 옥상으로 뛰어내림"], "how": ["뛰어내린다"], "gallery": [], "d": "balcony_drop", "cx": 710.5, "cy": 513.5, "layer": "gimmick"}, "inspect_ladder": {"t": "사다리", "name": "물탱크 점검 사다리", "zone": "z09", "z": 1200, "x": 5345, "y": 340, "note": "", "role": "사다리", "intent": ["옥상까지 내려 화톳불로"], "how": ["오른다"], "gallery": [{"src": "shots/obj_inspect_ladder.jpg", "fb": "", "cap": "물탱크 점검 사다리"}], "d": "inspect_ladder", "cx": 728.6, "cy": 506.5, "layer": "gimmick"}, "rooftop_door": {"t": "문", "name": "옥탑방 미닫이 문", "zone": "z09", "z": 1200, "x": 5150, "y": 2025, "note": "", "role": "문", "intent": ["빛나는 판 대신 미닫이 문"], "how": ["문을 연다"], "gallery": [{"src": "shots/obj_rooftop_door.jpg", "fb": "", "cap": "옥탑방 문과 십자가"}, {"src": "shots/z09_rooftop_room_c.jpg", "fb": "", "cap": "옥탑방 안"}], "d": "rooftop_door", "cx": 711.7, "cy": 593.0, "layer": "gimmick"}, "church_cross": {"t": "랜드마크", "name": "옥탑 교회 십자가", "zone": "z09", "z": 1470, "x": 5350, "y": 2025, "note": "", "role": "랜드마크", "intent": ["걷는 지붕으로만 끌어당김"], "how": [], "gallery": [{"src": "shots/z09_v4_roof_b.jpg", "fb": "", "cap": "옥탑방과 십자가"}], "d": "church_cross", "cx": 736.0, "cy": 588.2, "layer": "gimmick"}, "hoist": {"t": "승강 장치", "name": "공사장 호이스트", "zone": "z10", "z": 0, "x": 6250, "y": 350, "note": "", "role": "승강 장치", "intent": ["지상부터 타는 3정거장", "먼저 들러야 할 곳이 있게"], "how": ["층을 골라 탄다"], "gallery": [{"src": "shots/z10_dead_hoist_a.jpg", "fb": "", "cap": "꺼진 호이스트"}], "d": "hoist", "cx": 772.5, "cy": 507.5, "layer": "gimmick"}, "scaffold_ladder": {"t": "사다리", "name": "비계 사다리", "zone": "z10", "z": 0, "x": 6210, "y": 1700, "note": "", "role": "사다리", "intent": [], "how": ["내려간다"], "gallery": [{"src": "shots/obj_scaffold_ladder.jpg", "fb": "", "cap": "비계 사다리"}], "d": "scaffold_ladder", "cx": 770.5, "cy": 575.0, "layer": "gimmick"}, "generator": {"t": "발전기", "name": "발전기", "zone": "z10", "z": 0, "x": 10435.0, "y": 2420.0, "note": "", "role": "해야 하는 일", "intent": ["멀리, 가는 길에 몹"], "how": ["시동을 건다"], "gallery": [{"src": "shots/z10_generator_d.jpg", "fb": "", "cap": "발전기와 지킴이"}], "d": "generator", "cx": 981.8, "cy": 611.0, "layer": "gimmick"}, "site_gate": {"t": "지름길", "name": "현장 서쪽 철문", "zone": "z10", "z": 0, "x": 6000, "y": 2500, "note": "", "role": "지름길", "intent": ["마당 쪽에서만 여는 철문"], "how": ["철문을 민다"], "gallery": [], "d": "site_gate", "cx": 760.0, "cy": 615.0, "layer": "gimmick"}, "hidden_lane": {"t": "비밀", "name": "은신 통로", "zone": "z10", "z": 0, "x": 8300, "y": 3700, "note": "", "role": "은신 통로", "intent": ["몰래 지나 지킴이 등 뒤로", "중간에 보상 가방"], "how": [], "gallery": [{"src": "shots/z10_hidden_lane_c.jpg", "fb": "", "cap": "은신 통로"}], "d": "hidden_lane", "cx": 875.0, "cy": 675.0, "layer": "gimmick"}, "formwork_wall": {"t": "막힌 길", "name": "거푸집 벽", "zone": "z11", "z": 2600, "x": 7050, "y": 0, "note": "", "role": "막힌 길", "intent": ["도착점 → 크레인을 쉽게 두지 않음"], "how": [], "gallery": [{"src": "shots/z11_9f_arrival_a.jpg", "fb": "", "cap": "도착 — 막힌 길과 철골"}], "d": "formwork_wall", "cx": 812.5, "cy": 490.0, "layer": "gimmick"}, "key": {"t": "열쇠", "name": "마스트 리프트 열쇠", "zone": "z11", "z": 2668, "x": 7235, "y": -790, "note": "", "role": "열쇠", "intent": ["열쇠를 가지러 오면 깜놀 몹"], "how": ["집는다"], "gallery": [{"src": "shots/z11_container_key_c2.jpg", "fb": "", "cap": "현장사무소와 열쇠"}], "d": "key", "cx": 821.8, "cy": 450.5, "layer": "gimmick"}, "mast_lift": {"t": "승강 장치", "name": "마스트 리프트", "zone": "z12", "z": 2600, "x": 9250, "y": -2200, "note": "", "role": "승강 장치", "intent": ["열쇠가 있어야 작동"], "how": ["열쇠로 작동"], "gallery": [{"src": "shots/z12_mast_lift_a.jpg", "fb": "", "cap": "마스트 리프트"}], "d": "mast_lift", "cx": 922.8, "cy": 380.6, "layer": "gimmick"}, "crane_console": {"t": "크레인", "name": "크레인 운전석 콘솔", "zone": "z12", "z": 6400.0, "x": 9100, "y": -2530, "note": "", "role": "크레인 조종", "intent": ["크레인을 조종해 분수 쪽으로", "제자리에 오면 자석처럼 고정"], "how": ["조종해 갈고리를 정원 위로"], "gallery": [], "d": "crane_console", "cx": 914.7, "cy": 362.9, "layer": "gimmick"}, "hook": {"t": "크레인", "name": "갈고리", "zone": "z12", "z": 6400.0, "x": 5067.0, "y": -7267.0, "note": "", "role": "탈것", "intent": ["다른 옥상에 먼저 내려 마지막 화톳불"], "how": ["매달린다"], "gallery": [{"src": "shots/z12_hook_view_d.jpg", "fb": "", "cap": "갈고리에서 내려다봄"}, {"src": "captures/z12_jib.jpg", "fb": "", "cap": "지브 통로"}], "d": "hook", "cx": 713.4, "cy": 126.7, "layer": "gimmick"}, "annex_drop": {"t": "일방 낙하", "name": "별관 → 정원 (4 m)", "zone": "z13", "z": 2200.0, "x": 7700, "y": -6025, "note": "", "role": "보스존 진입", "intent": ["옥상에서 뛰어내려 진입, 낙뎀 없는 높이"], "how": ["뛰어내린다"], "gallery": [{"src": "shots/z13_drop_axis_c.jpg", "fb": "", "cap": "착지 — 정면에 신부"}, {"src": "shots/z13_annex_landing_a.jpg", "fb": "", "cap": "별관에서 본 정원"}], "d": "annex_drop", "cx": 841.8, "cy": 188.8, "layer": "gimmick"}, "fountain": {"t": "랜드마크", "name": "분수", "zone": "z13", "z": 1800.0, "x": 4600.0, "y": -6025.0, "note": "", "role": "정원 중심", "intent": ["평평한 정원, 분수는 가운데"], "how": [], "gallery": [{"src": "shots/z13_garden_axis_b.jpg", "fb": "", "cap": "분수와 호텔 축"}, {"src": "shots/z13_garden_wide_d.jpg", "fb": "", "cap": "평평한 사각형 정원, 가운데 분수"}], "d": "fountain", "cx": 690.0, "cy": 188.8, "layer": "gimmick"}, "rotunda": {"t": "랜드마크", "name": "백화점 로툰다", "zone": "z00", "z": 0, "x": 1700, "y": -3850, "note": "", "role": "랜드마크", "intent": ["시작 지점에서 정면으로 꽂히게"], "how": [], "gallery": [{"src": "captures/hero_start_view.jpg", "fb": "", "cap": ""}], "d": "rotunda", "cx": 545.0, "cy": 297.5, "layer": "gimmick"}, "sink2": {"t": "낙사 구역", "name": "싱크홀 2", "zone": "z00", "z": 0, "x": 3600, "y": -2600, "note": "", "role": "낙사 구역", "intent": ["내려오면 동선이 꼬임 → 무너뜨림"], "how": [], "gallery": [{"src": "shots/z00_store_street_a.jpg", "fb": "", "cap": "무너진 백화점 앞 거리"}, {"src": "captures/z00_store_street.jpg", "fb": "", "cap": ""}], "d": "sink2", "cx": 640.0, "cy": 360.0, "layer": "gimmick"}, "trap1": {"t": "함정", "name": "썩은 철골 1", "zone": "z11", "z": 2600.0, "x": 7810.0, "y": -1450.0, "note": "", "role": "함정", "intent": ["밟으면 부러져 낙사", "몹은 못 넘어옴"], "how": [], "gallery": [{"src": "shots/z11_beams_trap_b.jpg", "fb": "", "cap": "썩은 철골"}], "d": "trap1", "cx": 850.5, "cy": 417.5, "layer": "gimmick"}, "trap2": {"t": "함정", "name": "썩은 철골 2", "zone": "z11", "z": 2600.0, "x": 8420.0, "y": -2600.0, "note": "", "role": "함정", "intent": ["밟으면 부러져 낙사", "몹은 못 넘어옴"], "how": [], "gallery": [{"src": "shots/obj_trap2.jpg", "fb": "", "cap": "가장자리 보의 썩은 철골"}], "d": "trap2", "cx": 881.0, "cy": 360.0, "layer": "gimmick"}, "trap3": {"t": "함정", "name": "썩은 철골 3", "zone": "z11", "z": 2600.0, "x": 9200.0, "y": 1950.0, "note": "", "role": "함정", "intent": ["밟으면 부러져 낙사", "몹은 못 넘어옴"], "how": [], "gallery": [{"src": "shots/obj_trap3.jpg", "fb": "", "cap": "공구함으로 가는 썩은 철골"}], "d": "trap3", "cx": 920.0, "cy": 587.5, "layer": "gimmick"}, "trap4": {"t": "함정", "name": "썩은 철골 4", "zone": "z11", "z": 2600.0, "x": 9600.0, "y": 1450.0, "note": "", "role": "함정", "intent": ["밟으면 부러져 낙사", "몹은 못 넘어옴"], "how": [], "gallery": [{"src": "shots/obj_trap4.jpg", "fb": "", "cap": "공구함으로 가는 다른 길"}], "d": "trap4", "cx": 940.0, "cy": 562.5, "layer": "gimmick"}, "trap5": {"t": "함정", "name": "썩은 철골 5", "zone": "z11", "z": 2600.0, "x": 7850.0, "y": -2200.0, "note": "", "role": "함정", "intent": ["밟으면 부러져 낙사", "몹은 못 넘어옴"], "how": [], "gallery": [{"src": "shots/obj_trap5.jpg", "fb": "", "cap": "리프트로 곧장 가는 썩은 철골"}], "d": "trap5", "cx": 852.5, "cy": 380.0, "layer": "gimmick"}, "shop0": {"t": "셔터 가게", "name": "셔터 가게 · 상자", "zone": "z02", "z": 0, "x": -4450.0, "y": 1190.0, "note": "", "role": "셔터 가게", "intent": ["모든 셔터를 열 수 있음 — 상자"], "how": ["셔터를 올린다"], "gallery": [], "d": "shop_chest", "cx": 237.5, "cy": 549.5, "layer": "gimmick"}, "shop1": {"t": "셔터 가게", "name": "셔터 가게 · 상자", "zone": "z02", "z": 0, "x": -4450.0, "y": 1650.0, "note": "", "role": "셔터 가게", "intent": ["모든 셔터를 열 수 있음 — 상자"], "how": ["셔터를 올린다"], "gallery": [], "d": "shop_chest", "cx": 237.5, "cy": 572.5, "layer": "gimmick"}, "shop2": {"t": "셔터 가게", "name": "셔터 가게 · 빈 가게", "zone": "z02", "z": 0, "x": -4450.0, "y": 2110.0, "note": "", "role": "셔터 가게", "intent": ["몇 가게는 처음부터 열림"], "how": [], "gallery": [], "d": "shop_empty", "cx": 237.5, "cy": 595.5, "layer": "gimmick"}, "shop3": {"t": "셔터 가게", "name": "셔터 가게 · 몹", "zone": "z02", "z": 0, "x": -4450.0, "y": 2570.0, "note": "", "role": "셔터 가게", "intent": ["다가가면 셔터가 열리며 몹"], "how": [], "gallery": [], "d": "shop_mob", "cx": 237.5, "cy": 618.5, "layer": "gimmick"}, "shop4": {"t": "셔터 가게", "name": "셔터 가게 · 몹", "zone": "z02", "z": 0, "x": -4450.0, "y": 3030.0, "note": "", "role": "셔터 가게", "intent": ["다가가면 셔터가 열리며 몹"], "how": [], "gallery": [], "d": "shop_mob", "cx": 237.5, "cy": 641.5, "layer": "gimmick"}, "shop5": {"t": "셔터 가게", "name": "셔터 가게 · 상자", "zone": "z02", "z": 0, "x": -4450.0, "y": 3490.0, "note": "", "role": "셔터 가게", "intent": ["모든 셔터를 열 수 있음 — 상자"], "how": ["셔터를 올린다"], "gallery": [], "d": "shop_chest", "cx": 237.5, "cy": 664.5, "layer": "gimmick"}, "shop6": {"t": "셔터 가게", "name": "셔터 가게 · 주인 유령", "zone": "z02", "z": 0, "x": -4450.0, "y": 3950.0, "note": "처음부터 열려 있음", "role": "셔터 가게", "intent": ["가게 주인 유령"], "how": [], "gallery": [], "d": "shop_npc", "cx": 237.5, "cy": 687.5, "layer": "gimmick"}, "shop7": {"t": "셔터 가게", "name": "셔터 가게 · 빈 가게", "zone": "z02", "z": 0, "x": -4450.0, "y": 5790.0, "note": "", "role": "셔터 가게", "intent": ["몇 가게는 처음부터 열림"], "how": [], "gallery": [], "d": "shop_empty", "cx": 233.6, "cy": 775.1, "layer": "gimmick"}, "shop8": {"t": "셔터 가게", "name": "셔터 가게 · 몹", "zone": "z02", "z": 0, "x": -4450.0, "y": 6250.0, "note": "", "role": "셔터 가게", "intent": ["다가가면 셔터가 열리며 몹"], "how": [], "gallery": [], "d": "shop_mob", "cx": 237.5, "cy": 802.5, "layer": "gimmick"}, "shop9": {"t": "셔터 가게", "name": "셔터 가게 · 주인 유령", "zone": "z02", "z": 0, "x": -4450.0, "y": 6710.0, "note": "처음부터 열려 있음", "role": "셔터 가게", "intent": ["가게 주인 유령"], "how": [], "gallery": [], "d": "shop_npc", "cx": 237.5, "cy": 825.5, "layer": "gimmick"}, "shop10": {"t": "셔터 가게", "name": "셔터 가게 · 빈 가게", "zone": "z02", "z": 0, "x": -3350.0, "y": 1640.0, "note": "", "role": "셔터 가게", "intent": ["몇 가게는 처음부터 열림"], "how": [], "gallery": [], "d": "shop_empty", "cx": 292.5, "cy": 572.0, "layer": "gimmick"}, "shop11": {"t": "셔터 가게", "name": "셔터 가게 · 주인 유령", "zone": "z02", "z": 0, "x": -3350.0, "y": 3906.6666666666665, "note": "", "role": "셔터 가게", "intent": ["가게 주인 유령"], "how": [], "gallery": [], "d": "shop_npc", "cx": 291.7, "cy": 686.9, "layer": "gimmick"}, "shop12": {"t": "셔터 가게", "name": "셔터 가게 · 몹", "zone": "z02", "z": 0, "x": -3350.0, "y": 4360.0, "note": "", "role": "셔터 가게", "intent": ["다가가면 셔터가 열리며 몹"], "how": [], "gallery": [], "d": "shop_mob", "cx": 292.5, "cy": 708.0, "layer": "gimmick"}, "shop13": {"t": "셔터 가게", "name": "셔터 가게 · 상자", "zone": "z02", "z": 0, "x": -3350.0, "y": 4813.333333333333, "note": "", "role": "셔터 가게", "intent": ["모든 셔터를 열 수 있음 — 상자"], "how": ["셔터를 올린다"], "gallery": [], "d": "shop_chest", "cx": 292.5, "cy": 730.7, "layer": "gimmick"}, "shop14": {"t": "셔터 가게", "name": "셔터 가게 · 몹", "zone": "z02", "z": 0, "x": -3350.0, "y": 5266.666666666666, "note": "", "role": "셔터 가게", "intent": ["다가가면 셔터가 열리며 몹"], "how": [], "gallery": [], "d": "shop_mob", "cx": 292.5, "cy": 753.3, "layer": "gimmick"}, "shop15": {"t": "셔터 가게", "name": "셔터 가게 · 빈 가게", "zone": "z02", "z": 0, "x": -3350.0, "y": 5720.0, "note": "처음부터 열려 있음", "role": "셔터 가게", "intent": ["몇 가게는 처음부터 열림"], "how": [], "gallery": [], "d": "shop_empty", "cx": 292.5, "cy": 776.0, "layer": "gimmick"}, "shop16": {"t": "셔터 가게", "name": "셔터 가게 · 몹", "zone": "z02", "z": 0, "x": -3350.0, "y": 6173.333333333333, "note": "", "role": "셔터 가게", "intent": ["다가가면 셔터가 열리며 몹"], "how": [], "gallery": [], "d": "shop_mob", "cx": 292.5, "cy": 798.7, "layer": "gimmick"}, "mob0": {"t": "몹 · 순찰", "name": "셔터 내린 상인", "zone": "z02", "z": 0, "x": -2600, "y": 800, "note": "1층 통로 순찰", "role": "몹", "intent": ["한 시야 3마리 이하"], "how": [], "gallery": [], "d": "mob", "cx": 325.3, "cy": 530.0, "layer": "mob"}, "mob1": {"t": "몹 · 정지", "name": "셔터 내린 상인", "zone": "z02", "z": 0, "x": -3200, "y": 2860, "note": "공구 상가 진열대 사이", "role": "몹", "intent": ["한 시야 3마리 이하"], "how": [], "gallery": [], "d": "mob", "cx": 300.0, "cy": 633.0, "layer": "mob"}, "mob2": {"t": "몹 · 순찰", "name": "하교하지 못한 학생", "zone": "z02", "z": 0, "x": -3800, "y": 4000, "note": "골목 순찰", "role": "몹", "intent": ["한 시야 3마리 이하"], "how": [], "gallery": [], "d": "mob", "cx": 270.0, "cy": 690.0, "layer": "mob"}, "mob3": {"t": "몹 · 정지", "name": "셔터 내린 상인", "zone": "z02", "z": 0, "x": -4000, "y": 5700, "note": "다락 창 아래 골목", "role": "몹", "intent": ["한 시야 3마리 이하"], "how": [], "gallery": [], "d": "mob", "cx": 266.9, "cy": 778.0, "layer": "mob"}, "mob4": {"t": "몹 · 순찰", "name": "퇴근 못한 회사원", "zone": "z03", "z": 1200, "x": -3250, "y": 3700, "note": "카페테리아 서쪽 순찰", "role": "몹", "intent": ["한 시야 3마리 이하"], "how": [], "gallery": [], "d": "mob", "cx": 298.3, "cy": 673.4, "layer": "mob"}, "mob5": {"t": "몹 · 정예", "name": "포장마차 주인", "zone": "z03", "z": 1200, "x": -2950, "y": 5200, "note": "데크의 정예", "role": "정예", "intent": [], "how": [], "gallery": [{"src": "shots/obj_m_elite.jpg", "fb": "", "cap": "포장마차 주인"}], "d": "m_elite", "cx": 312.5, "cy": 750.0, "layer": "mob"}, "mob6": {"t": "몹 · 매복", "name": "창문 매복 (셔터 내린 상인)", "zone": "z03", "z": 1660, "x": -2170, "y": 3500, "note": "유리를 깨고 뛰어내림", "role": "매복", "intent": ["창문을 깨고 뛰어내림"], "how": [], "gallery": [{"src": "shots/z03_deck_window_b.jpg", "fb": "", "cap": "창 뒤의 형체"}, {"src": "captures/z03_deck_window_mockup.jpg", "fb": "", "cap": ""}], "d": "m_window", "cx": 351.5, "cy": 665.0, "layer": "mob"}, "mob7": {"t": "몹 · 정지", "name": "철골 인부", "zone": "z04", "z": 1200, "x": -6400, "y": 1350, "note": "스튜디오 접수대 쪽", "role": "몹", "intent": ["한 시야 3마리 이하"], "how": [], "gallery": [], "d": "mob", "cx": 140.0, "cy": 557.5, "layer": "mob"}, "mob8": {"t": "몹 · 매복", "name": "깨어나는 마네킹", "zone": "z04", "z": 1200, "x": -6950, "y": 2230, "note": "지나가면 깨어남", "role": "매복", "intent": ["마네킹이 많으니 마네킹이 덮침"], "how": [], "gallery": [{"src": "shots/z04_studio_runner_b.jpg", "fb": "", "cap": "버진로드와 꽃 아치"}, {"src": "shots/z04_studio_side_c.jpg", "fb": "", "cap": "웨딩 스튜디오"}], "d": "m_mq", "cx": 112.4, "cy": 599.3, "layer": "mob"}, "mob9": {"t": "몹 · 매복", "name": "깨어나는 마네킹", "zone": "z04", "z": 1200, "x": -7150, "y": 1770, "note": "지나가면 깨어남", "role": "매복", "intent": ["마네킹이 많으니 마네킹이 덮침"], "how": [], "gallery": [{"src": "shots/z04_studio_runner_b.jpg", "fb": "", "cap": "버진로드와 꽃 아치"}, {"src": "shots/z04_studio_side_c.jpg", "fb": "", "cap": "웨딩 스튜디오"}], "d": "m_mq", "cx": 100.4, "cy": 574.8, "layer": "mob"}, "mob10": {"t": "몹 · 마네킹 소품(몹 아님)", "name": "마네킹 소품", "zone": "z04", "z": 1200, "x": -6750, "y": 2230, "note": "맞지 않는 물리 소품", "role": "매복", "intent": ["마네킹이 많으니 마네킹이 덮침"], "how": [], "gallery": [{"src": "shots/z04_studio_runner_b.jpg", "fb": "", "cap": "버진로드와 꽃 아치"}, {"src": "shots/z04_studio_side_c.jpg", "fb": "", "cap": "웨딩 스튜디오"}], "d": "m_mq", "cx": 126.0, "cy": 602.0, "layer": "mob"}, "mob11": {"t": "몹 · 마네킹 소품(몹 아님)", "name": "마네킹 소품", "zone": "z04", "z": 1200, "x": -6750, "y": 1770, "note": "맞지 않는 물리 소품", "role": "매복", "intent": ["마네킹이 많으니 마네킹이 덮침"], "how": [], "gallery": [{"src": "shots/z04_studio_runner_b.jpg", "fb": "", "cap": "버진로드와 꽃 아치"}, {"src": "shots/z04_studio_side_c.jpg", "fb": "", "cap": "웨딩 스튜디오"}], "d": "m_mq", "cx": 124.6, "cy": 578.2, "layer": "mob"}, "mob12": {"t": "몹 · 마네킹 소품(몹 아님)", "name": "마네킹 소품", "zone": "z04", "z": 1200, "x": -6950, "y": 1770, "note": "맞지 않는 물리 소품", "role": "매복", "intent": ["마네킹이 많으니 마네킹이 덮침"], "how": [], "gallery": [{"src": "shots/z04_studio_runner_b.jpg", "fb": "", "cap": "버진로드와 꽃 아치"}, {"src": "shots/z04_studio_side_c.jpg", "fb": "", "cap": "웨딩 스튜디오"}], "d": "m_mq", "cx": 113.3, "cy": 580.0, "layer": "mob"}, "mob13": {"t": "몹 · 마네킹 소품(몹 아님)", "name": "마네킹 소품", "zone": "z04", "z": 1200, "x": -7150, "y": 2230, "note": "맞지 않는 물리 소품", "role": "매복", "intent": ["마네킹이 많으니 마네킹이 덮침"], "how": [], "gallery": [{"src": "shots/z04_studio_runner_b.jpg", "fb": "", "cap": "버진로드와 꽃 아치"}, {"src": "shots/z04_studio_side_c.jpg", "fb": "", "cap": "웨딩 스튜디오"}], "d": "m_mq", "cx": 100.2, "cy": 606.0, "layer": "mob"}, "mob14": {"t": "몹 · 매복", "name": "엘리베이터 승객 (우산 든 조문객)", "zone": "z05", "z": -777, "x": -7570, "y": 2000, "note": "문이 열리면 걸어 나옴", "role": "매복", "intent": ["엘리베이터 문이 열리면 몹"], "how": [], "gallery": [{"src": "shots/obj_glass_lift.jpg", "fb": "", "cap": ""}, {"src": "shots/z05_lift_bottom_a.jpg", "fb": "", "cap": "아래층의 유리 엘리베이터"}], "d": "m_lift", "cx": 80.5, "cy": 580.5, "layer": "mob"}, "mob15": {"t": "몹 · 순찰", "name": "퇴근 못한 회사원", "zone": "z05", "z": -800, "x": -7250, "y": 1300, "note": "엘리베이터 아래 통로 순찰", "role": "몹", "intent": ["한 시야 3마리 이하"], "how": [], "gallery": [], "d": "mob", "cx": 97.5, "cy": 555.0, "layer": "mob"}, "mob16": {"t": "몹 · 매복", "name": "천장 붕괴 매복 (회사원)", "zone": "z05", "z": -620, "x": -6787, "y": -940, "note": "천장과 함께 떨어짐", "role": "매복", "intent": ["천장이 무너지며 몹이 떨어짐"], "how": [], "gallery": [{"src": "shots/z05_ceiling_b.jpg", "fb": "", "cap": "무너질 천장"}], "d": "m_ceiling", "cx": 120.7, "cy": 443.0, "layer": "mob"}, "mob17": {"t": "몹 · 중간보스", "name": "지하상가 경비원", "zone": "z05", "z": -800, "x": -4300, "y": -1910, "note": "중간보스", "role": "중간보스", "intent": ["셔터가 열리며 달려 나옴", "통로는 넓게 — 중보 지역"], "how": [], "gallery": [{"src": "shots/z05_atrium_d.jpg", "fb": "", "cap": "중간보스 셔터"}, {"src": "captures/z05_mall_corridor.jpg", "fb": "", "cap": ""}], "d": "m_midboss", "cx": 245.0, "cy": 394.5, "layer": "mob"}, "mob18": {"t": "몹 · 순찰", "name": "우산 든 조문객", "zone": "z06", "z": 0, "x": -2900, "y": -1600, "note": "광장 순찰", "role": "몹", "intent": ["한 시야 3마리 이하"], "how": [], "gallery": [], "d": "mob", "cx": 315.0, "cy": 410.0, "layer": "mob"}, "mob19": {"t": "몹 · 정지", "name": "퇴근 못한 회사원", "zone": "z06", "z": 0, "x": -3300, "y": -2050, "note": "육교 계단 발치", "role": "몹", "intent": ["한 시야 3마리 이하"], "how": [], "gallery": [], "d": "mob", "cx": 294.5, "cy": 388.1, "layer": "mob"}, "mob20": {"t": "몹 · 순찰", "name": "우산 든 조문객", "zone": "z06", "z": 700, "x": 500, "y": -2300, "note": "육교 동쪽 순찰", "role": "몹", "intent": ["한 시야 3마리 이하"], "how": [], "gallery": [], "d": "mob", "cx": 485.0, "cy": 375.0, "layer": "mob"}, "mob21": {"t": "몹 · 정지", "name": "하교하지 못한 학생", "zone": "z07", "z": 900, "x": 3100, "y": -600, "note": "V1 옥상", "role": "몹", "intent": ["한 시야 3마리 이하"], "how": [], "gallery": [], "d": "mob", "cx": 615.0, "cy": 460.0, "layer": "mob"}, "mob22": {"t": "몹 · 순찰", "name": "우산 든 조문객", "zone": "z07", "z": 0, "x": 1800, "y": 1600, "note": "옥상 아래 골목(동선 밖)", "role": "몹", "intent": ["한 시야 3마리 이하"], "how": [], "gallery": [], "d": "mob", "cx": 550.0, "cy": 570.0, "layer": "mob"}, "mob23": {"t": "몹 · 정지", "name": "앉은 학생 (강의실)", "zone": "z08", "z": 900, "x": 4436, "y": -405, "note": "칠판을 보고 앉음", "role": "앉은 몹", "intent": ["앉아 있다가 알아채면 일어남"], "how": [], "gallery": [{"src": "shots/z08_lecture_a.jpg", "fb": "", "cap": "강의실 뒤에서"}], "d": "seated_lecture", "cx": 688.6, "cy": 467.2, "layer": "mob"}, "mob24": {"t": "몹 · 정지", "name": "앉은 학생 (강의실)", "zone": "z08", "z": 900, "x": 4666, "y": 150, "note": "칠판을 보고 앉음", "role": "앉은 몹", "intent": ["앉아 있다가 알아채면 일어남"], "how": [], "gallery": [{"src": "shots/z08_lecture_a.jpg", "fb": "", "cap": "강의실 뒤에서"}], "d": "seated_lecture", "cx": 693.4, "cy": 497.7, "layer": "mob"}, "mob25": {"t": "몹 · 정지", "name": "앉은 학생 (강의실)", "zone": "z08", "z": 900, "x": 4896, "y": -215, "note": "칠판을 보고 앉음", "role": "앉은 몹", "intent": ["앉아 있다가 알아채면 일어남"], "how": [], "gallery": [{"src": "shots/z08_lecture_a.jpg", "fb": "", "cap": "강의실 뒤에서"}], "d": "seated_lecture", "cx": 706.2, "cy": 478.9, "layer": "mob"}, "mob26": {"t": "몹 · 정지", "name": "앉은 학생 (독서실)", "zone": "z08", "z": 1500, "x": 4400, "y": -410, "note": "독서실에 들어와야 깸", "role": "앉은 몹", "intent": ["독서실에 들어와야 깨어남"], "how": [], "gallery": [{"src": "shots/z08_studyhall_c.jpg", "fb": "", "cap": "독서실"}, {"src": "captures/z08_studyhall.jpg", "fb": "", "cap": ""}], "d": "seated_study", "cx": 674.0, "cy": 471.7, "layer": "mob"}, "mob27": {"t": "몹 · 정지", "name": "앉은 학생 (독서실)", "zone": "z08", "z": 1500, "x": 4650, "y": -160, "note": "독서실에 들어와야 깸", "role": "앉은 몹", "intent": ["독서실에 들어와야 깨어남"], "how": [], "gallery": [{"src": "shots/z08_studyhall_c.jpg", "fb": "", "cap": "독서실"}, {"src": "captures/z08_studyhall.jpg", "fb": "", "cap": ""}], "d": "seated_study", "cx": 691.1, "cy": 482.4, "layer": "mob"}, "mob28": {"t": "몹 · 순찰", "name": "철골 인부", "zone": "z10", "z": 0, "x": 7200, "y": 2450, "note": "마당 순찰", "role": "몹", "intent": ["한 시야 3마리 이하"], "how": [], "gallery": [], "d": "mob", "cx": 820.0, "cy": 612.5, "layer": "mob"}, "mob29": {"t": "몹 · 순찰", "name": "철골 인부", "zone": "z10", "z": 0, "x": 8700, "y": 2350, "note": "마당 순찰", "role": "몹", "intent": ["한 시야 3마리 이하"], "how": [], "gallery": [], "d": "mob", "cx": 895.0, "cy": 607.5, "layer": "mob"}, "mob30": {"t": "몹 · 정지", "name": "발전기 지킴이 (철골 인부)", "zone": "z10", "z": 0, "x": 9935.0, "y": 2670.0, "note": "은신하면 등 뒤로", "role": "지킴이", "intent": ["숨어 가면 등 뒤로(백스탭)"], "how": [], "gallery": [{"src": "shots/z10_generator_d.jpg", "fb": "", "cap": "발전기와 지킴이"}], "d": "m_genguard", "cx": 956.8, "cy": 623.5, "layer": "mob"}, "mob31": {"t": "몹 · 순찰", "name": "철골 순찰 인부", "zone": "z11", "z": 2600, "x": 8450, "y": 850, "note": "850 철골", "role": "철골 순찰", "intent": ["철골을 따라 다가옴"], "how": [], "gallery": [{"src": "captures/z11_beams.jpg", "fb": "", "cap": ""}], "d": "beam_walker", "cx": 882.5, "cy": 532.5, "layer": "mob"}, "mob32": {"t": "몹 · 순찰", "name": "철골 순찰 인부", "zone": "z11", "z": 2600, "x": 9350, "y": -300, "note": "−300 철골", "role": "철골 순찰", "intent": ["철골을 따라 다가옴"], "how": [], "gallery": [{"src": "captures/z11_beams.jpg", "fb": "", "cap": ""}], "d": "beam_walker", "cx": 927.5, "cy": 475.0, "layer": "mob"}, "mob33": {"t": "몹 · 순찰", "name": "철골 순찰 인부", "zone": "z11", "z": 2600, "x": 9613, "y": -2600, "note": "−2600 가장자리 철골", "role": "철골 순찰", "intent": ["철골을 따라 다가옴"], "how": [], "gallery": [{"src": "captures/z11_beams.jpg", "fb": "", "cap": ""}], "d": "beam_walker", "cx": 940.6, "cy": 360.0, "layer": "mob"}, "mob34": {"t": "몹 · 매복", "name": "숨은 인부", "zone": "z11", "z": 2600, "x": 6790, "y": -830, "note": "열쇠를 집으면 튀어나옴", "role": "매복", "intent": ["열쇠를 가지러 오면 깜놀"], "how": [], "gallery": [{"src": "shots/z11_container_key_c2.jpg", "fb": "", "cap": "현장사무소와 열쇠"}], "d": "m_lurker", "cx": 801.3, "cy": 447.3, "layer": "mob"}, "mob35": {"t": "몹 · 보스", "name": "분수의 신부", "zone": "z13", "z": 1800.0, "x": 5500.0, "y": -6025.0, "note": "보스", "role": "보스", "intent": ["다가가는 방향 정면에 신부"], "how": [], "gallery": [{"src": "shots/z13_drop_axis_c.jpg", "fb": "", "cap": "착지 — 정면에 신부"}, {"src": "shots/z13_annex_landing_a.jpg", "fb": "", "cap": "별관에서 본 정원"}], "d": "m_boss", "cx": 735.0, "cy": 188.8, "layer": "mob"}, "SE_F1": {"t": "화톳불", "name": "중앙버스정류장", "zone": "z01", "z": 20.0, "x": -5.0, "y": 1260.0, "note": "", "role": "화톳불", "intent": ["몹으로부터 안전한 곳"], "how": ["쉰다"], "gallery": [{"src": "shots/obj_SE_F1.jpg", "fb": "", "cap": "화톳불 F1"}], "d": "SE_F1", "cx": 459.8, "cy": 553.0, "layer": "fire"}, "SE_F4": {"t": "화톳불", "name": "정상수학 옥상", "zone": "z08", "z": 1830.0, "x": 4860.0, "y": -1400.0, "note": "", "role": "화톳불", "intent": [], "how": ["쉰다"], "gallery": [{"src": "shots/z08_roof_d.jpg", "fb": "", "cap": "옥상 화톳불과 호텔"}], "d": "SE_F4", "cx": 706.6, "cy": 420.4, "layer": "fire"}, "SE_F5": {"t": "화톳불", "name": "메리디안 별관 옥상", "zone": "z13", "z": 2200.0, "x": 8400.0, "y": -5700.0, "note": "", "role": "화톳불", "intent": ["먼저 마지막 화톳불, 내려가면 보스"], "how": ["쉰다"], "gallery": [{"src": "shots/z13_annex_landing_a.jpg", "fb": "", "cap": "별관에서 본 정원"}], "d": "SE_F5", "cx": 880.0, "cy": 205.0, "layer": "fire"}, "loot_clothes": {"t": "보상", "name": "옷가게 금고 (포션 +1)", "zone": "z05", "z": -800.0, "x": -6450.0, "y": 250.0, "note": "기억 300 · 포션 1", "role": "보상", "intent": [], "how": [], "gallery": [{"src": "shots/z05_clothes_c.jpg", "fb": "", "cap": "옷가게 안"}], "d": "loot_clothes", "cx": 137.5, "cy": 502.5, "layer": "loot"}, "loot_pawn": {"t": "보상", "name": "전당포 금고 (포션 칸 +1)", "zone": "z02", "z": 340.0, "x": -4450.0, "y": 5480.0, "note": "기억 1200 · 포션 1 · 포션 칸 +1", "role": "보상", "intent": [], "how": [], "gallery": [{"src": "shots/obj_loot_pawn.jpg", "fb": "", "cap": "전당포 금고와 노인"}], "d": "loot_pawn", "cx": 238.5, "cy": 761.0, "layer": "loot"}, "loot_locker": {"t": "보상", "name": "옥상 자습생의 사물함", "zone": "z08", "z": 1830.0, "x": 4290.0, "y": -60.0, "note": "기억 1500 · 포션 2", "role": "보상", "intent": [], "how": [], "gallery": [{"src": "shots/obj_loot_locker.jpg", "fb": "", "cap": "옥상 사물함"}], "d": "loot_locker", "cx": 674.5, "cy": 487.3, "layer": "loot"}, "loot_rooftop": {"t": "보상", "name": "옥탑방 상자", "zone": "z09", "z": 1200.0, "x": 5350.0, "y": 2100.0, "note": "기억 900", "role": "보상", "intent": [], "how": [], "gallery": [{"src": "shots/z09_rooftop_room_c.jpg", "fb": "", "cap": "옥탑방 안"}], "d": "loot_rooftop", "cx": 726.3, "cy": 602.5, "layer": "loot"}, "loot_machine": {"t": "보상", "name": "기계실 지붕에 떨어진 가방 (포션 +1)", "zone": "z09", "z": 1500.0, "x": 4649.0, "y": 459.0, "note": "기억 700 · 포션 1", "role": "보상", "intent": [], "how": [], "gallery": [], "d": "loot_machine", "cx": 692.4, "cy": 513.2, "layer": "loot"}, "loot_toolbox": {"t": "보상", "name": "철골 끝의 공구함 (포션 +1, 화염병 2)", "zone": "z11", "z": 2600.0, "x": 9600.0, "y": 1950.0, "note": "기억 600 · 포션 1 · 화염병 2", "role": "보상", "intent": [], "how": [], "gallery": [{"src": "shots/obj_trap3.jpg", "fb": "", "cap": ""}], "d": "loot_toolbox", "cx": 940.0, "cy": 587.5, "layer": "loot"}, "loot_site": {"t": "보상", "name": "재개발 현장사무소 금고 (포션 칸 +1)", "zone": "z11", "z": 2600.0, "x": 6800.0, "y": -480.0, "note": "기억 200 · 포션 칸 +1", "role": "보상", "intent": [], "how": [], "gallery": [{"src": "shots/z11_container_key_c2.jpg", "fb": "", "cap": "현장사무소와 열쇠"}], "d": "loot_site", "cx": 800.1, "cy": 466.0, "layer": "loot"}, "loot_cart": {"t": "보상", "name": "버려진 장바구니 (화염병 2)", "zone": "z07", "z": 0.0, "x": 2400.0, "y": 4300.0, "note": "기억 400 · 포션 1 · 화염병 2", "role": "보상", "intent": [], "how": [], "gallery": [], "d": "loot_cart", "cx": 580.0, "cy": 705.0, "layer": "loot"}, "loot_lane": {"t": "보상", "name": "자재 적치장 뒤 공구 가방", "zone": "z10", "z": 0.0, "x": 8200.0, "y": 4300.0, "note": "기억 400 · 포션 1", "role": "보상", "intent": ["은신 통로 중간의 보상"], "how": [], "gallery": [{"src": "shots/z10_hidden_lane_c.jpg", "fb": "", "cap": "은신 통로"}], "d": "loot_lane", "cx": 870.0, "cy": 705.0, "layer": "loot"}, "loot_arcade": {"t": "보상", "name": "아케이드 셔터 안 상자 (화염병 2)", "zone": "z07", "z": 900.0, "x": 2600.0, "y": -160.0, "note": "기억 500 · 화염병 2", "role": "보상", "intent": ["열 수 있는 셔터 안 상자"], "how": [], "gallery": [{"src": "shots/z07_v1_shop_b.jpg", "fb": "", "cap": "데크 가게 셔터"}], "d": "loot_arcade", "cx": 590.0, "cy": 484.1, "layer": "loot"}, "w_knife": {"t": "무기", "name": "식칼 두 자루", "zone": "z03", "z": 1292, "x": -1998, "y": 4240, "note": "", "role": "무기", "intent": ["주방 안의 식칼"], "how": ["주워서 장착"], "gallery": [{"src": "shots/obj_kitchen_shutter.jpg", "fb": "", "cap": ""}], "d": "w_knife", "cx": 361.2, "cy": 702.0, "layer": "loot"}, "w_driver": {"t": "무기", "name": "골프 드라이버", "zone": "z09", "z": 1200, "x": 5260, "y": 1900, "note": "", "role": "무기", "intent": [], "how": ["주워서 장착"], "gallery": [{"src": "shots/z09_rooftop_room_c.jpg", "fb": "", "cap": "옥탑방 안"}], "d": "w_driver", "cx": 721.5, "cy": 578.8, "layer": "loot"}, "ghost_lamp": {"t": "유령 NPC", "name": "등불지기", "zone": "z01", "z": 20, "x": 130, "y": 620, "note": "", "role": "NPC", "intent": [], "how": [], "gallery": [{"src": "shots/obj_ghost_lamp.jpg", "fb": "", "cap": "등불지기"}], "d": "ghost_lamp", "cx": 466.5, "cy": 521.0, "layer": "npc"}, "ghost_groom": {"t": "유령 NPC", "name": "오지 않은 신랑", "zone": "z11", "z": 2600, "x": 6600, "y": -700, "note": "", "role": "NPC", "intent": [], "how": [], "gallery": [{"src": "shots/z11_groom_d2.jpg", "fb": "", "cap": "신랑이 보는 정원"}], "d": "ghost_groom", "cx": 788.1, "cy": 456.2, "layer": "npc"}, "ghost_pawn": {"t": "유령 NPC", "name": "전당포 노인", "zone": "z02", "z": 340, "x": -4600, "y": 5850, "note": "", "role": "NPC", "intent": [], "how": [], "gallery": [{"src": "shots/obj_loot_pawn.jpg", "fb": "", "cap": ""}], "d": "ghost_pawn", "cx": 226.7, "cy": 788.2, "layer": "npc"}, "ghost_student": {"t": "유령 NPC", "name": "옥상의 재수생", "zone": "z08", "z": 1830, "x": 4608, "y": -1411, "note": "", "role": "NPC", "intent": [], "how": [], "gallery": [{"src": "shots/z08_roof_d.jpg", "fb": "", "cap": "옥상 화톳불과 호텔"}], "d": "ghost_student", "cx": 687.4, "cy": 418.2, "layer": "npc"}, "msg0": {"t": "바닥 메시지", "name": "“골목 끝, 매복 있음”", "zone": "", "z": 0.0, "x": -2500.0, "y": 800.0, "note": "", "role": "바닥 메시지", "intent": [], "how": [], "gallery": [], "d": "msg", "cx": 339.7, "cy": 530.0, "layer": "npc"}, "msg1": {"t": "바닥 메시지", "name": "“셔터는 안쪽에서만”", "zone": "", "z": 0.0, "x": -1600.0, "y": 1650.0, "note": "", "role": "바닥 메시지", "intent": [], "how": [], "gallery": [], "d": "msg", "cx": 380.0, "cy": 572.5, "layer": "npc"}, "msg2": {"t": "바닥 메시지", "name": "“구멍 아래에 길이 있다”", "zone": "", "z": 1200.0, "x": -7500.0, "y": 1500.0, "note": "", "role": "바닥 메시지", "intent": [], "how": [], "gallery": [], "d": "msg", "cx": 85.0, "cy": 565.0, "layer": "npc"}, "msg3": {"t": "바닥 메시지", "name": "“사다리를 차라  화톳불이다”", "zone": "", "z": 700.0, "x": -700.0, "y": -2300.0, "note": "", "role": "바닥 메시지", "intent": [], "how": [], "gallery": [], "d": "msg", "cx": 425.0, "cy": 375.0, "layer": "npc"}, "msg4": {"t": "바닥 메시지", "name": "“용기를 내라  뛰어라”", "zone": "", "z": 1500.0, "x": 5050.0, "y": 230.0, "note": "", "role": "바닥 메시지", "intent": [], "how": [], "gallery": [], "d": "msg", "cx": 713.2, "cy": 497.5, "layer": "npc"}, "msg5": {"t": "바닥 메시지", "name": "“떨어지면 끝  천천히”", "zone": "", "z": 2600.0, "x": 7300.0, "y": -1450.0, "note": "", "role": "바닥 메시지", "intent": [], "how": [], "gallery": [], "d": "msg", "cx": 825.0, "cy": 417.5, "layer": "npc"}, "msg6": {"t": "바닥 메시지", "name": "“무너졌다  가게를 지나라”", "zone": "", "z": -800.0, "x": -7250.0, "y": 700.0, "note": "", "role": "바닥 메시지", "intent": [], "how": [], "gallery": [], "d": "msg", "cx": 97.5, "cy": 525.0, "layer": "npc"}, "msg7": {"t": "바닥 메시지", "name": "“위를 봐라”", "zone": "", "z": 0.0, "x": -3900.0, "y": 5550.0, "note": "", "role": "바닥 메시지", "intent": [], "how": [], "gallery": [], "d": "msg", "cx": 264.3, "cy": 763.9, "layer": "npc"}, "msg8": {"t": "바닥 메시지", "name": "“그녀가 기다린다”", "zone": "", "z": 2200.0, "x": 7900.0, "y": -6025.0, "note": "", "role": "바닥 메시지", "intent": [], "how": [], "gallery": [], "d": "msg", "cx": 858.2, "cy": 188.8, "layer": "npc"}}, "route_first": [[-1, 1687, 20], [-120, 1687, 20], [-120, -300, 20], [0, -300, 20], [-120, -300, 20], [-120, 800, 20], [-1200, 800, 0], [-2600, 800, 0], [-3900, 800, 0], [-3900, 2420, 0], [-3720, 2510, 0], [-3400, 2510, 0], [-2930, 2540, 0], [-2930, 2860, 0], [-3470, 2860, 0], [-3470, 3300, 0], [-3490, 3300, 0], [-3900, 3300, 0], [-3900, 4560, 0], [-4350, 4560, 0], [-4580, 4600, 0], [-4580, 5120, 0], [-4350, 5140, 0], [-3900, 5140, 0], [-3900, 6580, 0], [-3460, 6580, 0], [-3450, 6580, 0], [-3017, 6580, 200], [-3017, 6800, 200], [-3450, 6800, 400], [-3450, 6580, 400], [-3017, 6580, 600], [-3017, 6800, 600], [-3450, 6800, 800], [-3450, 6580, 800], [-3017, 6580, 1000], [-3017, 6800, 1000], [-3450, 6800, 1200], [-3450, 6350, 1200], [-2950, 5600, 1200], [-2950, 4000, 1200], [-2950, 2800, 1200], [-2950, 1850, 1200], [-2950, 1850, 1200], [-3400, 2000, 1200], [-4700, 2000, 1200], [-6100, 2000, 1200], [-6400, 2000, 1200], [-7250, 2000, 1200], [-7340, 2140, 1200], [-7250, 2000, 1200], [-7570, 2000, 1200], [-7250, 2000, -800], [-7250, 1700, -800], [-7250, 410, -800], [-6920, 410, -800], [-6600, 410, -800], [-6300, 150, -800], [-5900, 150, -800], [-5000, 150, -800], [-4300, -700, -800], [-3200, -700, -800], [-1850, -700, 0], [-1650, -1100, 0], [-2500, -1500, 0], [-3800, -2300, 0], [-2700, -2300, 700], [-2150, -2250, 700], [-1000, -2300, 700], [0, -2175, 700], [0, -2175, 700], [800, -2300, 700], [1800, -2300, 700], [2100, -2080, 700], [2100, -1620, 900], [2100, -1375, 900], [2600, -1375, 900], [3500, -800, 900], [3870, -800, 900], [3930, -800, 900], [4100, -800, 900], [4370, -1040, 900], [4370, -1000, 900], [4370, -1425, 900], [4747, -1425, 1050], [4747, -1255, 1050], [4370, -1255, 1200], [4370, -1425, 1200], [4747, -1425, 1350], [4747, -1255, 1350], [4370, -1255, 1500], [4370, -1270, 1500], [4365, -1000, 1500], [4850, -1000, 1500], [4850, 150, 1500], [5050, 150, 1500], [5050, 380, 1500], [5050, 900, 1200], [5450, 1400, 1200], [6000, 1400, 1200], [6210, 1400, 1200], [6210, 1570, 1200], [6210, 1840, 0], [6300, 2400, 0], [8000, 2400, 0], [10315, 2420, 0], [8000, 2400, 0], [6300, 2400, 0], [6210, 1840, 0], [6210, 1780, 0], [6210, 1400, 1200], [6250, 1400, 1200], [6100, 790, 1200], [6250, 350, 1200], [6750, 350, 2600], [7450, 850, 2600], [7660, 850, 2600], [8850, 850, 2600], [8850, -300, 2600], [8850, -1450, 2600], [8100, -1450, 2600], [8100, -2600, 2600], [7660, -2600, 2600], [7450, -2500, 2600], [7450, -250, 2600], [7150, -250, 2600], [7150, -450, 2600], [7180, -700, 2600], [7150, -450, 2600], [7150, -250, 2600], [7450, -250, 2600], [7450, -2500, 2600], [7660, -2600, 2600], [8100, -2600, 2600], [8100, -2200, 2600], [8980, -2200, 2600], [9250, -2200, 2600], [9100, -2530, 6400], [8964, -2547, 6400], [8753, -2802, 6400], [7038, -4880, 6400], [5322, -6959, 6400], [5105, -7221, 6400], [8129, -6203, 6100], [8129, -6203, 2200], [8129, -6203, 2200], [7850, -6025, 2200], [7400, -6025, 1800], [5100, -5875, 1800]], "zrects": {"z01": [[385.0, 395.0, 150.0, 202.5], [385.0, 520.0, 62.5, 20.0]], "z02": [[280.0, 522.5, 95.0, 15.0], [250.0, 516.0, 30.0, 298.0], [280.0, 605.0, 40.0, 60.0], [225.0, 712.5, 25.0, 40.0], [210.0, 722.5, 39.0, 72.5]], "z03": [[284.0, 814.0, 28.4, 21.0], [280.0, 620.0, 65.0, 194.0], [280.0, 540.0, 95.0, 80.0], [345.0, 690.0, 17.5, 25.0]], "z04": [[250.0, 575.0, 30.0, 30.0], [160.0, 570.0, 90.0, 40.0], [60.0, 540.0, 100.0, 110.0]], "z05": [[60.0, 390.0, 280.0, 240.0]], "z06": [[270.0, 357.5, 105.0, 109.0], [280.0, 360.0, 292.5, 30.0]], "z07": [[572.5, 417.5, 75.0, 87.5], [647.0, 444.5, 13.5, 11.0], [557.0, 390.0, 16.0, 35.5]], "z08": [[660.0, 405.0, 68.8, 100.0]], "z09": [[678.8, 505.0, 62.5, 100.0], [740.8, 555.0, 19.2, 10.0]], "z10": [[760.0, 520.0, 25.0, 55.0], [760.0, 596.0, 225.0, 124.0]], "z11": [[785.0, 355.0, 187.5, 237.5]], "z12": [[902.5, 360.0, 40.0, 40.0]], "z13": [[535.0, 70.0, 310.0, 237.5], [845.0, 120.0, 55.0, 187.5]], "z00": [[537.5, 322.5, 217.5, 77.5]]}, "plan": {"x0": -9200, "y0": -9800, "s": 20.0}, "layers": [{"name": "지하 −8 m", "color": "#5b8cff"}, {"name": "지상 0 m", "color": "#9aa4b2"}, {"name": "+7 ~ +9 m (육교·V1·강의실)", "color": "#3fd0c9"}, {"name": "+12 ~ +15 m (데크·V4·독서실)", "color": "#8fe36b"}, {"name": "+18 ~ +22 m (학원 옥상·정원·별관)", "color": "#ffd166"}, {"name": "+26 m (9층 철골)", "color": "#ff8c42"}, {"name": "+64 m (크레인)", "color": "#ff4d6d"}]};
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const ZONES = DATA.zones, ZBY = Object.fromEntries(ZONES.map(z => [z.id, z])), OBJ = DATA.objects;
+const ORDER = ["z01","z02","z03","z04","z05","z06","z07","z08","z09","z10","z11","z12","z13","z00"];
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const PX = (x, y) => [(x - DATA.plan.x0) / DATA.plan.s, (y - DATA.plan.y0) / DATA.plan.s];
+const svg = $("#plan");
+const ul = a => a && a.length ? `<ul class="b">${a.map(x => `<li>${esc(x).replace(/[①-⑨]/g, m => `<b style="color:var(--sodium)">${m}</b>`)}</li>`).join("")}</ul>` : "";
+const zh = z => (z >= 0 ? "+" : "") + (z / 100).toFixed(0) + " m";
+const LET = i => "ABCDEFGH"[i] || (i + 1);
+
+// ---------- gallery: shot -> fallback capture -> placeholder; numbered when it has a camera on the mini plan
+function gallery(items, lettered) {
+  if (!items || !items.length) return "";
+  let n = 0;
+  return `<div class="shots">${items.map((g, i) => {
+    const tag = lettered && g.cam ? LET(n++) : "";
+    return `<figure data-i="${i}" ${tag ? `data-cam="${tag}"` : ""}><div class="fi">${tag ? `<span class="num">${tag}</span>` : ""}<img loading="lazy" src="assets/${esc(g.src)}" data-fb="${esc(g.fb || "")}" alt="${esc(g.cap)}"></div>${g.cap ? `<figcaption>${esc(g.cap)}</figcaption>` : ""}</figure>`;
+  }).join("")}</div>`;
+}
+document.addEventListener("error", e => {
+  const im = e.target; if (!(im instanceof HTMLImageElement) || !im.closest("figure")) return;
+  if (im.dataset.fb) { const f = im.dataset.fb; im.dataset.fb = ""; im.src = "assets/" + f; return; }
+  const fg = im.closest("figure"), gs = fg.parentNode; fg.remove(); if (gs && !gs.children.length) { const h = gs.previousElementSibling; gs.remove(); if (h && h.tagName === "H5") h.remove(); } drawLinks();
+}, true);
+document.addEventListener("load", e => { if (e.target instanceof HTMLImageElement && e.target.closest("#mbox")) drawLinks(); }, true);
+
+// ---------- mini plan (zone modal): clone of the plan cropped to the zone, numbered marks + lettered cameras
+function miniPlan(box, opts = {}) {
+  const c = svg.cloneNode(true);
+  c.removeAttribute("id"); c.setAttribute("class", "plan mini"); c.removeAttribute("aria-label");
+  $$("[id]", c).forEach(el => { if (el.tagName !== "pattern" && el.tagName !== "marker") el.removeAttribute("id"); });
+  $$("#lyr-first, .first", c).forEach(el => el.remove());
+  let [x, y, w, h] = box; const pad = Math.max(w, h) * 0.08 + 8; x -= pad; y -= pad; w += pad * 2; h += pad * 2;
+  if (w / h > 2.2) { const nh = w / 2.2; y -= (nh - h) / 2; h = nh; } if (h / w > 1.3) { const nw = h / 1.3; x -= (nw - w) / 2; w = nw; }
+  c.setAttribute("viewBox", `${x} ${y} ${w} ${h}`);
+  const k = Math.min(1, Math.max(0.3, w / 1010 * 2.2));
+  $$(".poi", c).forEach(p => { const cx = +p.dataset.cx, cy = +p.dataset.cy; p.setAttribute("transform", `translate(${cx} ${cy}) scale(${k}) translate(${-cx} ${-cy})`); });
+  $$(".zone", c).forEach(g => g.classList.toggle("cur", g.dataset.zone === opts.zone));
+  const g = document.createElementNS("http://www.w3.org/2000/svg", "g"), r = w * 0.022;
+  (opts.marks || []).forEach(([n, mx, my, lab]) => {
+    const [px, py] = PX(mx, my);
+    g.insertAdjacentHTML("beforeend", `<g class="mark"><circle cx="${px}" cy="${py}" r="${r}" stroke-width="${r * 0.18}"/><text x="${px}" y="${py + r * 0.4}" font-size="${r * 1.15}">${n}</text><text class="ml" x="${px + r * 1.3}" y="${py + r * 0.4}" font-size="${r * 0.95}" stroke-width="${r * 0.3}">${esc(lab)}</text></g>`);
+  });
+  let n = 0;
+  (opts.gallery || []).forEach(gi => {
+    if (!gi.cam) return; const [cx, cy, yaw] = gi.cam, a = yaw * Math.PI / 180, L = r * 2.2, s = r * 0.9, t = LET(n++);
+    const tip = [cx + Math.cos(a) * L, cy + Math.sin(a) * L], l1 = [cx + Math.cos(a + 1.9) * s, cy + Math.sin(a + 1.9) * s], l2 = [cx + Math.cos(a - 1.9) * s, cy + Math.sin(a - 1.9) * s];
+    g.insertAdjacentHTML("beforeend", `<g class="cam" data-cam="${t}"><path d="M${tip} L${l1} L${l2} Z" stroke-width="${r * 0.12}"/><circle cx="${cx}" cy="${cy}" r="${r * 0.75}" fill="#ffb547" stroke="#05070a" stroke-width="${r * 0.12}"/><text x="${cx}" y="${cy + r * 0.3}" font-size="${r * 0.85}">${t}</text></g>`);
+  });
+  c.appendChild(g);
+  return c;
+}
+function zoneBox(id) {
+  const rs = DATA.zrects[id]; let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  const add = (px, py) => { x0 = Math.min(x0, px); y0 = Math.min(y0, py); x1 = Math.max(x1, px); y1 = Math.max(y1, py); };
+  rs.forEach(([x, y, w, h]) => { add(x, y); add(x + w, y + h); });
+  (ZBY[id].marks || []).forEach(([, mx, my]) => add(...PX(mx, my)));
+  return [x0, y0, x1 - x0, y1 - y0];
+}
+// connector lines from each example image to its camera on the mini plan
+function drawLinks() {
+  const box = $("#mbox"), mini = $("#mbox svg.mini"); $$("#mbox svg.links").forEach(el => el.remove());
+  if (!mini || !$("#modal").classList.contains("on")) return;
+  const br = box.getBoundingClientRect(), ns = "http://www.w3.org/2000/svg";
+  const ov = document.createElementNS(ns, "svg"); ov.setAttribute("class", "links"); ov.setAttribute("width", box.scrollWidth); ov.setAttribute("height", box.scrollHeight);
+  $$("#mbox figure[data-cam]").forEach(f => {
+    const cam = $(`g.cam[data-cam="${f.dataset.cam}"] circle`, mini); if (!cam) return;
+    const fr = f.getBoundingClientRect(), cr = cam.getBoundingClientRect();
+    const ox = box.scrollLeft - br.left, oy = box.scrollTop - br.top;
+    const x1 = fr.left + fr.width / 2 + ox, y1 = fr.top + oy, x2 = cr.left + cr.width / 2 + ox, y2 = cr.top + cr.height / 2 + oy;
+    const p = document.createElementNS(ns, "path"); p.dataset.cam = f.dataset.cam;
+    p.setAttribute("d", `M${x1},${y1} C${x1},${y1 - 60} ${x2},${y2 + 60} ${x2},${y2}`); ov.appendChild(p);
+  });
+  box.appendChild(ov);
+}
+function hiCam(t, on) { $$(`#mbox [data-cam="${t}"]`).forEach(el => el.classList.toggle("hi", on)); }
+$("#mbox").addEventListener("pointerover", e => { const f = e.target.closest("[data-cam]"); if (f) hiCam(f.dataset.cam, true); });
+$("#mbox").addEventListener("pointerout", e => { const f = e.target.closest("[data-cam]"); if (f) hiCam(f.dataset.cam, false); });
+addEventListener("resize", () => drawLinks());
+
+// ---------- modals
+let stack = [];
+function show(html, mini, kind) {
+  $("#mbox").className = "mbox " + (kind || "obj"); $("#mbox").scrollTop = 0;
+  $("#mbox").innerHTML = html;
+  if (mini) $("#mini").appendChild(mini);
+  $("#modal").classList.add("on"); document.body.style.overflow = "hidden"; $("#modal").scrollTop = 0; $(".mclose").focus({preventScroll: true});
+  requestAnimationFrame(drawLinks);
+}
+function openZone(id, push = true) {
+  const z = ZBY[id]; if (!z) return; if (push) stack = [["z", id]];
+  const imp = Object.entries(OBJ).filter(([, o]) => o.zone === id && o.t !== "바닥 메시지" && !(o.t.startsWith("몹 · 순찰") || o.t.startsWith("몹 · 정지") || o.t === "셔터 가게" || o.name.includes("소품")));
+  const i = ORDER.indexOf(id), prev = ORDER[(i + ORDER.length - 1) % ORDER.length], next = ORDER[(i + 1) % ORDER.length];
+  show(`<div class="mhead"><div class="no">ZONE ${esc(z.no)}</div><h3 id="mtitle">${esc(z.name)}</h3><div class="where">${esc(z.where)}</div>
+    <div class="mtools"><button type="button" data-go="${prev}">← ${esc(ZBY[prev].short)}</button><button type="button" data-go="${next}">${esc(ZBY[next].short)} →</button></div>
+    <button type="button" class="mclose" aria-label="닫기">✕</button></div>
+  <div class="mbody">
+    <div><div id="mini"></div></div>
+    <div>
+      <h5>역할</h5><div class="chips">${z.role.map(r => `<span class="chip">${esc(r)}</span>`).join("")}</div>
+      <h5>설계 의도</h5>${ul(z.intent)}
+      <h5>기믹</h5>${ul(z.gimmicks)}
+      <h5>몹</h5>${ul(z.mobs)}
+      <h5>무드</h5>${ul(z.mood)}
+      ${imp.length ? `<h5>주요 객체</h5><div class="objchips">${imp.map(([k, o]) => `<button type="button" class="chip" data-obj="${k}">${esc(o.name)}</button>`).join("")}</div>` : ""}
+    </div>
+    <div class="mfull"><h5>예시 이미지</h5>${gallery(z.gallery, true)}</div>
+  </div>`, miniPlan(zoneBox(id), {marks: z.marks, zone: id, gallery: z.gallery}), "zone");
+}
+function openObj(id, push = true) {
+  const o = OBJ[id]; if (!o) return; if (push) stack.push(["o", id]);
+  const z = ZBY[o.zone];
+  const back = stack.length > 1 ? `<button type="button" data-back>← 뒤로</button>` : "";
+  show(`<div class="mhead"><div class="no">${esc(o.t)}</div><h3 id="mtitle">${esc(o.name)}</h3><div class="where">${z ? esc(z.short) + " · " : ""}${zh(o.z)}${o.note ? " · " + esc(o.note) : ""}</div>
+    <div class="mtools">${back}${z ? `<button type="button" data-zone="${o.zone}">구역 보기 — ${esc(z.short)}</button>` : ""}</div>
+    <button type="button" class="mclose" aria-label="닫기">✕</button></div>
+  <div class="mbody" style="grid-template-columns:1fr">
+    <div>
+      ${o.role ? `<span class="rolebig">${esc(o.role)}</span>` : ""}
+      ${o.intent.length ? `<h5>설계 의도</h5>${ul(o.intent)}` : ""}
+      ${o.how.length ? `<h5>작동</h5>${ul(o.how)}` : ""}
+    </div>
+    ${o.gallery.length ? `<div class="mfull"><h5>예시 이미지</h5>${gallery(o.gallery, false)}</div>` : ""}
+  </div>`);
+}
+function closeModal() { $("#modal").classList.remove("on"); document.body.style.overflow = ""; stack = []; $$("#mbox svg.links").forEach(el => el.remove()); }
+$("#modal").addEventListener("click", e => {
+  if (e.target.id === "modal" || e.target.closest(".mclose")) return closeModal();
+  const go = e.target.closest("[data-go]"); if (go) return openZone(go.dataset.go);
+  if (e.target.closest("[data-back]")) { stack.pop(); const [t, id] = stack[stack.length - 1]; return t === "z" ? openZone(id, false) : openObj(id, false); }
+  const ob = e.target.closest("[data-obj]"); if (ob) return openObj(ob.dataset.obj);
+  const zb = e.target.closest("button[data-zone]"); if (zb) { stack = []; return openZone(zb.dataset.zone); }
+  const fi = e.target.closest(".fi"); if (fi && fi.querySelector("img")) { $("#lbimg").src = fi.querySelector("img").src; $("#lb").classList.add("on"); }
+});
+$("#modal").addEventListener("scroll", () => {}, {passive: true});
+$("#lb").addEventListener("click", () => $("#lb").classList.remove("on"));
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") { if ($("#lb").classList.contains("on")) $("#lb").classList.remove("on"); else closeModal(); }
+  if ((e.key === "Enter" || e.key === " ") && document.activeElement) {
+    const a = document.activeElement;
+    if (a.dataset?.obj && !$("#modal").contains(a)) { e.preventDefault(); stack = []; openObj(a.dataset.obj); }
+    else if (a.dataset?.zone && !$("#modal").contains(a)) { e.preventDefault(); openZone(a.dataset.zone); }
+  }
+});
+
+// ---------- zone cards
+const cards = $("#zcards");
+ORDER.forEach(id => {
+  const z = ZBY[id], g = (z.gallery || [])[0];
+  cards.insertAdjacentHTML("beforeend", `<div class="box zcard" tabindex="0" role="button" data-zone="${id}">${g ? `<div class="im"><img alt="" style="width:100%;height:100%;object-fit:cover;display:block" src="assets/${g.src}" data-fb="${g && g.fb ? g.fb : ""}" onerror="if(this.dataset.fb){const f=this.dataset.fb;this.dataset.fb='';this.src='assets/'+f}else{this.closest('.im').remove()}"></div>` : ""}<div class="bd"><div class="no">${esc(z.no)}</div><h4>${esc(z.name)}</h4><div class="chips">${z.role.map(r => `<span class="chip">${esc(r)}</span>`).join("")}</div></div></div>`);
+});
+cards.addEventListener("click", e => { const c = e.target.closest("[data-zone]"); if (c) openZone(c.dataset.zone); });
+
+// ---------- elevation clicks
+$("#elev").addEventListener("click", e => {
+  const p = e.target.closest(".poi"); if (p) { stack = []; return openObj(p.dataset.obj); }
+  const z = e.target.closest(".ez"); if (z) openZone(z.dataset.zone);
+});
+
+// ---------- main plan: layers, tooltip, click, zoom/pan
+$$(".tog input").forEach(cb => cb.addEventListener("change", () => svg.classList.toggle("hide-" + cb.dataset.l, !cb.checked)));
+svg.classList.add("hide-wp");
+const layerOn = new Set(DATA.layers.map((_, i) => i));
+$$("#layerleg li").forEach((li, i) => li.addEventListener("click", () => {
+  if (layerOn.size === DATA.layers.length) { layerOn.clear(); layerOn.add(i); }
+  else if (layerOn.has(i)) { layerOn.delete(i); if (!layerOn.size) DATA.layers.forEach((_, k) => layerOn.add(k)); }
+  else layerOn.add(i);
+  $$("#layerleg li").forEach((l, k) => l.classList.toggle("off", !layerOn.has(k)));
+  $$("#plan .rt").forEach(p => p.classList.toggle("dim", !layerOn.has(+p.dataset.l)));
+}));
+const tip = $("#tip");
+function showTip(e, o) {
+  tip.innerHTML = `<div class="t">${esc(o.t)}</div><div class="n">${esc(o.name)}</div>`;
+  tip.style.left = Math.min(e.clientX + 14, innerWidth - 290) + "px"; tip.style.top = Math.min(e.clientY + 14, innerHeight - 70) + "px"; tip.classList.add("on");
+}
+document.addEventListener("pointermove", e => {
+  const p = e.target.closest && e.target.closest("svg.plan:not(.mini) .poi, svg.elev .poi");
+  if (p && !drag) showTip(e, OBJ[p.dataset.obj]); else if (!e.target.closest || !e.target.closest("#v3wrap canvas")) tip.classList.remove("on");
+});
+const VB0 = svg.viewBox.baseVal, base = {x: VB0.x, y: VB0.y, w: VB0.width, h: VB0.height};
+let vb = {...base}, drag = null, moved = false;
+const apply = () => svg.setAttribute("viewBox", `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
+function zoom(f, cx = 0.5, cy = 0.5) {
+  const nw = Math.min(base.w, Math.max(base.w / 8, vb.w * f)), nh = nw * base.h / base.w;
+  vb.x += (vb.w - nw) * cx; vb.y += (vb.h - nh) * cy; vb.w = nw; vb.h = nh; apply();
+}
+svg.addEventListener("wheel", e => { e.preventDefault(); const r = svg.getBoundingClientRect(); zoom(e.deltaY > 0 ? 1.18 : 1 / 1.18, (e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height); }, {passive: false});
+svg.addEventListener("pointerdown", e => { drag = {x: e.clientX, y: e.clientY, vx: vb.x, vy: vb.y}; moved = false; });
+addEventListener("pointermove", e => {
+  if (!drag) return; const r = svg.getBoundingClientRect(), dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if (Math.abs(dx) + Math.abs(dy) > 5) { moved = true; svg.classList.add("drag"); }
+  if (moved) { vb.x = drag.vx - dx * vb.w / r.width; vb.y = drag.vy - dy * vb.h / r.height; apply(); }
+});
+addEventListener("pointerup", () => { drag = null; svg.classList.remove("drag"); });
+svg.addEventListener("click", e => {
+  if (moved) { moved = false; return; }
+  const p = e.target.closest(".poi"); if (p) { stack = []; return openObj(p.dataset.obj); }
+  const z = e.target.closest(".zone"); if (z) openZone(z.dataset.zone);
+});
+$("#zin").onclick = () => zoom(1 / 1.4); $("#zout").onclick = () => zoom(1.4); $("#zreset").onclick = () => { vb = {...base}; apply(); };
+
+// ---------- 3D viewer (three.js r160, vendored; loaded on demand)
+function loadScript(src) { return new Promise(res => { const s = document.createElement("script"); s.src = src; s.onload = () => res(true); s.onerror = () => res(false); document.head.appendChild(s); }); }
+$("#v3load").addEventListener("click", async () => {
+  const msg = $("#v3msg"); msg.innerHTML = "<div>불러오는 중…</div>";
+  if (!(await loadScript("assets/vendor/three.classic.js")) || !(await loadScript("assets/vendor/orbit.classic.js")) || !window.THREE || !THREE.OrbitControls) { msg.innerHTML = "<div>3D 라이브러리를 찾지 못했다(assets/vendor)</div>"; return; }
+  if (!window.DS_GEOMETRY) await loadScript("assets/geometry.js");
+  if (!window.DS_GEOMETRY && location.protocol.startsWith("http")) { try { window.DS_GEOMETRY = await (await fetch("assets/geometry.json")).json(); } catch (e) {} }
+  start3D(); });
+function start3D() {
+  const T = THREE, wrap = $("#v3wrap"), msg = $("#v3msg"), G = window.DS_GEOMETRY;
+  const renderer = new T.WebGLRenderer({antialias: true}); renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.localClippingEnabled = true;
+  wrap.appendChild(renderer.domElement);
+  const scene = new T.Scene(); scene.background = new T.Color(0x05070a); scene.fog = new T.Fog(0x05070a, 260, 520);
+  const cam = new T.PerspectiveCamera(45, 16 / 9, 0.5, 2000);
+  scene.add(new T.HemisphereLight(0xbfd4ff, 0x1a140c, 1.6)); const sun = new T.DirectionalLight(0xffffff, 1.6); sun.position.set(-60, 120, 80); scene.add(sun);
+  const ctl = new T.OrbitControls(cam, renderer.domElement); ctl.enableDamping = true; ctl.target.set(10, 10, 0); ctl.maxPolarAngle = Math.PI * 0.495;
+  const W = (x, y, z) => new T.Vector3(x * 0.01, z * 0.01, y * 0.01);	// UE (cm, left-handed, Z up) -> three (m, right-handed, Y up): swap Y and Z
+  const clip = new T.Plane(new T.Vector3(0, -1, 0), 70);
+  const unit = {box: new T.BoxGeometry(1, 1, 1), cyl: new T.CylinderGeometry(0.5, 0.5, 1, 16), sph: new T.SphereGeometry(0.5, 12, 8)};
+  let count = 0;
+  if (G && G.items) {
+    const groups = {};
+    G.items.forEach(it => { const key = it[0] + "|" + (it[13] ? 1 : 0); (groups[key] ||= []).push(it); });
+    const m4 = new T.Matrix4(), col = new T.Color(), d2r = Math.PI / 180;
+    for (const [key, list] of Object.entries(groups)) {
+      const name = key.split("|")[0], glow = key.endsWith("|1"), b = (G.meshes || {})[name] || [-50, -50, -50, 50, 50, 50];
+      const geo = /cylinder/i.test(name) ? unit.cyl : /sphere/i.test(name) ? unit.sph : unit.box;
+      const mat = glow ? new T.MeshBasicMaterial({clippingPlanes: [clip], side: T.DoubleSide}) : new T.MeshLambertMaterial({clippingPlanes: [clip], side: T.DoubleSide});
+      const im = new T.InstancedMesh(geo, mat, list.length);
+      const cx = (b[0] + b[3]) / 2, cy = (b[1] + b[4]) / 2, cz = (b[2] + b[5]) / 2, dx = b[3] - b[0], dy = b[4] - b[1], dz = b[5] - b[2];
+      list.forEach((it, i) => {
+        const [, x, y, z, pi, ya, ro, sx, sy, sz, r, g, bb] = it;
+        const cp = Math.cos(pi * d2r), sp = Math.sin(pi * d2r), cyw = Math.cos(ya * d2r), syw = Math.sin(ya * d2r), cr = Math.cos(ro * d2r), sr = Math.sin(ro * d2r);
+        const X = [cp * cyw * sx, cp * syw * sx, sp * sx];
+        const Y = [(sr * sp * cyw - cr * syw) * sy, (sr * sp * syw + cr * cyw) * sy, -sr * cp * sy];
+        const Z = [-(cr * sp * cyw + sr * syw) * sz, (cyw * sr - cr * sp * syw) * sz, cr * cp * sz];
+        const t = [x + cx * X[0] + cy * Y[0] + cz * Z[0], y + cx * X[1] + cy * Y[1] + cz * Z[1], z + cx * X[2] + cy * Y[2] + cz * Z[2]];
+        const k = 0.01;	// columns: unit x -> local X*dx, unit y -> local Z*dz (three up), unit z -> local Y*dy; every vector Y/Z-swapped
+        m4.set(X[0] * dx * k, Z[0] * dz * k, Y[0] * dy * k, t[0] * k,
+               X[2] * dx * k, Z[2] * dz * k, Y[2] * dy * k, t[2] * k,
+               X[1] * dx * k, Z[1] * dz * k, Y[1] * dy * k, t[1] * k, 0, 0, 0, 1);
+        im.setMatrixAt(i, m4); col.setRGB(Math.min(r, 1.5), Math.min(g, 1.5), Math.min(bb, 1.5)); im.setColorAt(i, col);
+      });
+      im.instanceMatrix.needsUpdate = true; if (im.instanceColor) im.instanceColor.needsUpdate = true;
+      scene.add(im); count += list.length;
+    }
+  } else {
+    const gp = new T.Mesh(new T.PlaneGeometry(200, 186), new T.MeshLambertMaterial({color: 0x10151d, clippingPlanes: [clip]})); gp.rotation.x = -Math.PI / 2; gp.position.set(10, -0.05, -3); scene.add(gp);
+    scene.add(new T.GridHelper(200, 20, 0x2c3747, 0x161d2a));
+  }
+  // first-time route + clickable object icons (same modals)
+  const rp = DATA.route_first.map(([x, y, z]) => W(x, y, z + 40));
+  const route = new T.Line(new T.BufferGeometry().setFromPoints(rp), new T.LineBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.85, clippingPlanes: [clip]})); scene.add(route);
+  const LC = {gimmick: "#7cc4ff", mob: "#ff5470", fire: "#ff7a1a", loot: "#e9c46a", npc: "#9ad1ff"}, tex = {};
+  const sprite = c => tex[c] ||= (() => { const cv = document.createElement("canvas"); cv.width = cv.height = 64; const x = cv.getContext("2d"); x.fillStyle = c; x.beginPath(); x.arc(32, 32, 24, 0, 7); x.fill(); x.lineWidth = 6; x.strokeStyle = "#05070a"; x.stroke(); return new T.CanvasTexture(cv); })();
+  const icons = new T.Group(); scene.add(icons);
+  Object.entries(OBJ).forEach(([id, o]) => {
+    if (o.t === "바닥 메시지" || o.t === "셔터 가게" || o.name.includes("소품")) return;
+    const s = new T.Sprite(new T.SpriteMaterial({map: sprite(LC[o.layer] || "#fff"), depthTest: false, sizeAttenuation: false}));
+    s.scale.set(0.022, 0.022, 1); s.position.copy(W(o.x, o.y, o.z + 120)); s.userData.id = id; s.renderOrder = 10; icons.add(s);
+  });
+  msg.innerHTML = G ? "" : `<div style="position:absolute;left:12px;top:10px;font-size:12.5px;color:var(--ink3);pointer-events:none">형상 데이터 대기 — assets/geometry.json 을 넣고 build_plan.py</div>`;
+  msg.style.pointerEvents = "none"; $("#v3bar").hidden = false;
+  const view = top => { if (top) { cam.position.set(10, 230, 0.1); ctl.target.set(10, 0, 0); } else { cam.position.set(95, 120, 150); ctl.target.set(10, 10, -5); } ctl.update(); };
+  view(false);
+  const resize = () => { const w = wrap.clientWidth, h = wrap.clientHeight; renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); };
+  addEventListener("resize", resize); resize();
+  const setCut = v => { clip.constant = +v; $("#v3cut").value = v; $("#v3cutv").textContent = v >= 70 ? "전체" : (v >= 0 ? "+" : "") + v + " m 이하"; icons.children.forEach(s => s.visible = s.position.y <= clip.constant + 1); };
+  $("#v3cut").addEventListener("input", e => setCut(e.target.value));
+  $$("#v3bar [data-cut]").forEach(b => b.addEventListener("click", () => setCut(b.dataset.cut)));
+  $("#v3route").addEventListener("change", e => route.visible = e.target.checked);
+  $("#v3icons").addEventListener("change", e => icons.visible = e.target.checked);
+  $("#v3top").onclick = () => view(true); $("#v3persp").onclick = () => view(false);
+  const ray = new T.Raycaster(), mp = new T.Vector2(); let down = null;
+  const pick = e => { const r = renderer.domElement.getBoundingClientRect(); mp.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1); ray.setFromCamera(mp, cam); const h = ray.intersectObjects(icons.children.filter(s => s.visible), false); return h.length ? h[0].object.userData.id : null; };
+  renderer.domElement.addEventListener("pointerdown", e => down = [e.clientX, e.clientY]);
+  renderer.domElement.addEventListener("pointerup", e => { if (down && Math.hypot(e.clientX - down[0], e.clientY - down[1]) < 5) { const id = pick(e); if (id) { stack = []; openObj(id); } } down = null; });
+  renderer.domElement.addEventListener("pointermove", e => { const id = icons.visible ? pick(e) : null; renderer.domElement.style.cursor = id ? "pointer" : ""; if (id) showTip(e, OBJ[id]); else tip.classList.remove("on"); });
+  (function loop() { ctl.update(); renderer.render(scene, cam); requestAnimationFrame(loop); })();
+  console.log("[3D] items", count);
+}
+</script>
+</body>
+</html>

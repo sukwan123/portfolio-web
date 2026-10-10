@@ -759,3 +759,15 @@ figure{margin:0}
   .play img{width:100%;height:auto;aspect-ratio:16/9}
   .play-go{padding:14px 22px;font-size:15px}
 }
+
+/* 페이지 안에 띄운 웹 문서 (인터랙티브 기획서) */
+.frame{margin-top:22px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  background:var(--surface);box-shadow:var(--shadow)}
+.frame-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 16px;
+  border-bottom:1px solid var(--line);font-size:13.5px}
+.frame-bar b{color:var(--ink);font-weight:700}
+.frame-bar a{color:var(--accent-ink);text-decoration:none;white-space:nowrap;font-weight:600}
+.frame-bar a:hover{text-decoration:underline}
+.frame iframe{display:block;width:100%;height:min(86vh,980px);min-height:560px;border:0;background:#0b0e13}
+.frame figcaption{padding:10px 16px;font-size:13px;color:var(--ink3);border-top:1px solid var(--line)}
+@media(max-width:620px){.frame iframe{height:78vh;min-height:480px}.frame-bar{font-size:12.5px}}
