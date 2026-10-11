@@ -771,9 +771,6 @@ PERSONAL = dict(
                  # 원본: github.com/sukwan123/dark-seoul-level-design — 갱신되면 doc/darkseoul/ 로 다시 복사
                  ("frame", "doc/darkseoul/index.html", "다크서울 레벨 기획서",
                   "인터랙티브 기획서 — 개요 · 설계 원칙 · 평면도 · 측면도 · 3D · 구역 · 긴장도"),
-                 ("shotfig", "img/ds_shots.webp",
-                  "아트 패스 맵 — 싱크홀 · 공구 골목 · 지하상가 · V1 옥상 · 학원 · 타워크레인",
-                  "같은 레벨의 아트 패스 맵에서 촬영한 장면"),
              ],
              videos=[], links=[]),
         dict(slug="sc-redesign", page="pw-starcraft.html",
