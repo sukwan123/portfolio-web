@@ -369,6 +369,9 @@ DETAIL = [
 ]
 
 # 회사별 최종 연봉 — 이력서에만 적는다. 웹 포트폴리오에는 싣지 않는다.
+# BLIND=1 — 연봉 · 사진처럼 민감하거나 직무와 무관한 정보를 빼라는 공고에 낼 때
+BLIND = os.environ.get("BLIND") == "1"
+
 SALARY = {"넷마블네오": "6,931만원", "너바나나": "5,700만원",
           "님블뉴런": "4,850만원", "블루사이드": "4,100만원"}
 
@@ -381,12 +384,12 @@ OFFINDUSTRY = ("오디오드라마 집필 · 연출 · 제작 (현재)<br>"
 def header(doc_name, career=None):
     site = ('<b>포트폴리오</b> %s' % link("index.html", SITE.replace("https://", "")
                                       if SITE else "웹 포트폴리오"))
+    img = "" if BLIND else '<img class="photo" src="file://%s" alt="증명사진">' % photo()
     return ('<header class="with-photo"><div><h1>%s<small>%s</small></h1>'
             '<div class="role">레벨 디자이너 · %s</div>'
-            '<div class="meta"><b>%s</b> · <b>%s</b><br>%s</div></div>'
-            '<img class="photo" src="file://%s" alt="증명사진"></header>'
+            '<div class="meta"><b>%s</b> · <b>%s</b><br>%s</div></div>%s</header>'
             % (e(C.SITE["name"]), e(doc_name), e(career or CAREER),
-               e(C.SITE["email"]), e(C.SITE["tel"]), site, photo()))
+               e(C.SITE["email"]), e(C.SITE["tel"]), site, img))
 
 
 # ─────────────────────────────────────────────────────────────── 이력서
@@ -399,16 +402,18 @@ def resume():
                     for n, lab in C.HOME["stats"])
     b.append('<div class="tiles">%s</div>' % tiles)
 
-    b.append('<h2>경력</h2><table><tr><td class="when"></td><td class="what"></td>'
-             '<td class="pay hd">최종 연봉</td></tr>')
+    b.append('<h2>경력</h2><table>')
+    if not BLIND:
+        b.append('<tr><td class="when"></td><td class="what"></td><td class="pay hd">최종 연봉</td></tr>')
     seen = set()
     for when, co, title, pos in C.HOME["career"]:
         # 연봉은 회사 기준 — 같은 회사가 두 줄이면 위(최근) 줄에만 적는다
         pay = SALARY.get(co, "") if co not in seen else ""
         seen.add(co)
+        cell = "" if BLIND else '<td class="pay">%s</td>' % e(pay)
         b.append('<tr><td class="when"><b>%s</b>%s</td>'
-                 '<td class="what"><b>%s</b><div>%s</div></td><td class="pay">%s</td></tr>'
-                 % (e(co), e(when), e(title), pos, e(pay)))
+                 '<td class="what"><b>%s</b><div>%s</div></td>%s</tr>'
+                 % (e(co), e(when), e(title), pos, cell))
     b.append('</table>')
 
     b.append('<h2>경력 상세</h2>')
@@ -436,6 +441,8 @@ def resume():
 
     b.append('<h2>학력 · 기타</h2><table>')
     for k, v in C.HOME["edu"]:
+        if BLIND and k == "병역":          # 직무와 무관한 정보
+            continue
         b.append('<tr><td class="k">%s</td><td class="v">%s</td></tr>' % (e(k), v))
     b.append('<tr><td class="k">업계 외</td><td class="v kw">%s</td></tr>' % OFFINDUSTRY)
     b.append('</table>')
