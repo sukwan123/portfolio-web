@@ -758,10 +758,16 @@ PERSONAL = dict(
     own=[
         dict(slug="darkseoul", page="pw-darkseoul.html",
              title="다크서울 — 소울라이크 스테이지 레벨 디자인", year="2026",
-             meta="레벨디자인 · 기획서 · UE5.8 · 1인 개발", mono="DS", cover="darkseoul",
+             meta="레벨디자인 · 기획서 · 플레이어블 빌드 · UE5.8 · 1인 개발", mono="DS", cover="darkseoul",
              desc="비에 잠긴 밤의 서울 도심을 무대로, 소울라이크 스테이지 하나를 블록아웃부터 "
                   "기믹 · 몹 · 지름길 · 보스 진입까지 처음부터 끝까지 설계한 레벨 디자인 작업입니다.",
              blocks=[
+                 ("play", "img/cov/darkseoul.webp",
+                  "https://github.com/sukwan123/dark-seoul-level-design/releases/download/v1.0/DarkSeoul.zip",
+                  "목업 빌드 내려받기 — DARK SEOUL",
+                  "Windows 64비트 · 1.9 GB · 압축을 풀고 DongtanSoul.exe 실행 · RTX 2060 급 이상 권장",
+                  "↓ 내려받기"),
+                 ("embeds", [("플레이 영상", "https://youtu.be/GNAHm4777Ng", "다크서울 목업 빌드 플레이")]),
                  # 원본: github.com/sukwan123/dark-seoul-level-design — 갱신되면 doc/darkseoul/ 로 다시 복사
                  ("frame", "doc/darkseoul/index.html", "다크서울 레벨 기획서",
                   "인터랙티브 기획서 — 개요 · 설계 원칙 · 평면도 · 측면도 · 3D · 구역 · 긴장도"),
